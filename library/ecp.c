@@ -250,9 +250,6 @@ static int ecp_check_budget( const mbedtls_ecp_group *grp,
 #define ECP_BUDGET( ops )   MBEDTLS_MPI_CHK( ecp_check_budget( grp, rs_ctx, ops ) );
 #else
 #define ECP_BUDGET( ops )   /* no-op */
-
-/* We also need that type to make our life simpler for internal functions */
-typedef void mbedtls_ecp_restart_ctx;
 #endif /* MBEDTLS_ECP_RESTARTABLE */
 
 #if defined(MBEDTLS_ECP_DP_SECP192R1_ENABLED) ||   \
