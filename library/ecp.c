@@ -2120,9 +2120,19 @@ int32_t mbedtls_ecp_mul_restartable( mbedtls_ecp_group *grp, mbedtls_ecp_point *
 
 #endif /* MBEDTLS_ECP_INTERNAL_ALT */
 
-    /* Common sanity checks */
-    MBEDTLS_MPI_CHK( mbedtls_ecp_check_privkey( grp, m ) );
-    MBEDTLS_MPI_CHK( mbedtls_ecp_check_pubkey( grp, P ) );
+#if defined(MBEDTLS_ECP_EARLY_RETURN) && defined(ECP_SHORTWEIERSTRASS)
+    /* skip argument check when restarting */
+    if( ecp_get_type( grp ) != ECP_TYPE_SHORT_WEIERSTRASS ||
+        rs_ctx == NULL || rs_ctx->rsm == NULL )
+#endif
+    {
+        /* Common sanity checks */
+        MBEDTLS_MPI_CHK( mbedtls_ecp_check_privkey( grp, m ) );
+        MBEDTLS_MPI_CHK( mbedtls_ecp_check_pubkey( grp, P ) );
+
+        /* check_privkey is 0M and check_pubkey is 3M */
+        ECP_BUDGET( 3 );
+    }
 
     ret = MBEDTLS_ERR_ECP_BAD_INPUT_DATA;
 #if defined(ECP_MONTGOMERY)
