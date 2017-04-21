@@ -108,7 +108,7 @@ int32_t mbedtls_ecdsa_sign_det( mbedtls_ecp_group *grp, mbedtls_mpi *r, mbedtls_
  * \param s         Second integer of the signature
  *
  * \return          0 if successful,
- *                  MBEDTLS_ERR_ECP_BAD_INPUT_DATA if signature is invalid
+ *                  MBEDTLS_ERR_ECP_VERIFY_FAILED if signature is invalid
  *                  or a MBEDTLS_ERR_ECP_XXX or MBEDTLS_MPI_XXX error code
  */
 int32_t mbedtls_ecdsa_verify( mbedtls_ecp_group *grp,
