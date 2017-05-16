@@ -79,6 +79,7 @@ int main( void )
 #define DFL_PSK                 ""
 #define DFL_PSK_IDENTITY        "Client_identity"
 #define DFL_ECJPAKE_PW          NULL
+#define DFL_EC_MAX_OPS          -1
 #define DFL_FORCE_CIPHER        0
 #define DFL_RENEGOTIATION       MBEDTLS_SSL_RENEGOTIATION_DISABLED
 #define DFL_ALLOW_LEGACY        -2
@@ -222,6 +223,13 @@ int main( void )
 #define USAGE_ECJPAKE ""
 #endif
 
+#if defined(MBEDTLS_ECP_RESTARTABLE)
+#define USAGE_ECRESTART \
+    "    ec_max_ops=%%s       default: library default (restart disabled)\n"
+#else
+#define USAGE_ECRESTART ""
+#endif
+
 #define USAGE \
     "\n usage: ssl_client2 param=<>...\n"                   \
     "\n acceptable parameters:\n"                           \
@@ -245,6 +253,7 @@ int main( void )
     "\n"                                                    \
     USAGE_PSK                                               \
     USAGE_ECJPAKE                                           \
+    USAGE_ECRESTART                                         \
     "\n"                                                    \
     "    allow_legacy=%%d     default: (library default: no)\n"      \
     USAGE_RENEGO                                            \
@@ -292,6 +301,7 @@ struct options
     const char *psk;            /* the pre-shared key                       */
     const char *psk_identity;   /* the pre-shared key identity              */
     const char *ecjpake_pw;     /* the EC J-PAKE password                   */
+    int32_t ec_max_ops;             /* EC consecutive operations limit          */
     int32_t force_ciphersuite[2];   /* protocol/ciphersuite to use, or all      */
     int32_t renegotiation;          /* enable / disable renegotiation           */
     int32_t allow_legacy;           /* allow legacy renegotiation               */
@@ -483,6 +493,7 @@ int main( int32_t argc, char *argv[] )
     opt.psk                 = DFL_PSK;
     opt.psk_identity        = DFL_PSK_IDENTITY;
     opt.ecjpake_pw          = DFL_ECJPAKE_PW;
+    opt.ec_max_ops          = DFL_EC_MAX_OPS;
     opt.force_ciphersuite[0]= DFL_FORCE_CIPHER;
     opt.renegotiation       = DFL_RENEGOTIATION;
     opt.allow_legacy        = DFL_ALLOW_LEGACY;
@@ -573,6 +584,8 @@ int main( int32_t argc, char *argv[] )
             opt.psk_identity = q;
         else if( strcmp( p, "ecjpake_pw" ) == 0 )
             opt.ecjpake_pw = q;
+        else if( strcmp( p, "ec_max_ops" ) == 0 )
+            opt.ec_max_ops = atoi( q );
         else if( strcmp( p, "force_ciphersuite" ) == 0 )
         {
             opt.force_ciphersuite[0] = mbedtls_ssl_get_ciphersuite_id( q );
@@ -1244,6 +1257,11 @@ int main( int32_t argc, char *argv[] )
                                             mbedtls_timing_get_delay );
 #endif
 
+#if defined(MBEDTLS_ECP_RESTARTABLE)
+    if( opt.ec_max_ops != DFL_EC_MAX_OPS )
+        mbedtls_ecp_set_max_ops( opt.ec_max_ops );
+#endif
+
     mbedtls_printf( " ok\n" );
 
     /*
@@ -1254,7 +1272,9 @@ int main( int32_t argc, char *argv[] )
 
     while( ( ret = mbedtls_ssl_handshake( &ssl ) ) != 0 )
     {
-        if( ret != MBEDTLS_ERR_SSL_WANT_READ && ret != MBEDTLS_ERR_SSL_WANT_WRITE )
+        if( ret != MBEDTLS_ERR_SSL_WANT_READ &&
+            ret != MBEDTLS_ERR_SSL_WANT_WRITE &&
+            ret != MBEDTLS_ERR_ECP_IN_PROGRESS )
         {
             mbedtls_printf( " failed\n  ! mbedtls_ssl_handshake returned -0x%x\n", -ret );
             if( ret == MBEDTLS_ERR_X509_CERT_VERIFY_FAILED )
@@ -1346,7 +1366,8 @@ int main( int32_t argc, char *argv[] )
         while( ( ret = mbedtls_ssl_renegotiate( &ssl ) ) != 0 )
         {
             if( ret != MBEDTLS_ERR_SSL_WANT_READ &&
-                ret != MBEDTLS_ERR_SSL_WANT_WRITE )
+                ret != MBEDTLS_ERR_SSL_WANT_WRITE &&
+                ret != MBEDTLS_ERR_ECP_IN_PROGRESS )
             {
                 mbedtls_printf( " failed\n  ! mbedtls_ssl_renegotiate returned %d\n\n", ret );
                 goto exit;
@@ -1398,7 +1419,8 @@ send_request:
                            <= 0 )
             {
                 if( ret != MBEDTLS_ERR_SSL_WANT_READ &&
-                    ret != MBEDTLS_ERR_SSL_WANT_WRITE )
+                    ret != MBEDTLS_ERR_SSL_WANT_WRITE &&
+                    ret != MBEDTLS_ERR_ECP_IN_PROGRESS )
                 {
                     mbedtls_printf( " failed\n  ! mbedtls_ssl_write returned -0x%x\n\n", -ret );
                     goto exit;
@@ -1410,7 +1432,8 @@ send_request:
     {
         do ret = mbedtls_ssl_write( &ssl, buf, len );
         while( ret == MBEDTLS_ERR_SSL_WANT_READ ||
-               ret == MBEDTLS_ERR_SSL_WANT_WRITE );
+               ret == MBEDTLS_ERR_SSL_WANT_WRITE ||
+               ret == MBEDTLS_ERR_ECP_IN_PROGRESS );
 
         if( ret < 0 )
         {
@@ -1443,7 +1466,8 @@ send_request:
             ret = mbedtls_ssl_read( &ssl, buf, len );
 
             if( ret == MBEDTLS_ERR_SSL_WANT_READ ||
-                ret == MBEDTLS_ERR_SSL_WANT_WRITE )
+                ret == MBEDTLS_ERR_SSL_WANT_WRITE  ||
+                ret == MBEDTLS_ERR_ECP_IN_PROGRESS )
                 continue;
 
             if( ret <= 0 )
@@ -1488,7 +1512,8 @@ send_request:
 
         do ret = mbedtls_ssl_read( &ssl, buf, len );
         while( ret == MBEDTLS_ERR_SSL_WANT_READ ||
-               ret == MBEDTLS_ERR_SSL_WANT_WRITE );
+               ret == MBEDTLS_ERR_SSL_WANT_WRITE ||
+               ret == MBEDTLS_ERR_ECP_IN_PROGRESS );
 
         if( ret <= 0 )
         {
@@ -1536,7 +1561,8 @@ send_request:
         while( ( ret = mbedtls_ssl_handshake( &ssl ) ) != 0 )
         {
             if( ret != MBEDTLS_ERR_SSL_WANT_READ &&
-                ret != MBEDTLS_ERR_SSL_WANT_WRITE )
+                ret != MBEDTLS_ERR_SSL_WANT_WRITE &&
+                ret != MBEDTLS_ERR_ECP_IN_PROGRESS )
             {
                 mbedtls_printf( " failed\n  ! mbedtls_ssl_handshake returned -0x%x\n\n", -ret );
                 goto exit;
@@ -1619,7 +1645,8 @@ reconnect:
         while( ( ret = mbedtls_ssl_handshake( &ssl ) ) != 0 )
         {
             if( ret != MBEDTLS_ERR_SSL_WANT_READ &&
-                ret != MBEDTLS_ERR_SSL_WANT_WRITE )
+                ret != MBEDTLS_ERR_SSL_WANT_WRITE &&
+                ret != MBEDTLS_ERR_ECP_IN_PROGRESS )
             {
                 mbedtls_printf( " failed\n  ! mbedtls_ssl_handshake returned -0x%x\n\n", -ret );
                 goto exit;
