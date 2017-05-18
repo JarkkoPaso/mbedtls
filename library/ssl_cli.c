@@ -2820,6 +2820,9 @@ static int32_t ssl_write_client_key_exchange( mbedtls_ssl_context *ssl )
          * ECDH key exchange -- send client public value
          */
 #if defined(MBEDTLS_SSL__ECP_RESTARTABLE)
+        if( ssl->handshake->ec_restart_enabled)
+            mbedtls_ecdh_enable_restart( &ssl->handshake->ecdh_ctx );
+
         if( ssl->handshake->ecrs_state == ssl_ecrs_ecdh_public_done )
             goto ecdh_calc_secret;
 #endif
