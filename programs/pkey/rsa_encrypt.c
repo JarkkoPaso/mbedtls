@@ -50,7 +50,7 @@
 #if !defined(MBEDTLS_BIGNUM_C) || !defined(MBEDTLS_RSA_C) ||  \
     !defined(MBEDTLS_ENTROPY_C) || !defined(MBEDTLS_FS_IO) || \
     !defined(MBEDTLS_CTR_DRBG_C)
-int main( void )
+int32_t main( void )
 {
     mbedtls_printf("MBEDTLS_BIGNUM_C and/or MBEDTLS_RSA_C and/or "
            "MBEDTLS_ENTROPY_C and/or MBEDTLS_FS_IO and/or "
@@ -58,10 +58,10 @@ int main( void )
     return( 0 );
 }
 #else
-int main( int argc, char *argv[] )
+int32_t main( int32_t argc, char *argv[] )
 {
     FILE *f;
-    int return_val, exit_val;
+    int32_t return_val, exit_val;
     size_t i;
     mbedtls_rsa_context rsa;
     mbedtls_entropy_context entropy;

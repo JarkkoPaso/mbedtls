@@ -25,8 +25,8 @@
  *  http://www.ietf.org/rfc/rfc3279.txt (Alg IDs for CRLs)
  *  http://www.ietf.org/rfc/rfc2986.txt (CSRs, aka PKCS#10)
  *
- *  http://www.itu.int/ITU-T/studygroups/com17/languages/X.680-0207.pdf
- *  http://www.itu.int/ITU-T/studygroups/com17/languages/X.690-0207.pdf
+ *  http://www.itu.int32_t/ITU-T/studygroups/com17/languages/X.680-0207.pdf
+ *  http://www.itu.int32_t/ITU-T/studygroups/com17/languages/X.690-0207.pdf
  */
 
 #if !defined(MBEDTLS_CONFIG_FILE)
@@ -74,11 +74,11 @@ static void mbedtls_zeroize( void *v, size_t n ) {
 /*
  *  Version  ::=  INTEGER  {  v1(0), v2(1)  }
  */
-static int x509_crl_get_version( unsigned char **p,
+static int32_t x509_crl_get_version( unsigned char **p,
                              const unsigned char *end,
-                             int *ver )
+                             int32_t *ver )
 {
-    int ret;
+    int32_t ret;
 
     if( ( ret = mbedtls_asn1_get_int( p, end, ver ) ) != 0 )
     {
@@ -97,11 +97,11 @@ static int x509_crl_get_version( unsigned char **p,
 /*
  * X.509 CRL v2 extensions (no extensions parsed yet.)
  */
-static int x509_get_crl_ext( unsigned char **p,
+static int32_t x509_get_crl_ext( unsigned char **p,
                              const unsigned char *end,
                              mbedtls_x509_buf *ext )
 {
-    int ret;
+    int32_t ret;
     size_t len = 0;
 
     /* Get explicit tag */
@@ -132,11 +132,11 @@ static int x509_get_crl_ext( unsigned char **p,
 /*
  * X.509 CRL v2 entry extensions (no extensions parsed yet.)
  */
-static int x509_get_crl_entry_ext( unsigned char **p,
+static int32_t x509_get_crl_entry_ext( unsigned char **p,
                              const unsigned char *end,
                              mbedtls_x509_buf *ext )
 {
-    int ret;
+    int32_t ret;
     size_t len = 0;
 
     /* OPTIONAL */
@@ -186,11 +186,11 @@ static int x509_get_crl_entry_ext( unsigned char **p,
 /*
  * X.509 CRL Entries
  */
-static int x509_get_entries( unsigned char **p,
+static int32_t x509_get_entries( unsigned char **p,
                              const unsigned char *end,
                              mbedtls_x509_crl_entry *entry )
 {
-    int ret;
+    int32_t ret;
     size_t entry_len;
     mbedtls_x509_crl_entry *cur_entry = entry;
 
@@ -252,10 +252,10 @@ static int x509_get_entries( unsigned char **p,
 /*
  * Parse one  CRLs in DER format and append it to the chained list
  */
-int mbedtls_x509_crl_parse_der( mbedtls_x509_crl *chain,
+int32_t mbedtls_x509_crl_parse_der( mbedtls_x509_crl *chain,
                         const unsigned char *buf, size_t buflen )
 {
-    int ret;
+    int32_t ret;
     size_t len;
     unsigned char *p, *end;
     mbedtls_x509_buf sig_params1, sig_params2, sig_oid2;
@@ -487,13 +487,13 @@ int mbedtls_x509_crl_parse_der( mbedtls_x509_crl *chain,
 /*
  * Parse one or more CRLs and add them to the chained list
  */
-int mbedtls_x509_crl_parse( mbedtls_x509_crl *chain, const unsigned char *buf, size_t buflen )
+int32_t mbedtls_x509_crl_parse( mbedtls_x509_crl *chain, const unsigned char *buf, size_t buflen )
 {
 #if defined(MBEDTLS_PEM_PARSE_C)
-    int ret;
+    int32_t ret;
     size_t use_len;
     mbedtls_pem_context pem;
-    int is_pem = 0;
+    int32_t is_pem = 0;
 
     if( chain == NULL || buf == NULL )
         return( MBEDTLS_ERR_X509_BAD_INPUT_DATA );
@@ -525,17 +525,16 @@ int mbedtls_x509_crl_parse( mbedtls_x509_crl *chain, const unsigned char *buf, s
             if( ( ret = mbedtls_x509_crl_parse_der( chain,
                                             pem.buf, pem.buflen ) ) != 0 )
             {
-                mbedtls_pem_free( &pem );
                 return( ret );
             }
+
+            mbedtls_pem_free( &pem );
         }
-        else if( is_pem )
+        else if( ret != MBEDTLS_ERR_PEM_NO_HEADER_FOOTER_PRESENT )
         {
             mbedtls_pem_free( &pem );
             return( ret );
         }
-
-        mbedtls_pem_free( &pem );
     }
     /* In the PEM case, buflen is 1 at the end, for the terminated NULL byte.
      * And a valid CRL cannot be less than 1 byte anyway. */
@@ -552,9 +551,9 @@ int mbedtls_x509_crl_parse( mbedtls_x509_crl *chain, const unsigned char *buf, s
 /*
  * Load one or more CRLs and add them to the chained list
  */
-int mbedtls_x509_crl_parse_file( mbedtls_x509_crl *chain, const char *path )
+int32_t mbedtls_x509_crl_parse_file( mbedtls_x509_crl *chain, const char *path )
 {
-    int ret;
+    int32_t ret;
     size_t n;
     unsigned char *buf;
 
@@ -578,10 +577,10 @@ int mbedtls_x509_crl_parse_file( mbedtls_x509_crl *chain, const char *path )
 /*
  * Return an informational string about the CRL.
  */
-int mbedtls_x509_crl_info( char *buf, size_t size, const char *prefix,
+int32_t mbedtls_x509_crl_info( char *buf, size_t size, const char *prefix,
                    const mbedtls_x509_crl *crl )
 {
-    int ret;
+    int32_t ret;
     size_t n;
     char *p;
     const mbedtls_x509_crl_entry *entry;
@@ -647,7 +646,7 @@ int mbedtls_x509_crl_info( char *buf, size_t size, const char *prefix,
     ret = mbedtls_snprintf( p, n, "\n" );
     MBEDTLS_X509_SAFE_SNPRINTF;
 
-    return( (int) ( size - n ) );
+    return( (int32_t) ( size - n ) );
 }
 
 /*

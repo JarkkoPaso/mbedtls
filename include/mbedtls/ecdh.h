@@ -48,7 +48,7 @@ typedef struct
     mbedtls_ecp_point Q;        /*!<  our public value (public key)                 */
     mbedtls_ecp_point Qp;       /*!<  peer's public value (public key)              */
     mbedtls_mpi z;              /*!<  shared secret                                 */
-    int point_format;   /*!<  format for point export in TLS messages       */
+    int32_t point_format;   /*!<  format for point export in TLS messages       */
     mbedtls_ecp_point Vi;       /*!<  blinding value (for later)                    */
     mbedtls_ecp_point Vf;       /*!<  un-blinding value (for later)                 */
     mbedtls_mpi _d;             /*!<  previous d (for later)                        */
@@ -68,8 +68,8 @@ mbedtls_ecdh_context;
  * \return          0 if successful,
  *                  or a MBEDTLS_ERR_ECP_XXX or MBEDTLS_MPI_XXX error code
  */
-int mbedtls_ecdh_gen_public( mbedtls_ecp_group *grp, mbedtls_mpi *d, mbedtls_ecp_point *Q,
-                     int (*f_rng)(void *, unsigned char *, size_t),
+int32_t mbedtls_ecdh_gen_public( mbedtls_ecp_group *grp, mbedtls_mpi *d, mbedtls_ecp_point *Q,
+                     int32_t (*f_rng)(void *, unsigned char *, size_t),
                      void *p_rng );
 
 /**
@@ -90,9 +90,9 @@ int mbedtls_ecdh_gen_public( mbedtls_ecp_group *grp, mbedtls_mpi *d, mbedtls_ecp
  *                  countermeasures against potential elaborate timing
  *                  attacks, see \c mbedtls_ecp_mul() for details.
  */
-int mbedtls_ecdh_compute_shared( mbedtls_ecp_group *grp, mbedtls_mpi *z,
+int32_t mbedtls_ecdh_compute_shared( mbedtls_ecp_group *grp, mbedtls_mpi *z,
                          const mbedtls_ecp_point *Q, const mbedtls_mpi *d,
-                         int (*f_rng)(void *, unsigned char *, size_t),
+                         int32_t (*f_rng)(void *, unsigned char *, size_t),
                          void *p_rng );
 
 /**
@@ -125,9 +125,9 @@ void mbedtls_ecdh_free( mbedtls_ecdh_context *ctx );
  *
  * \return          0 if successful, or an MBEDTLS_ERR_ECP_XXX error code
  */
-int mbedtls_ecdh_make_params( mbedtls_ecdh_context *ctx, size_t *olen,
+int32_t mbedtls_ecdh_make_params( mbedtls_ecdh_context *ctx, size_t *olen,
                       unsigned char *buf, size_t blen,
-                      int (*f_rng)(void *, unsigned char *, size_t),
+                      int32_t (*f_rng)(void *, unsigned char *, size_t),
                       void *p_rng );
 
 /**
@@ -140,7 +140,7 @@ int mbedtls_ecdh_make_params( mbedtls_ecdh_context *ctx, size_t *olen,
  *
  * \return          0 if successful, or an MBEDTLS_ERR_ECP_XXX error code
  */
-int mbedtls_ecdh_read_params( mbedtls_ecdh_context *ctx,
+int32_t mbedtls_ecdh_read_params( mbedtls_ecdh_context *ctx,
                       const unsigned char **buf, const unsigned char *end );
 
 /**
@@ -155,7 +155,7 @@ int mbedtls_ecdh_read_params( mbedtls_ecdh_context *ctx,
  *
  * \return          0 if successful, or an MBEDTLS_ERR_ECP_XXX error code
  */
-int mbedtls_ecdh_get_params( mbedtls_ecdh_context *ctx, const mbedtls_ecp_keypair *key,
+int32_t mbedtls_ecdh_get_params( mbedtls_ecdh_context *ctx, const mbedtls_ecp_keypair *key,
                      mbedtls_ecdh_side side );
 
 /**
@@ -171,9 +171,9 @@ int mbedtls_ecdh_get_params( mbedtls_ecdh_context *ctx, const mbedtls_ecp_keypai
  *
  * \return          0 if successful, or an MBEDTLS_ERR_ECP_XXX error code
  */
-int mbedtls_ecdh_make_public( mbedtls_ecdh_context *ctx, size_t *olen,
+int32_t mbedtls_ecdh_make_public( mbedtls_ecdh_context *ctx, size_t *olen,
                       unsigned char *buf, size_t blen,
-                      int (*f_rng)(void *, unsigned char *, size_t),
+                      int32_t (*f_rng)(void *, unsigned char *, size_t),
                       void *p_rng );
 
 /**
@@ -186,7 +186,7 @@ int mbedtls_ecdh_make_public( mbedtls_ecdh_context *ctx, size_t *olen,
  *
  * \return          0 if successful, or an MBEDTLS_ERR_ECP_XXX error code
  */
-int mbedtls_ecdh_read_public( mbedtls_ecdh_context *ctx,
+int32_t mbedtls_ecdh_read_public( mbedtls_ecdh_context *ctx,
                       const unsigned char *buf, size_t blen );
 
 /**
@@ -202,9 +202,9 @@ int mbedtls_ecdh_read_public( mbedtls_ecdh_context *ctx,
  *
  * \return          0 if successful, or an MBEDTLS_ERR_ECP_XXX error code
  */
-int mbedtls_ecdh_calc_secret( mbedtls_ecdh_context *ctx, size_t *olen,
+int32_t mbedtls_ecdh_calc_secret( mbedtls_ecdh_context *ctx, size_t *olen,
                       unsigned char *buf, size_t blen,
-                      int (*f_rng)(void *, unsigned char *, size_t),
+                      int32_t (*f_rng)(void *, unsigned char *, size_t),
                       void *p_rng );
 
 #ifdef __cplusplus

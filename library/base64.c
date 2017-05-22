@@ -74,11 +74,11 @@ static const unsigned char base64_dec_map[128] =
 /*
  * Encode a buffer into base64 format
  */
-int mbedtls_base64_encode( unsigned char *dst, size_t dlen, size_t *olen,
+int32_t mbedtls_base64_encode( unsigned char *dst, size_t dlen, size_t *olen,
                    const unsigned char *src, size_t slen )
 {
     size_t i, n;
-    int C1, C2, C3;
+    int32_t C1, C2, C3;
     unsigned char *p;
 
     if( slen == 0 )
@@ -141,7 +141,7 @@ int mbedtls_base64_encode( unsigned char *dst, size_t dlen, size_t *olen,
 /*
  * Decode a base64-formatted buffer
  */
-int mbedtls_base64_decode( unsigned char *dst, size_t dlen, size_t *olen,
+int32_t mbedtls_base64_decode( unsigned char *dst, size_t dlen, size_t *olen,
                    const unsigned char *src, size_t slen )
 {
     size_t i, n;
@@ -192,11 +192,7 @@ int mbedtls_base64_decode( unsigned char *dst, size_t dlen, size_t *olen,
         return( 0 );
     }
 
-    /* The following expression is to calculate the following formula without
-     * risk of integer overflow in n:
-     *     n = ( ( n * 6 ) + 7 ) >> 3;
-     */
-    n = ( 6 * ( n >> 3 ) ) + ( ( 6 * ( n & 0x7 ) + 7 ) >> 3 );
+    n = ( ( n * 6 ) + 7 ) >> 3;
     n -= j;
 
     if( dst == NULL || dlen < n )
@@ -248,7 +244,7 @@ static const unsigned char base64_test_enc[] =
 /*
  * Checkup routine
  */
-int mbedtls_base64_self_test( int verbose )
+int32_t mbedtls_base64_self_test( int32_t verbose )
 {
     size_t len;
     const unsigned char *src;

@@ -41,7 +41,7 @@
     !defined(MBEDTLS_NET_C) || !defined(MBEDTLS_RSA_C) ||         \
     !defined(MBEDTLS_CERTS_C) || !defined(MBEDTLS_PEM_PARSE_C) || \
     !defined(MBEDTLS_CTR_DRBG_C) || !defined(MBEDTLS_X509_CRT_PARSE_C)
-int main( void )
+int32_t main( void )
 {
     mbedtls_printf("MBEDTLS_BIGNUM_C and/or MBEDTLS_ENTROPY_C and/or "
            "MBEDTLS_SSL_TLS_C and/or MBEDTLS_SSL_CLI_C and/or "
@@ -68,8 +68,8 @@ int main( void )
 
 #define DEBUG_LEVEL 1
 
-static void my_debug( void *ctx, int level,
-                      const char *file, int line,
+static void my_debug( void *ctx, int32_t level,
+                      const char *file, int32_t line,
                       const char *str )
 {
     ((void) level);
@@ -78,9 +78,9 @@ static void my_debug( void *ctx, int level,
     fflush(  (FILE *) ctx  );
 }
 
-int main( void )
+int32_t main( void )
 {
-    int ret, len;
+    int32_t ret, len;
     mbedtls_net_context server_fd;
     uint32_t flags;
     unsigned char buf[1024];
@@ -180,7 +180,7 @@ int main( void )
         goto exit;
     }
 
-    if( ( ret = mbedtls_ssl_set_hostname( &ssl, SERVER_NAME ) ) != 0 )
+    if( ( ret = mbedtls_ssl_set_hostname( &ssl, "mbed TLS Server 1" ) ) != 0 )
     {
         mbedtls_printf( " failed\n  ! mbedtls_ssl_set_hostname returned %d\n\n", ret );
         goto exit;

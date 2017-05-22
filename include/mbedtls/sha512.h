@@ -48,7 +48,7 @@ typedef struct
     uint64_t total[2];          /*!< number of bytes processed  */
     uint64_t state[8];          /*!< intermediate digest state  */
     unsigned char buffer[128];  /*!< data block being processed */
-    int is384;                  /*!< 0 => SHA-512, else SHA-384 */
+    int32_t is384;                  /*!< 0 => SHA-512, else SHA-384 */
 }
 mbedtls_sha512_context;
 
@@ -81,7 +81,7 @@ void mbedtls_sha512_clone( mbedtls_sha512_context *dst,
  * \param ctx      context to be initialized
  * \param is384    0 = use SHA512, 1 = use SHA384
  */
-void mbedtls_sha512_starts( mbedtls_sha512_context *ctx, int is384 );
+void mbedtls_sha512_starts( mbedtls_sha512_context *ctx, int32_t is384 );
 
 /**
  * \brief          SHA-512 process buffer
@@ -122,14 +122,14 @@ extern "C" {
  * \param is384    0 = use SHA512, 1 = use SHA384
  */
 void mbedtls_sha512( const unsigned char *input, size_t ilen,
-             unsigned char output[64], int is384 );
+             unsigned char output[64], int32_t is384 );
 
 /**
  * \brief          Checkup routine
  *
  * \return         0 if successful, or 1 if the test failed
  */
-int mbedtls_sha512_self_test( int verbose );
+int32_t mbedtls_sha512_self_test( int32_t verbose );
 
 /* Internal use */
 void mbedtls_sha512_process( mbedtls_sha512_context *ctx, const unsigned char data[128] );

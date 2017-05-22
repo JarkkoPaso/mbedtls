@@ -56,7 +56,7 @@
 #include <windows.h>
 #include <wincrypt.h>
 
-int mbedtls_platform_entropy_poll( void *data, unsigned char *output, size_t len,
+int32_t mbedtls_platform_entropy_poll( void *data, unsigned char *output, size_t len,
                            size_t *olen )
 {
     HCRYPTPROV provider;
@@ -93,7 +93,7 @@ int mbedtls_platform_entropy_poll( void *data, unsigned char *output, size_t len
 #if defined(SYS_getrandom)
 #define HAVE_GETRANDOM
 
-static int getrandom_wrapper( void *buf, size_t buflen, unsigned int flags )
+static int32_t getrandom_wrapper( void *buf, size_t buflen, uint32_t flags )
 {
     /* MemSan cannot understand that the syscall writes to the buffer */
 #if defined(__has_feature)
@@ -107,9 +107,9 @@ static int getrandom_wrapper( void *buf, size_t buflen, unsigned int flags )
 
 #include <sys/utsname.h>
 /* Check if version is at least 3.17.0 */
-static int check_version_3_17_plus( void )
+static int32_t check_version_3_17_plus( void )
 {
-    int minor;
+    int32_t minor;
     struct utsname un;
     const char *ver;
 
@@ -141,13 +141,13 @@ static int check_version_3_17_plus( void )
 
     return( 0 );
 }
-static int has_getrandom = -1;
+static int32_t has_getrandom = -1;
 #endif /* SYS_getrandom */
 #endif /* __linux__ */
 
 #include <stdio.h>
 
-int mbedtls_platform_entropy_poll( void *data,
+int32_t mbedtls_platform_entropy_poll( void *data,
                            unsigned char *output, size_t len, size_t *olen )
 {
     FILE *file;
@@ -160,7 +160,7 @@ int mbedtls_platform_entropy_poll( void *data,
 
     if( has_getrandom )
     {
-        int ret;
+        int32_t ret;
 
         if( ( ret = getrandom_wrapper( output, len, 0 ) ) < 0 )
             return( MBEDTLS_ERR_ENTROPY_SOURCE_FAILED );
@@ -192,7 +192,7 @@ int mbedtls_platform_entropy_poll( void *data,
 #endif /* !MBEDTLS_NO_PLATFORM_ENTROPY */
 
 #if defined(MBEDTLS_TEST_NULL_ENTROPY)
-int mbedtls_null_entropy_poll( void *data,
+int32_t mbedtls_null_entropy_poll( void *data,
                     unsigned char *output, size_t len, size_t *olen )
 {
     ((void) data);
@@ -209,7 +209,7 @@ int mbedtls_null_entropy_poll( void *data,
 #endif
 
 #if defined(MBEDTLS_TIMING_C)
-int mbedtls_hardclock_poll( void *data,
+int32_t mbedtls_hardclock_poll( void *data,
                     unsigned char *output, size_t len, size_t *olen )
 {
     unsigned long timer = mbedtls_timing_hardclock();
@@ -227,7 +227,7 @@ int mbedtls_hardclock_poll( void *data,
 #endif /* MBEDTLS_TIMING_C */
 
 #if defined(MBEDTLS_HAVEGE_C)
-int mbedtls_havege_poll( void *data,
+int32_t mbedtls_havege_poll( void *data,
                  unsigned char *output, size_t len, size_t *olen )
 {
     mbedtls_havege_state *hs = (mbedtls_havege_state *) data;
@@ -243,7 +243,7 @@ int mbedtls_havege_poll( void *data,
 #endif /* MBEDTLS_HAVEGE_C */
 
 #if defined(MBEDTLS_ENTROPY_NV_SEED)
-int mbedtls_nv_seed_poll( void *data,
+int32_t mbedtls_nv_seed_poll( void *data,
                           unsigned char *output, size_t len, size_t *olen )
 {
     unsigned char buf[MBEDTLS_ENTROPY_BLOCK_SIZE];

@@ -51,7 +51,7 @@
 #define mbedtls_printf printf
 #endif
 
-int main( void )
+int32_t main( void )
 {
     mbedtls_printf( "MBEDTLS_CTR_DRBG_C and/or MBEDTLS_ENTROPY_C and/or "
             "MBEDTLS_NET_C and/or MBEDTLS_SSL_CLI_C and/or UNIX "
@@ -168,9 +168,9 @@ enum exit_codes
     ssl_write_failed,
 };
 
-int main( void )
+int32_t main( void )
 {
-    int ret = exit_ok;
+    int32_t ret = exit_ok;
     mbedtls_net_context server_fd;
     struct sockaddr_in addr;
 #if defined(MBEDTLS_X509_CRT_PARSE_C)

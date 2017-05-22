@@ -34,7 +34,7 @@
 
 #if !defined(MBEDTLS_BIGNUM_C) || !defined(MBEDTLS_RSA_C) ||  \
     !defined(MBEDTLS_X509_CRL_PARSE_C) || !defined(MBEDTLS_FS_IO)
-int main( void )
+int32_t main( void )
 {
     mbedtls_printf("MBEDTLS_BIGNUM_C and/or MBEDTLS_RSA_C and/or "
            "MBEDTLS_X509_CRL_PARSE_C and/or MBEDTLS_FS_IO not defined.\n");
@@ -65,12 +65,12 @@ struct options
     const char *filename;       /* filename of the certificate file     */
 } opt;
 
-int main( int argc, char *argv[] )
+int32_t main( int32_t argc, char *argv[] )
 {
-    int ret = 0;
+    int32_t ret = 0;
     unsigned char buf[100000];
     mbedtls_x509_crl crl;
-    int i;
+    int32_t i;
     char *p, *q;
 
     /*

@@ -39,16 +39,16 @@
  */
 #define MBEDTLS_VERSION_MAJOR  2
 #define MBEDTLS_VERSION_MINOR  4
-#define MBEDTLS_VERSION_PATCH  1
+#define MBEDTLS_VERSION_PATCH  0
 
 /**
  * The single version number has the following structure:
  *    MMNNPP00
  *    Major version | Minor version | Patch version
  */
-#define MBEDTLS_VERSION_NUMBER         0x02040100
-#define MBEDTLS_VERSION_STRING         "2.4.1"
-#define MBEDTLS_VERSION_STRING_FULL    "mbed TLS 2.4.1"
+#define MBEDTLS_VERSION_NUMBER         0x02040000
+#define MBEDTLS_VERSION_STRING         "2.4.0"
+#define MBEDTLS_VERSION_STRING_FULL    "mbed TLS 2.4.0"
 
 #if defined(MBEDTLS_VERSION_C)
 
@@ -62,7 +62,7 @@ extern "C" {
  * \return          The constructed version number in the format
  *                  MMNNPP00 (Major, Minor, Patch).
  */
-unsigned int mbedtls_version_get_number( void );
+uint32_t mbedtls_version_get_number( void );
 
 /**
  * Get the version string ("x.y.z").
@@ -100,7 +100,7 @@ void mbedtls_version_get_string_full( char *string );
  *                  -2 if support for feature checking as a whole was not
  *                  compiled in.
  */
-int mbedtls_version_check_feature( const char *feature );
+int32_t mbedtls_version_check_feature( const char *feature );
 
 #ifdef __cplusplus
 }

@@ -76,7 +76,7 @@ static const TYPE_T * oid_ ## NAME ## _from_asn1( const mbedtls_asn1_buf *oid ) 
  * descriptor of an mbedtls_oid_descriptor_t wrapper.
  */
 #define FN_OID_GET_DESCRIPTOR_ATTR1(FN_NAME, TYPE_T, TYPE_NAME, ATTR1_TYPE, ATTR1) \
-int FN_NAME( const mbedtls_asn1_buf *oid, ATTR1_TYPE * ATTR1 )                  \
+int32_t FN_NAME( const mbedtls_asn1_buf *oid, ATTR1_TYPE * ATTR1 )                  \
 {                                                                       \
     const TYPE_T *data = oid_ ## TYPE_NAME ## _from_asn1( oid );        \
     if( data == NULL ) return( MBEDTLS_ERR_OID_NOT_FOUND );            \
@@ -89,7 +89,7 @@ int FN_NAME( const mbedtls_asn1_buf *oid, ATTR1_TYPE * ATTR1 )                  
  * mbedtls_oid_descriptor_t wrapper.
  */
 #define FN_OID_GET_ATTR1(FN_NAME, TYPE_T, TYPE_NAME, ATTR1_TYPE, ATTR1) \
-int FN_NAME( const mbedtls_asn1_buf *oid, ATTR1_TYPE * ATTR1 )                  \
+int32_t FN_NAME( const mbedtls_asn1_buf *oid, ATTR1_TYPE * ATTR1 )                  \
 {                                                                       \
     const TYPE_T *data = oid_ ## TYPE_NAME ## _from_asn1( oid );        \
     if( data == NULL ) return( MBEDTLS_ERR_OID_NOT_FOUND );            \
@@ -103,7 +103,7 @@ int FN_NAME( const mbedtls_asn1_buf *oid, ATTR1_TYPE * ATTR1 )                  
  */
 #define FN_OID_GET_ATTR2(FN_NAME, TYPE_T, TYPE_NAME, ATTR1_TYPE, ATTR1,     \
                          ATTR2_TYPE, ATTR2)                                 \
-int FN_NAME( const mbedtls_asn1_buf *oid, ATTR1_TYPE * ATTR1, ATTR2_TYPE * ATTR2 )  \
+int32_t FN_NAME( const mbedtls_asn1_buf *oid, ATTR1_TYPE * ATTR1, ATTR2_TYPE * ATTR2 )  \
 {                                                                           \
     const TYPE_T *data = oid_ ## TYPE_NAME ## _from_asn1( oid );            \
     if( data == NULL ) return( MBEDTLS_ERR_OID_NOT_FOUND );                \
@@ -117,7 +117,7 @@ int FN_NAME( const mbedtls_asn1_buf *oid, ATTR1_TYPE * ATTR1, ATTR2_TYPE * ATTR2
  * attribute from a mbedtls_oid_descriptor_t wrapper.
  */
 #define FN_OID_GET_OID_BY_ATTR1(FN_NAME, TYPE_T, LIST, ATTR1_TYPE, ATTR1)   \
-int FN_NAME( ATTR1_TYPE ATTR1, const char **oid, size_t *olen )             \
+int32_t FN_NAME( ATTR1_TYPE ATTR1, const char **oid, size_t *olen )             \
 {                                                                           \
     const TYPE_T *cur = LIST;                                               \
     while( cur->descriptor.asn1 != NULL ) {                                 \
@@ -137,7 +137,7 @@ int FN_NAME( ATTR1_TYPE ATTR1, const char **oid, size_t *olen )             \
  */
 #define FN_OID_GET_OID_BY_ATTR2(FN_NAME, TYPE_T, LIST, ATTR1_TYPE, ATTR1,   \
                                 ATTR2_TYPE, ATTR2)                          \
-int FN_NAME( ATTR1_TYPE ATTR1, ATTR2_TYPE ATTR2, const char **oid ,         \
+int32_t FN_NAME( ATTR1_TYPE ATTR1, ATTR2_TYPE ATTR2, const char **oid ,         \
              size_t *olen )                                                 \
 {                                                                           \
     const TYPE_T *cur = LIST;                                               \
@@ -253,7 +253,7 @@ FN_OID_GET_ATTR1(mbedtls_oid_get_attr_short_name, oid_x520_attr_t, x520_attr, co
  */
 typedef struct {
     mbedtls_oid_descriptor_t    descriptor;
-    int                 ext_type;
+    int32_t                 ext_type;
 } oid_x509_ext_t;
 
 static const oid_x509_ext_t oid_x509_ext[] =
@@ -285,7 +285,7 @@ static const oid_x509_ext_t oid_x509_ext[] =
 };
 
 FN_OID_TYPED_FROM_ASN1(oid_x509_ext_t, x509_ext, oid_x509_ext)
-FN_OID_GET_ATTR1(mbedtls_oid_get_x509_ext_type, oid_x509_ext_t, x509_ext, int, ext_type)
+FN_OID_GET_ATTR1(mbedtls_oid_get_x509_ext_type, oid_x509_ext_t, x509_ext, int32_t, ext_type)
 
 static const mbedtls_oid_descriptor_t oid_ext_key_usage[] =
 {
@@ -667,12 +667,12 @@ FN_OID_GET_ATTR2(mbedtls_oid_get_pkcs12_pbe_alg, oid_pkcs12_pbe_alg_t, pkcs12_pb
     } while( 0 )
 
 /* Return the x.y.z.... style numeric string for the given OID */
-int mbedtls_oid_get_numeric_string( char *buf, size_t size,
+int32_t mbedtls_oid_get_numeric_string( char *buf, size_t size,
                             const mbedtls_asn1_buf *oid )
 {
-    int ret;
+    int32_t ret;
     size_t i, n;
-    unsigned int value;
+    uint32_t value;
     char *p;
 
     p = buf;
@@ -698,13 +698,13 @@ int mbedtls_oid_get_numeric_string( char *buf, size_t size,
         if( !( oid->p[i] & 0x80 ) )
         {
             /* Last byte */
-            ret = mbedtls_snprintf( p, n, ".%d", value );
+            ret = mbedtls_snprintf( p, n, ".%d", (int)value );
             OID_SAFE_SNPRINTF;
             value = 0;
         }
     }
 
-    return( (int) ( size - n ) );
+    return( (int32_t) ( size - n ) );
 }
 
 #endif /* MBEDTLS_OID_C */

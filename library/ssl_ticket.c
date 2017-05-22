@@ -61,10 +61,10 @@ void mbedtls_ssl_ticket_init( mbedtls_ssl_ticket_context *ctx )
 /*
  * Generate/update a key
  */
-static int ssl_ticket_gen_key( mbedtls_ssl_ticket_context *ctx,
+static int32_t ssl_ticket_gen_key( mbedtls_ssl_ticket_context *ctx,
                                unsigned char index )
 {
-    int ret;
+    int32_t ret;
     unsigned char buf[MAX_KEY_BYTES];
     mbedtls_ssl_ticket_key *key = ctx->keys + index;
 
@@ -91,7 +91,7 @@ static int ssl_ticket_gen_key( mbedtls_ssl_ticket_context *ctx,
 /*
  * Rotate/generate keys if necessary
  */
-static int ssl_ticket_update_keys( mbedtls_ssl_ticket_context *ctx )
+static int32_t ssl_ticket_update_keys( mbedtls_ssl_ticket_context *ctx )
 {
 #if !defined(MBEDTLS_HAVE_TIME)
     ((void) ctx);
@@ -119,12 +119,12 @@ static int ssl_ticket_update_keys( mbedtls_ssl_ticket_context *ctx )
 /*
  * Setup context for actual use
  */
-int mbedtls_ssl_ticket_setup( mbedtls_ssl_ticket_context *ctx,
-    int (*f_rng)(void *, unsigned char *, size_t), void *p_rng,
+int32_t mbedtls_ssl_ticket_setup( mbedtls_ssl_ticket_context *ctx,
+    int32_t (*f_rng)(void *, unsigned char *, size_t), void *p_rng,
     mbedtls_cipher_type_t cipher,
     uint32_t lifetime )
 {
-    int ret;
+    int32_t ret;
     const mbedtls_cipher_info_t *cipher_info;
 
     ctx->f_rng = f_rng;
@@ -166,7 +166,7 @@ int mbedtls_ssl_ticket_setup( mbedtls_ssl_ticket_context *ctx,
  *  n   .   n+2     peer_cert length = m (0 if no certificate)
  *  n+3 .   n+2+m   peer cert ASN.1
  */
-static int ssl_save_session( const mbedtls_ssl_session *session,
+static int32_t ssl_save_session( const mbedtls_ssl_session *session,
                              unsigned char *buf, size_t buf_len,
                              size_t *olen )
 {
@@ -210,7 +210,7 @@ static int ssl_save_session( const mbedtls_ssl_session *session,
 /*
  * Unserialise session, see ssl_save_session()
  */
-static int ssl_load_session( mbedtls_ssl_session *session,
+static int32_t ssl_load_session( mbedtls_ssl_session *session,
                              const unsigned char *buf, size_t len )
 {
     const unsigned char *p = buf;
@@ -238,7 +238,7 @@ static int ssl_load_session( mbedtls_ssl_session *session,
     }
     else
     {
-        int ret;
+        int32_t ret;
 
         if( p + cert_len > end )
             return( MBEDTLS_ERR_SSL_BAD_INPUT_DATA );
@@ -282,14 +282,14 @@ static int ssl_load_session( mbedtls_ssl_session *session,
  * The key_name, iv, and length of encrypted_state are the additional
  * authenticated data.
  */
-int mbedtls_ssl_ticket_write( void *p_ticket,
+int32_t mbedtls_ssl_ticket_write( void *p_ticket,
                               const mbedtls_ssl_session *session,
                               unsigned char *start,
                               const unsigned char *end,
                               size_t *tlen,
                               uint32_t *ticket_lifetime )
 {
-    int ret;
+    int32_t ret;
     mbedtls_ssl_ticket_context *ctx = p_ticket;
     mbedtls_ssl_ticket_key *key;
     unsigned char *key_name = start;
@@ -380,12 +380,12 @@ static mbedtls_ssl_ticket_key *ssl_ticket_select_key(
 /*
  * Load session ticket (see mbedtls_ssl_ticket_write for structure)
  */
-int mbedtls_ssl_ticket_parse( void *p_ticket,
+int32_t mbedtls_ssl_ticket_parse( void *p_ticket,
                               mbedtls_ssl_session *session,
                               unsigned char *buf,
                               size_t len )
 {
-    int ret;
+    int32_t ret;
     mbedtls_ssl_ticket_context *ctx = p_ticket;
     mbedtls_ssl_ticket_key *key;
     unsigned char *key_name = buf;

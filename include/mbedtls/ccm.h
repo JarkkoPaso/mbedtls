@@ -59,10 +59,10 @@ void mbedtls_ccm_init( mbedtls_ccm_context *ctx );
  *
  * \return          0 if successful, or a cipher specific error code
  */
-int mbedtls_ccm_setkey( mbedtls_ccm_context *ctx,
+int32_t mbedtls_ccm_setkey( mbedtls_ccm_context *ctx,
                         mbedtls_cipher_id_t cipher,
                         const unsigned char *key,
-                        unsigned int keybits );
+                        uint32_t keybits );
 
 /**
  * \brief           Free a CCM context and underlying cipher sub-context
@@ -96,7 +96,7 @@ void mbedtls_ccm_free( mbedtls_ccm_context *ctx );
  *
  * \return          0 if successful
  */
-int mbedtls_ccm_encrypt_and_tag( mbedtls_ccm_context *ctx, size_t length,
+int32_t mbedtls_ccm_encrypt_and_tag( mbedtls_ccm_context *ctx, size_t length,
                          const unsigned char *iv, size_t iv_len,
                          const unsigned char *add, size_t add_len,
                          const unsigned char *input, unsigned char *output,
@@ -119,7 +119,7 @@ int mbedtls_ccm_encrypt_and_tag( mbedtls_ccm_context *ctx, size_t length,
  * \return         0 if successful and authenticated,
  *                 MBEDTLS_ERR_CCM_AUTH_FAILED if tag does not match
  */
-int mbedtls_ccm_auth_decrypt( mbedtls_ccm_context *ctx, size_t length,
+int32_t mbedtls_ccm_auth_decrypt( mbedtls_ccm_context *ctx, size_t length,
                       const unsigned char *iv, size_t iv_len,
                       const unsigned char *add, size_t add_len,
                       const unsigned char *input, unsigned char *output,
@@ -131,7 +131,7 @@ int mbedtls_ccm_auth_decrypt( mbedtls_ccm_context *ctx, size_t length,
  *
  * \return         0 if successful, or 1 if the test failed
  */
-int mbedtls_ccm_self_test( int verbose );
+int32_t mbedtls_ccm_self_test( int32_t verbose );
 #endif /* MBEDTLS_SELF_TEST && MBEDTLS_AES_C */
 
 #ifdef __cplusplus

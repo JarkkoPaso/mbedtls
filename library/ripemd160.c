@@ -428,9 +428,9 @@ static const unsigned char ripemd160_test_md[TESTS][20] =
 /*
  * Checkup routine
  */
-int mbedtls_ripemd160_self_test( int verbose )
+int32_t mbedtls_ripemd160_self_test( int32_t verbose )
 {
-    int i;
+    int32_t i;
     unsigned char output[20];
 
     memset( output, 0, sizeof output );

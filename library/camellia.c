@@ -339,10 +339,10 @@ void mbedtls_camellia_free( mbedtls_camellia_context *ctx )
 /*
  * Camellia key schedule (encryption)
  */
-int mbedtls_camellia_setkey_enc( mbedtls_camellia_context *ctx, const unsigned char *key,
-                         unsigned int keybits )
+int32_t mbedtls_camellia_setkey_enc( mbedtls_camellia_context *ctx, const unsigned char *key,
+                         uint32_t keybits )
 {
-    int idx;
+    int32_t idx;
     size_t i;
     uint32_t *RK;
     unsigned char t[64];
@@ -444,10 +444,10 @@ int mbedtls_camellia_setkey_enc( mbedtls_camellia_context *ctx, const unsigned c
 /*
  * Camellia key schedule (decryption)
  */
-int mbedtls_camellia_setkey_dec( mbedtls_camellia_context *ctx, const unsigned char *key,
-                         unsigned int keybits )
+int32_t mbedtls_camellia_setkey_dec( mbedtls_camellia_context *ctx, const unsigned char *key,
+                         uint32_t keybits )
 {
-    int idx, ret;
+    int32_t idx, ret;
     size_t i;
     mbedtls_camellia_context cty;
     uint32_t *RK;
@@ -492,12 +492,12 @@ exit:
 /*
  * Camellia-ECB block encryption/decryption
  */
-int mbedtls_camellia_crypt_ecb( mbedtls_camellia_context *ctx,
-                    int mode,
+int32_t mbedtls_camellia_crypt_ecb( mbedtls_camellia_context *ctx,
+                    int32_t mode,
                     const unsigned char input[16],
                     unsigned char output[16] )
 {
-    int NR;
+    int32_t NR;
     uint32_t *RK, X[4];
 
     ( (void) mode );
@@ -555,14 +555,14 @@ int mbedtls_camellia_crypt_ecb( mbedtls_camellia_context *ctx,
 /*
  * Camellia-CBC buffer encryption/decryption
  */
-int mbedtls_camellia_crypt_cbc( mbedtls_camellia_context *ctx,
-                    int mode,
+int32_t mbedtls_camellia_crypt_cbc( mbedtls_camellia_context *ctx,
+                    int32_t mode,
                     size_t length,
                     unsigned char iv[16],
                     const unsigned char *input,
                     unsigned char *output )
 {
-    int i;
+    int32_t i;
     unsigned char temp[16];
 
     if( length % 16 )
@@ -609,15 +609,15 @@ int mbedtls_camellia_crypt_cbc( mbedtls_camellia_context *ctx,
 /*
  * Camellia-CFB128 buffer encryption/decryption
  */
-int mbedtls_camellia_crypt_cfb128( mbedtls_camellia_context *ctx,
-                       int mode,
+int32_t mbedtls_camellia_crypt_cfb128( mbedtls_camellia_context *ctx,
+                       int32_t mode,
                        size_t length,
                        size_t *iv_off,
                        unsigned char iv[16],
                        const unsigned char *input,
                        unsigned char *output )
 {
-    int c;
+    int32_t c;
     size_t n = *iv_off;
 
     if( mode == MBEDTLS_CAMELLIA_DECRYPT )
@@ -657,7 +657,7 @@ int mbedtls_camellia_crypt_cfb128( mbedtls_camellia_context *ctx,
 /*
  * Camellia-CTR buffer encryption/decryption
  */
-int mbedtls_camellia_crypt_ctr( mbedtls_camellia_context *ctx,
+int32_t mbedtls_camellia_crypt_ctr( mbedtls_camellia_context *ctx,
                        size_t length,
                        size_t *nc_off,
                        unsigned char nonce_counter[16],
@@ -665,7 +665,7 @@ int mbedtls_camellia_crypt_ctr( mbedtls_camellia_context *ctx,
                        const unsigned char *input,
                        unsigned char *output )
 {
-    int c, i;
+    int32_t c, i;
     size_t n = *nc_off;
 
     while( length-- )
@@ -884,16 +884,16 @@ static const unsigned char camellia_test_ctr_ct[3][48] =
       0xDF, 0x50, 0x86, 0x96 }
 };
 
-static const int camellia_test_ctr_len[3] =
+static const int32_t camellia_test_ctr_len[3] =
     { 16, 32, 36 };
 #endif /* MBEDTLS_CIPHER_MODE_CTR */
 
 /*
  * Checkup routine
  */
-int mbedtls_camellia_self_test( int verbose )
+int32_t mbedtls_camellia_self_test( int32_t verbose )
 {
-    int i, j, u, v;
+    int32_t i, j, u, v;
     unsigned char key[32];
     unsigned char buf[64];
     unsigned char src[16];

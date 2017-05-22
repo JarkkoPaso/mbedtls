@@ -41,7 +41,7 @@
     !defined(MBEDTLS_CERTS_C) || !defined(MBEDTLS_PEM_PARSE_C) ||         \
     !defined(MBEDTLS_TIMING_C)
 
-int main( void )
+int32_t main( void )
 {
     printf( "MBEDTLS_SSL_SRV_C and/or MBEDTLS_SSL_PROTO_DTLS and/or "
             "MBEDTLS_SSL_COOKIE_C and/or MBEDTLS_NET_C and/or "
@@ -79,8 +79,8 @@ int main( void )
 #define READ_TIMEOUT_MS 10000   /* 5 seconds */
 #define DEBUG_LEVEL 0
 
-static void my_debug( void *ctx, int level,
-                      const char *file, int line,
+static void my_debug( void *ctx, int32_t level,
+                      const char *file, int32_t line,
                       const char *str )
 {
     ((void) level);
@@ -89,9 +89,9 @@ static void my_debug( void *ctx, int level,
     fflush(  (FILE *) ctx  );
 }
 
-int main( void )
+int32_t main( void )
 {
-    int ret, len;
+    int32_t ret, len;
     mbedtls_net_context listen_fd, client_fd;
     unsigned char buf[1024];
     const char *pers = "dtls_server";

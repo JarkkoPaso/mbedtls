@@ -42,7 +42,7 @@
     !defined(MBEDTLS_X509_CRT_PARSE_C) || !defined(MBEDTLS_FS_IO) ||      \
     !defined(MBEDTLS_THREADING_C) || !defined(MBEDTLS_THREADING_PTHREAD) || \
     !defined(MBEDTLS_PEM_PARSE_C)
-int main( void )
+int32_t main( void )
 {
     mbedtls_printf("MBEDTLS_BIGNUM_C and/or MBEDTLS_CERTS_C and/or MBEDTLS_ENTROPY_C "
            "and/or MBEDTLS_SSL_TLS_C and/or MBEDTLS_SSL_SRV_C and/or "
@@ -88,11 +88,11 @@ int main( void )
 
 mbedtls_threading_mutex_t debug_mutex;
 
-static void my_mutexed_debug( void *ctx, int level,
-                      const char *file, int line,
+static void my_mutexed_debug( void *ctx, int32_t level,
+                      const char *file, int32_t line,
                       const char *str )
 {
-    long int thread_id = (long int) pthread_self();
+    long int32_t thread_id = (long int32_t) pthread_self();
 
     mbedtls_mutex_lock( &debug_mutex );
 
@@ -106,12 +106,12 @@ static void my_mutexed_debug( void *ctx, int level,
 
 typedef struct {
     mbedtls_net_context client_fd;
-    int thread_complete;
+    int32_t thread_complete;
     const mbedtls_ssl_config *config;
 } thread_info_t;
 
 typedef struct {
-    int active;
+    int32_t active;
     thread_info_t   data;
     pthread_t       thread;
 } pthread_info_t;
@@ -121,10 +121,10 @@ static pthread_info_t   threads[MAX_NUM_THREADS];
 
 static void *handle_ssl_connection( void *data )
 {
-    int ret, len;
+    int32_t ret, len;
     thread_info_t *thread_info = (thread_info_t *) data;
     mbedtls_net_context *client_fd = &thread_info->client_fd;
-    long int thread_id = (long int) pthread_self();
+    long int32_t thread_id = (long int32_t) pthread_self();
     unsigned char buf[1024];
     mbedtls_ssl_context ssl;
 
@@ -272,9 +272,9 @@ thread_exit:
     return( NULL );
 }
 
-static int thread_create( mbedtls_net_context *client_fd )
+static int32_t thread_create( mbedtls_net_context *client_fd )
 {
-    int ret, i;
+    int32_t ret, i;
 
     /*
      * Find in-active or finished thread slot
@@ -312,9 +312,9 @@ static int thread_create( mbedtls_net_context *client_fd )
     return( 0 );
 }
 
-int main( void )
+int32_t main( void )
 {
-    int ret;
+    int32_t ret;
     mbedtls_net_context listen_fd, client_fd;
     const char pers[] = "ssl_pthread_server";
 

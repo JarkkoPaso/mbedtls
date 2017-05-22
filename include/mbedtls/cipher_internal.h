@@ -46,43 +46,43 @@ struct mbedtls_cipher_base_t
     mbedtls_cipher_id_t cipher;
 
     /** Encrypt using ECB */
-    int (*ecb_func)( void *ctx, mbedtls_operation_t mode,
+    int32_t (*ecb_func)( void *ctx, mbedtls_operation_t mode,
                      const unsigned char *input, unsigned char *output );
 
 #if defined(MBEDTLS_CIPHER_MODE_CBC)
     /** Encrypt using CBC */
-    int (*cbc_func)( void *ctx, mbedtls_operation_t mode, size_t length,
+    int32_t (*cbc_func)( void *ctx, mbedtls_operation_t mode, size_t length,
                      unsigned char *iv, const unsigned char *input,
                      unsigned char *output );
 #endif
 
 #if defined(MBEDTLS_CIPHER_MODE_CFB)
     /** Encrypt using CFB (Full length) */
-    int (*cfb_func)( void *ctx, mbedtls_operation_t mode, size_t length, size_t *iv_off,
+    int32_t (*cfb_func)( void *ctx, mbedtls_operation_t mode, size_t length, size_t *iv_off,
                      unsigned char *iv, const unsigned char *input,
                      unsigned char *output );
 #endif
 
 #if defined(MBEDTLS_CIPHER_MODE_CTR)
     /** Encrypt using CTR */
-    int (*ctr_func)( void *ctx, size_t length, size_t *nc_off,
+    int32_t (*ctr_func)( void *ctx, size_t length, size_t *nc_off,
                      unsigned char *nonce_counter, unsigned char *stream_block,
                      const unsigned char *input, unsigned char *output );
 #endif
 
 #if defined(MBEDTLS_CIPHER_MODE_STREAM)
     /** Encrypt using STREAM */
-    int (*stream_func)( void *ctx, size_t length,
+    int32_t (*stream_func)( void *ctx, size_t length,
                         const unsigned char *input, unsigned char *output );
 #endif
 
     /** Set key for encryption purposes */
-    int (*setkey_enc_func)( void *ctx, const unsigned char *key,
-                            unsigned int key_bitlen );
+    int32_t (*setkey_enc_func)( void *ctx, const unsigned char *key,
+                            uint32_t key_bitlen );
 
     /** Set key for decryption purposes */
-    int (*setkey_dec_func)( void *ctx, const unsigned char *key,
-                            unsigned int key_bitlen);
+    int32_t (*setkey_dec_func)( void *ctx, const unsigned char *key,
+                            uint32_t key_bitlen);
 
     /** Allocate a new context */
     void * (*ctx_alloc_func)( void );
@@ -100,7 +100,7 @@ typedef struct
 
 extern const mbedtls_cipher_definition_t mbedtls_cipher_definitions[];
 
-extern int mbedtls_cipher_supported[];
+extern int32_t mbedtls_cipher_supported[];
 
 #ifdef __cplusplus
 }

@@ -65,11 +65,11 @@ static void mbedtls_zeroize( void *v, size_t n ) {
 /*
  * helper to validate the mbedtls_mpi size and import it
  */
-static int dhm_read_bignum( mbedtls_mpi *X,
+static int32_t dhm_read_bignum( mbedtls_mpi *X,
                             unsigned char **p,
                             const unsigned char *end )
 {
-    int ret, n;
+    int32_t ret, n;
 
     if( end - *p < 2 )
         return( MBEDTLS_ERR_DHM_BAD_INPUT_DATA );
@@ -77,7 +77,7 @@ static int dhm_read_bignum( mbedtls_mpi *X,
     n = ( (*p)[0] << 8 ) | (*p)[1];
     (*p) += 2;
 
-    if( (int)( end - *p ) < n )
+    if( (int32_t)( end - *p ) < n )
         return( MBEDTLS_ERR_DHM_BAD_INPUT_DATA );
 
     if( ( ret = mbedtls_mpi_read_binary( X, *p, n ) ) != 0 )
@@ -97,10 +97,10 @@ static int dhm_read_bignum( mbedtls_mpi *X,
  *  http://www.cl.cam.ac.uk/~rja14/Papers/psandqs.pdf
  *  http://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2005-2643
  */
-static int dhm_check_range( const mbedtls_mpi *param, const mbedtls_mpi *P )
+static int32_t dhm_check_range( const mbedtls_mpi *param, const mbedtls_mpi *P )
 {
     mbedtls_mpi L, U;
-    int ret = MBEDTLS_ERR_DHM_BAD_INPUT_DATA;
+    int32_t ret = MBEDTLS_ERR_DHM_BAD_INPUT_DATA;
 
     mbedtls_mpi_init( &L ); mbedtls_mpi_init( &U );
 
@@ -126,11 +126,11 @@ void mbedtls_dhm_init( mbedtls_dhm_context *ctx )
 /*
  * Parse the ServerKeyExchange parameters
  */
-int mbedtls_dhm_read_params( mbedtls_dhm_context *ctx,
+int32_t mbedtls_dhm_read_params( mbedtls_dhm_context *ctx,
                      unsigned char **p,
                      const unsigned char *end )
 {
-    int ret;
+    int32_t ret;
 
     if( ( ret = dhm_read_bignum( &ctx->P,  p, end ) ) != 0 ||
         ( ret = dhm_read_bignum( &ctx->G,  p, end ) ) != 0 ||
@@ -148,12 +148,12 @@ int mbedtls_dhm_read_params( mbedtls_dhm_context *ctx,
 /*
  * Setup and write the ServerKeyExchange parameters
  */
-int mbedtls_dhm_make_params( mbedtls_dhm_context *ctx, int x_size,
+int32_t mbedtls_dhm_make_params( mbedtls_dhm_context *ctx, int32_t x_size,
                      unsigned char *output, size_t *olen,
-                     int (*f_rng)(void *, unsigned char *, size_t),
+                     int32_t (*f_rng)(void *, unsigned char *, size_t),
                      void *p_rng )
 {
-    int ret, count = 0;
+    int32_t ret, count = 0;
     size_t n1, n2, n3;
     unsigned char *p;
 
@@ -216,10 +216,10 @@ cleanup:
 /*
  * Import the peer's public value G^Y
  */
-int mbedtls_dhm_read_public( mbedtls_dhm_context *ctx,
+int32_t mbedtls_dhm_read_public( mbedtls_dhm_context *ctx,
                      const unsigned char *input, size_t ilen )
 {
-    int ret;
+    int32_t ret;
 
     if( ctx == NULL || ilen < 1 || ilen > ctx->len )
         return( MBEDTLS_ERR_DHM_BAD_INPUT_DATA );
@@ -233,12 +233,12 @@ int mbedtls_dhm_read_public( mbedtls_dhm_context *ctx,
 /*
  * Create own private value X and export G^X
  */
-int mbedtls_dhm_make_public( mbedtls_dhm_context *ctx, int x_size,
+int32_t mbedtls_dhm_make_public( mbedtls_dhm_context *ctx, int32_t x_size,
                      unsigned char *output, size_t olen,
-                     int (*f_rng)(void *, unsigned char *, size_t),
+                     int32_t (*f_rng)(void *, unsigned char *, size_t),
                      void *p_rng )
 {
-    int ret, count = 0;
+    int32_t ret, count = 0;
 
     if( ctx == NULL || olen < 1 || olen > ctx->len )
         return( MBEDTLS_ERR_DHM_BAD_INPUT_DATA );
@@ -283,10 +283,10 @@ cleanup:
  *  DSS, and other systems. In : Advances in Cryptology-CRYPTO'96. Springer
  *  Berlin Heidelberg, 1996. p. 104-113.
  */
-static int dhm_update_blinding( mbedtls_dhm_context *ctx,
-                    int (*f_rng)(void *, unsigned char *, size_t), void *p_rng )
+static int32_t dhm_update_blinding( mbedtls_dhm_context *ctx,
+                    int32_t (*f_rng)(void *, unsigned char *, size_t), void *p_rng )
 {
-    int ret, count;
+    int32_t ret, count;
 
     /*
      * Don't use any blinding the first time a particular X is used,
@@ -345,12 +345,12 @@ cleanup:
 /*
  * Derive and export the shared secret (G^Y)^X mod P
  */
-int mbedtls_dhm_calc_secret( mbedtls_dhm_context *ctx,
+int32_t mbedtls_dhm_calc_secret( mbedtls_dhm_context *ctx,
                      unsigned char *output, size_t output_size, size_t *olen,
-                     int (*f_rng)(void *, unsigned char *, size_t),
+                     int32_t (*f_rng)(void *, unsigned char *, size_t),
                      void *p_rng )
 {
-    int ret;
+    int32_t ret;
     mbedtls_mpi GYb;
 
     if( ctx == NULL || output_size < ctx->len )
@@ -412,10 +412,10 @@ void mbedtls_dhm_free( mbedtls_dhm_context *ctx )
 /*
  * Parse DHM parameters
  */
-int mbedtls_dhm_parse_dhm( mbedtls_dhm_context *dhm, const unsigned char *dhmin,
+int32_t mbedtls_dhm_parse_dhm( mbedtls_dhm_context *dhm, const unsigned char *dhmin,
                    size_t dhminlen )
 {
-    int ret;
+    int32_t ret;
     size_t len;
     unsigned char *p, *end;
 #if defined(MBEDTLS_PEM_PARSE_C)
@@ -514,7 +514,7 @@ exit:
  * A terminating null byte is always appended. It is included in the announced
  * length only if the data looks like it is PEM encoded.
  */
-static int load_file( const char *path, unsigned char **buf, size_t *n )
+static int32_t load_file( const char *path, unsigned char **buf, size_t *n )
 {
     FILE *f;
     long size;
@@ -559,9 +559,9 @@ static int load_file( const char *path, unsigned char **buf, size_t *n )
 /*
  * Load and parse DHM parameters
  */
-int mbedtls_dhm_parse_dhmfile( mbedtls_dhm_context *dhm, const char *path )
+int32_t mbedtls_dhm_parse_dhmfile( mbedtls_dhm_context *dhm, const char *path )
 {
-    int ret;
+    int32_t ret;
     size_t n;
     unsigned char *buf;
 
@@ -592,9 +592,9 @@ static const size_t mbedtls_test_dhm_params_len = sizeof( mbedtls_test_dhm_param
 /*
  * Checkup routine
  */
-int mbedtls_dhm_self_test( int verbose )
+int32_t mbedtls_dhm_self_test( int32_t verbose )
 {
-    int ret;
+    int32_t ret;
     mbedtls_dhm_context dhm;
 
     mbedtls_dhm_init( &dhm );

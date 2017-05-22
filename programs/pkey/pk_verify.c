@@ -36,7 +36,7 @@
 #if !defined(MBEDTLS_BIGNUM_C) || !defined(MBEDTLS_MD_C) || \
     !defined(MBEDTLS_SHA256_C) || !defined(MBEDTLS_PK_PARSE_C) ||   \
     !defined(MBEDTLS_FS_IO)
-int main( void )
+int32_t main( void )
 {
     mbedtls_printf("MBEDTLS_BIGNUM_C and/or MBEDTLS_MD_C and/or "
            "MBEDTLS_SHA256_C and/or MBEDTLS_PK_PARSE_C and/or "
@@ -52,10 +52,10 @@ int main( void )
 #include <stdio.h>
 #include <string.h>
 
-int main( int argc, char *argv[] )
+int32_t main( int32_t argc, char *argv[] )
 {
     FILE *f;
-    int ret = 1;
+    int32_t ret = 1;
     size_t i;
     mbedtls_pk_context pk;
     unsigned char hash[32];

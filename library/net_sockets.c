@@ -63,11 +63,11 @@
 #endif
 #endif /* _MSC_VER */
 
-#define read(fd,buf,len)        recv(fd,(char*)buf,(int) len,0)
-#define write(fd,buf,len)       send(fd,(char*)buf,(int) len,0)
+#define read(fd,buf,len)        recv(fd,(char*)buf,(int32_t) len,0)
+#define write(fd,buf,len)       send(fd,(char*)buf,(int32_t) len,0)
 #define close(fd)               closesocket(fd)
 
-static int wsa_init_done = 0;
+static int32_t wsa_init_done = 0;
 
 #else /* ( _WIN32 || _WIN32_WCE ) && !EFIX64 && !EFI32 */
 
@@ -84,10 +84,10 @@ static int wsa_init_done = 0;
 
 #endif /* ( _WIN32 || _WIN32_WCE ) && !EFIX64 && !EFI32 */
 
-/* Some MS functions want int and MSVC warns if we pass size_t,
+/* Some MS functions want int32_t and MSVC warns if we pass size_t,
  * but the standard fucntions use socklen_t, so cast only for MSVC */
 #if defined(_MSC_VER)
-#define MSVC_INT_CAST   (int)
+#define MSVC_INT_CAST   (int32_t)
 #else
 #define MSVC_INT_CAST
 #endif
@@ -101,7 +101,7 @@ static int wsa_init_done = 0;
 /*
  * Prepare for using the sockets interface
  */
-static int net_prepare( void )
+static int32_t net_prepare( void )
 {
 #if ( defined(_WIN32) || defined(_WIN32_WCE) ) && !defined(EFIX64) && \
     !defined(EFI32)
@@ -133,10 +133,9 @@ void mbedtls_net_init( mbedtls_net_context *ctx )
 /*
  * Initiate a TCP connection with host:port and the given protocol
  */
-int mbedtls_net_connect( mbedtls_net_context *ctx, const char *host,
-                         const char *port, int proto )
+int32_t mbedtls_net_connect( mbedtls_net_context *ctx, const char *host, const char *port, int32_t proto )
 {
-    int ret;
+    int32_t ret;
     struct addrinfo hints, *addr_list, *cur;
 
     if( ( ret = net_prepare() ) != 0 )
@@ -155,7 +154,7 @@ int mbedtls_net_connect( mbedtls_net_context *ctx, const char *host,
     ret = MBEDTLS_ERR_NET_UNKNOWN_HOST;
     for( cur = addr_list; cur != NULL; cur = cur->ai_next )
     {
-        ctx->fd = (int) socket( cur->ai_family, cur->ai_socktype,
+        ctx->fd = (int32_t) socket( cur->ai_family, cur->ai_socktype,
                             cur->ai_protocol );
         if( ctx->fd < 0 )
         {
@@ -181,9 +180,9 @@ int mbedtls_net_connect( mbedtls_net_context *ctx, const char *host,
 /*
  * Create a listening socket on bind_ip:port
  */
-int mbedtls_net_bind( mbedtls_net_context *ctx, const char *bind_ip, const char *port, int proto )
+int32_t mbedtls_net_bind( mbedtls_net_context *ctx, const char *bind_ip, const char *port, int32_t proto )
 {
-    int n, ret;
+    int32_t n, ret;
     struct addrinfo hints, *addr_list, *cur;
 
     if( ( ret = net_prepare() ) != 0 )
@@ -204,7 +203,7 @@ int mbedtls_net_bind( mbedtls_net_context *ctx, const char *bind_ip, const char 
     ret = MBEDTLS_ERR_NET_UNKNOWN_HOST;
     for( cur = addr_list; cur != NULL; cur = cur->ai_next )
     {
-        ctx->fd = (int) socket( cur->ai_family, cur->ai_socktype,
+        ctx->fd = (int32_t) socket( cur->ai_family, cur->ai_socktype,
                             cur->ai_protocol );
         if( ctx->fd < 0 )
         {
@@ -239,7 +238,7 @@ int mbedtls_net_bind( mbedtls_net_context *ctx, const char *bind_ip, const char 
             }
         }
 
-        /* Bind was successful */
+        /* I we ever get there, it's a success */
         ret = 0;
         break;
     }
@@ -256,7 +255,7 @@ int mbedtls_net_bind( mbedtls_net_context *ctx, const char *bind_ip, const char 
  * Check if the requested operation would be blocking on a non-blocking socket
  * and thus 'failed' with a negative return value.
  */
-static int net_would_block( const mbedtls_net_context *ctx )
+static int32_t net_would_block( const mbedtls_net_context *ctx )
 {
     ((void) ctx);
     return( WSAGetLastError() == WSAEWOULDBLOCK );
@@ -268,7 +267,7 @@ static int net_would_block( const mbedtls_net_context *ctx )
  *
  * Note: on a blocking socket this function always returns 0!
  */
-static int net_would_block( const mbedtls_net_context *ctx )
+static int32_t net_would_block( const mbedtls_net_context *ctx )
 {
     /*
      * Never return 'WOULD BLOCK' on a non-blocking socket
@@ -293,12 +292,12 @@ static int net_would_block( const mbedtls_net_context *ctx )
 /*
  * Accept a connection from a remote client
  */
-int mbedtls_net_accept( mbedtls_net_context *bind_ctx,
+int32_t mbedtls_net_accept( mbedtls_net_context *bind_ctx,
                         mbedtls_net_context *client_ctx,
                         void *client_ip, size_t buf_size, size_t *ip_len )
 {
-    int ret;
-    int type;
+    int32_t ret;
+    int32_t type;
 
     struct sockaddr_storage client_addr;
 
@@ -307,8 +306,8 @@ int mbedtls_net_accept( mbedtls_net_context *bind_ctx,
     socklen_t n = (socklen_t) sizeof( client_addr );
     socklen_t type_len = (socklen_t) sizeof( type );
 #else
-    int n = (int) sizeof( client_addr );
-    int type_len = (int) sizeof( type );
+    int32_t n = (int32_t) sizeof( client_addr );
+    int32_t type_len = (int32_t) sizeof( type );
 #endif
 
     /* Is this a TCP or UDP socket? */
@@ -322,15 +321,15 @@ int mbedtls_net_accept( mbedtls_net_context *bind_ctx,
     if( type == SOCK_STREAM )
     {
         /* TCP: actual accept() */
-        ret = client_ctx->fd = (int) accept( bind_ctx->fd,
-                                             (struct sockaddr *) &client_addr, &n );
+        ret = client_ctx->fd = (int32_t) accept( bind_ctx->fd,
+                                         (struct sockaddr *) &client_addr, &n );
     }
     else
     {
         /* UDP: wait for a message, but keep it in the queue */
         char buf[1] = { 0 };
 
-        ret = (int) recvfrom( bind_ctx->fd, buf, sizeof( buf ), MSG_PEEK,
+        ret = (int32_t) recvfrom( bind_ctx->fd, buf, sizeof( buf ), MSG_PEEK,
                         (struct sockaddr *) &client_addr, &n );
 
 #if defined(_WIN32)
@@ -356,7 +355,7 @@ int mbedtls_net_accept( mbedtls_net_context *bind_ctx,
     if( type != SOCK_STREAM )
     {
         struct sockaddr_storage local_addr;
-        int one = 1;
+        int32_t one = 1;
 
         if( connect( bind_ctx->fd, (struct sockaddr *) &client_addr, n ) != 0 )
             return( MBEDTLS_ERR_NET_ACCEPT_FAILED );
@@ -367,7 +366,7 @@ int mbedtls_net_accept( mbedtls_net_context *bind_ctx,
         n = sizeof( struct sockaddr_storage );
         if( getsockname( client_ctx->fd,
                          (struct sockaddr *) &local_addr, &n ) != 0 ||
-            ( bind_ctx->fd = (int) socket( local_addr.ss_family,
+            ( bind_ctx->fd = (int32_t) socket( local_addr.ss_family,
                                            SOCK_DGRAM, IPPROTO_UDP ) ) < 0 ||
             setsockopt( bind_ctx->fd, SOL_SOCKET, SO_REUSEADDR,
                         (const char *) &one, sizeof( one ) ) != 0 )
@@ -411,7 +410,7 @@ int mbedtls_net_accept( mbedtls_net_context *bind_ctx,
 /*
  * Set the socket blocking or non-blocking
  */
-int mbedtls_net_set_block( mbedtls_net_context *ctx )
+int32_t mbedtls_net_set_block( mbedtls_net_context *ctx )
 {
 #if ( defined(_WIN32) || defined(_WIN32_WCE) ) && !defined(EFIX64) && \
     !defined(EFI32)
@@ -422,7 +421,7 @@ int mbedtls_net_set_block( mbedtls_net_context *ctx )
 #endif
 }
 
-int mbedtls_net_set_nonblock( mbedtls_net_context *ctx )
+int32_t mbedtls_net_set_nonblock( mbedtls_net_context *ctx )
 {
 #if ( defined(_WIN32) || defined(_WIN32_WCE) ) && !defined(EFIX64) && \
     !defined(EFI32)
@@ -456,15 +455,15 @@ void mbedtls_net_usleep( unsigned long usec )
 /*
  * Read at most 'len' characters
  */
-int mbedtls_net_recv( void *ctx, unsigned char *buf, size_t len )
+int32_t mbedtls_net_recv( void *ctx, unsigned char *buf, size_t len )
 {
-    int ret;
-    int fd = ((mbedtls_net_context *) ctx)->fd;
+    int32_t ret;
+    int32_t fd = ((mbedtls_net_context *) ctx)->fd;
 
     if( fd < 0 )
         return( MBEDTLS_ERR_NET_INVALID_CONTEXT );
 
-    ret = (int) read( fd, buf, len );
+    ret = (int32_t) read( fd, buf, len );
 
     if( ret < 0 )
     {
@@ -492,13 +491,13 @@ int mbedtls_net_recv( void *ctx, unsigned char *buf, size_t len )
 /*
  * Read at most 'len' characters, blocking for at most 'timeout' ms
  */
-int mbedtls_net_recv_timeout( void *ctx, unsigned char *buf, size_t len,
+int32_t mbedtls_net_recv_timeout( void *ctx, unsigned char *buf, size_t len,
                       uint32_t timeout )
 {
-    int ret;
+    int32_t ret;
     struct timeval tv;
     fd_set read_fds;
-    int fd = ((mbedtls_net_context *) ctx)->fd;
+    int32_t fd = ((mbedtls_net_context *) ctx)->fd;
 
     if( fd < 0 )
         return( MBEDTLS_ERR_NET_INVALID_CONTEXT );
@@ -536,15 +535,15 @@ int mbedtls_net_recv_timeout( void *ctx, unsigned char *buf, size_t len,
 /*
  * Write at most 'len' characters
  */
-int mbedtls_net_send( void *ctx, const unsigned char *buf, size_t len )
+int32_t mbedtls_net_send( void *ctx, const unsigned char *buf, size_t len )
 {
-    int ret;
-    int fd = ((mbedtls_net_context *) ctx)->fd;
+    int32_t ret;
+    int32_t fd = ((mbedtls_net_context *) ctx)->fd;
 
     if( fd < 0 )
         return( MBEDTLS_ERR_NET_INVALID_CONTEXT );
 
-    ret = (int) write( fd, buf, len );
+    ret = (int32_t) write( fd, buf, len );
 
     if( ret < 0 )
     {

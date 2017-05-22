@@ -52,10 +52,10 @@ struct mbedtls_md_info_t
     const char * name;
 
     /** Output length of the digest function in bytes */
-    int size;
+    int32_t size;
 
     /** Block length of the digest function in bytes */
-    int block_size;
+    int32_t block_size;
 
     /** Digest initialisation function */
     void (*starts_func)( void *ctx );

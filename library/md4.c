@@ -348,9 +348,9 @@ static const unsigned char md4_test_sum[7][16] =
 /*
  * Checkup routine
  */
-int mbedtls_md4_self_test( int verbose )
+int32_t mbedtls_md4_self_test( int32_t verbose )
 {
-    int i;
+    int32_t i;
     unsigned char md4sum[16];
 
     for( i = 0; i < 7; i++ )

@@ -54,7 +54,7 @@
     "\n"
 
 #if !defined(MBEDTLS_BASE64_C) || !defined(MBEDTLS_FS_IO)
-int main( void )
+int32_t main( void )
 {
     mbedtls_printf("MBEDTLS_BASE64_C and/or MBEDTLS_FS_IO not defined.\n");
     return( 0 );
@@ -69,10 +69,10 @@ struct options
     const char *output_file;    /* where to store the output              */
 } opt;
 
-int convert_pem_to_der( const unsigned char *input, size_t ilen,
+int32_t convert_pem_to_der( const unsigned char *input, size_t ilen,
                         unsigned char *output, size_t *olen )
 {
-    int ret;
+    int32_t ret;
     const unsigned char *s1, *s2, *end = input + ilen;
     size_t len = 0;
 
@@ -116,7 +116,7 @@ int convert_pem_to_der( const unsigned char *input, size_t ilen,
 /*
  * Load all data from a file into a given buffer.
  */
-static int load_file( const char *path, unsigned char **buf, size_t *n )
+static int32_t load_file( const char *path, unsigned char **buf, size_t *n )
 {
     FILE *f;
     long size;
@@ -159,7 +159,7 @@ static int load_file( const char *path, unsigned char **buf, size_t *n )
 /*
  * Write buffer to a file
  */
-static int write_file( const char *path, unsigned char *buf, size_t n )
+static int32_t write_file( const char *path, unsigned char *buf, size_t n )
 {
     FILE *f;
 
@@ -176,14 +176,14 @@ static int write_file( const char *path, unsigned char *buf, size_t n )
     return( 0 );
 }
 
-int main( int argc, char *argv[] )
+int32_t main( int32_t argc, char *argv[] )
 {
-    int ret = 0;
+    int32_t ret = 0;
     unsigned char *pem_buffer = NULL;
     unsigned char der_buffer[4096];
     char buf[1024];
     size_t pem_size, der_size = sizeof(der_buffer);
-    int i;
+    int32_t i;
     char *p, *q;
 
     /*

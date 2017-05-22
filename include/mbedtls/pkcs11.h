@@ -51,7 +51,7 @@ extern "C" {
  */
 typedef struct {
         pkcs11h_certificate_t pkcs11h_cert;
-        int len;
+        int32_t len;
 } mbedtls_pkcs11_context;
 
 /**
@@ -68,7 +68,7 @@ void mbedtls_pkcs11_init( mbedtls_pkcs11_context *ctx );
  *
  * \return              0 on success.
  */
-int mbedtls_pkcs11_x509_cert_bind( mbedtls_x509_crt *cert, pkcs11h_certificate_t pkcs11h_cert );
+int32_t mbedtls_pkcs11_x509_cert_bind( mbedtls_x509_crt *cert, pkcs11h_certificate_t pkcs11h_cert );
 
 /**
  * Set up a mbedtls_pkcs11_context storing the given certificate. Note that the
@@ -80,7 +80,7 @@ int mbedtls_pkcs11_x509_cert_bind( mbedtls_x509_crt *cert, pkcs11h_certificate_t
  *
  * \return              0 on success
  */
-int mbedtls_pkcs11_priv_key_bind( mbedtls_pkcs11_context *priv_key,
+int32_t mbedtls_pkcs11_priv_key_bind( mbedtls_pkcs11_context *priv_key,
         pkcs11h_certificate_t pkcs11_cert );
 
 /**
@@ -108,8 +108,8 @@ void mbedtls_pkcs11_priv_key_free( mbedtls_pkcs11_context *priv_key );
  *                 of ctx->N (eg. 128 bytes if RSA-1024 is used) otherwise
  *                 an error is thrown.
  */
-int mbedtls_pkcs11_decrypt( mbedtls_pkcs11_context *ctx,
-                       int mode, size_t *olen,
+int32_t mbedtls_pkcs11_decrypt( mbedtls_pkcs11_context *ctx,
+                       int32_t mode, size_t *olen,
                        const unsigned char *input,
                        unsigned char *output,
                        size_t output_max_len );
@@ -130,17 +130,17 @@ int mbedtls_pkcs11_decrypt( mbedtls_pkcs11_context *ctx,
  * \note           The "sig" buffer must be as large as the size
  *                 of ctx->N (eg. 128 bytes if RSA-1024 is used).
  */
-int mbedtls_pkcs11_sign( mbedtls_pkcs11_context *ctx,
-                    int mode,
+int32_t mbedtls_pkcs11_sign( mbedtls_pkcs11_context *ctx,
+                    int32_t mode,
                     mbedtls_md_type_t md_alg,
-                    unsigned int hashlen,
+                    uint32_t hashlen,
                     const unsigned char *hash,
                     unsigned char *sig );
 
 /**
  * SSL/TLS wrappers for PKCS#11 functions
  */
-static inline int mbedtls_ssl_pkcs11_decrypt( void *ctx, int mode, size_t *olen,
+static inline int32_t mbedtls_ssl_pkcs11_decrypt( void *ctx, int32_t mode, size_t *olen,
                         const unsigned char *input, unsigned char *output,
                         size_t output_max_len )
 {
@@ -148,9 +148,9 @@ static inline int mbedtls_ssl_pkcs11_decrypt( void *ctx, int mode, size_t *olen,
                            output_max_len );
 }
 
-static inline int mbedtls_ssl_pkcs11_sign( void *ctx,
-                     int (*f_rng)(void *, unsigned char *, size_t), void *p_rng,
-                     int mode, mbedtls_md_type_t md_alg, unsigned int hashlen,
+static inline int32_t mbedtls_ssl_pkcs11_sign( void *ctx,
+                     int32_t (*f_rng)(void *, unsigned char *, size_t), void *p_rng,
+                     int32_t mode, mbedtls_md_type_t md_alg, uint32_t hashlen,
                      const unsigned char *hash, unsigned char *sig )
 {
     ((void) f_rng);

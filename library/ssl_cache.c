@@ -55,9 +55,9 @@ void mbedtls_ssl_cache_init( mbedtls_ssl_cache_context *cache )
 #endif
 }
 
-int mbedtls_ssl_cache_get( void *data, mbedtls_ssl_session *session )
+int32_t mbedtls_ssl_cache_get( void *data, mbedtls_ssl_session *session )
 {
-    int ret = 1;
+    int32_t ret = 1;
 #if defined(MBEDTLS_HAVE_TIME)
     mbedtls_time_t t = mbedtls_time( NULL );
 #endif
@@ -79,7 +79,7 @@ int mbedtls_ssl_cache_get( void *data, mbedtls_ssl_session *session )
 
 #if defined(MBEDTLS_HAVE_TIME)
         if( cache->timeout != 0 &&
-            (int) ( t - entry->timestamp ) > cache->timeout )
+            (int32_t) ( t - entry->timestamp ) > cache->timeout )
             continue;
 #endif
 
@@ -134,16 +134,16 @@ exit:
     return( ret );
 }
 
-int mbedtls_ssl_cache_set( void *data, const mbedtls_ssl_session *session )
+int32_t mbedtls_ssl_cache_set( void *data, const mbedtls_ssl_session *session )
 {
-    int ret = 1;
+    int32_t ret = 1;
 #if defined(MBEDTLS_HAVE_TIME)
     mbedtls_time_t t = time( NULL ), oldest = 0;
     mbedtls_ssl_cache_entry *old = NULL;
 #endif
     mbedtls_ssl_cache_context *cache = (mbedtls_ssl_cache_context *) data;
     mbedtls_ssl_cache_entry *cur, *prv;
-    int count = 0;
+    int32_t count = 0;
 
 #if defined(MBEDTLS_THREADING_C)
     if( ( ret = mbedtls_mutex_lock( &cache->mutex ) ) != 0 )
@@ -159,7 +159,7 @@ int mbedtls_ssl_cache_set( void *data, const mbedtls_ssl_session *session )
 
 #if defined(MBEDTLS_HAVE_TIME)
         if( cache->timeout != 0 &&
-            (int) ( t - cur->timestamp ) > cache->timeout )
+            (int32_t) ( t - cur->timestamp ) > cache->timeout )
         {
             cur->timestamp = t;
             break; /* expired, reuse this slot, update timestamp */
@@ -283,7 +283,7 @@ exit:
 }
 
 #if defined(MBEDTLS_HAVE_TIME)
-void mbedtls_ssl_cache_set_timeout( mbedtls_ssl_cache_context *cache, int timeout )
+void mbedtls_ssl_cache_set_timeout( mbedtls_ssl_cache_context *cache, int32_t timeout )
 {
     if( timeout < 0 ) timeout = 0;
 
@@ -291,7 +291,7 @@ void mbedtls_ssl_cache_set_timeout( mbedtls_ssl_cache_context *cache, int timeou
 }
 #endif /* MBEDTLS_HAVE_TIME */
 
-void mbedtls_ssl_cache_set_max_entries( mbedtls_ssl_cache_context *cache, int max )
+void mbedtls_ssl_cache_set_max_entries( mbedtls_ssl_cache_context *cache, int32_t max )
 {
     if( max < 0 ) max = 0;
 

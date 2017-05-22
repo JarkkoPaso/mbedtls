@@ -40,7 +40,7 @@
 #if !defined(MBEDTLS_ENTROPY_C) || \
     !defined(MBEDTLS_SSL_TLS_C) || !defined(MBEDTLS_SSL_CLI_C) || \
     !defined(MBEDTLS_NET_C) || !defined(MBEDTLS_CTR_DRBG_C)
-int main( void )
+int32_t main( void )
 {
     mbedtls_printf("MBEDTLS_ENTROPY_C and/or "
            "MBEDTLS_SSL_TLS_C and/or MBEDTLS_SSL_CLI_C and/or "
@@ -279,12 +279,12 @@ struct options
     const char *server_name;    /* hostname of the server (client only)     */
     const char *server_addr;    /* address of the server (client only)      */
     const char *server_port;    /* port on which the ssl service runs       */
-    int debug_level;            /* level of debugging                       */
-    int nbio;                   /* should I/O be blocking?                  */
+    int32_t debug_level;            /* level of debugging                       */
+    int32_t nbio;                   /* should I/O be blocking?                  */
     uint32_t read_timeout;      /* timeout on mbedtls_ssl_read() in milliseconds    */
-    int max_resend;             /* DTLS times to resend on read timeout     */
+    int32_t max_resend;             /* DTLS times to resend on read timeout     */
     const char *request_page;   /* page on server to request                */
-    int request_size;           /* pad request with header to requested size */
+    int32_t request_size;           /* pad request with header to requested size */
     const char *ca_file;        /* the file with the CA certificate(s)      */
     const char *ca_path;        /* the path with the CA certificate(s) reside */
     const char *crt_file;       /* the file with the client certificate     */
@@ -292,35 +292,35 @@ struct options
     const char *psk;            /* the pre-shared key                       */
     const char *psk_identity;   /* the pre-shared key identity              */
     const char *ecjpake_pw;     /* the EC J-PAKE password                   */
-    int force_ciphersuite[2];   /* protocol/ciphersuite to use, or all      */
-    int renegotiation;          /* enable / disable renegotiation           */
-    int allow_legacy;           /* allow legacy renegotiation               */
-    int renegotiate;            /* attempt renegotiation?                   */
-    int renego_delay;           /* delay before enforcing renegotiation     */
-    int exchanges;              /* number of data exchanges                 */
-    int min_version;            /* minimum protocol version accepted        */
-    int max_version;            /* maximum protocol version accepted        */
-    int arc4;                   /* flag for arc4 suites support             */
-    int auth_mode;              /* verify mode for connection               */
+    int32_t force_ciphersuite[2];   /* protocol/ciphersuite to use, or all      */
+    int32_t renegotiation;          /* enable / disable renegotiation           */
+    int32_t allow_legacy;           /* allow legacy renegotiation               */
+    int32_t renegotiate;            /* attempt renegotiation?                   */
+    int32_t renego_delay;           /* delay before enforcing renegotiation     */
+    int32_t exchanges;              /* number of data exchanges                 */
+    int32_t min_version;            /* minimum protocol version accepted        */
+    int32_t max_version;            /* maximum protocol version accepted        */
+    int32_t arc4;                   /* flag for arc4 suites support             */
+    int32_t auth_mode;              /* verify mode for connection               */
     unsigned char mfl_code;     /* code for maximum fragment length         */
-    int trunc_hmac;             /* negotiate truncated hmac or not          */
-    int recsplit;               /* enable record splitting?                 */
-    int dhmlen;                 /* minimum DHM params len in bits           */
-    int reconnect;              /* attempt to resume session                */
-    int reco_delay;             /* delay in seconds before resuming session */
-    int reconnect_hard;         /* unexpectedly reconnect from the same port */
-    int tickets;                /* enable / disable session tickets         */
+    int32_t trunc_hmac;             /* negotiate truncated hmac or not          */
+    int32_t recsplit;               /* enable record splitting?                 */
+    int32_t dhmlen;                 /* minimum DHM params len in bits           */
+    int32_t reconnect;              /* attempt to resume session                */
+    int32_t reco_delay;             /* delay in seconds before resuming session */
+    int32_t reconnect_hard;         /* unexpectedly reconnect from the same port */
+    int32_t tickets;                /* enable / disable session tickets         */
     const char *alpn_string;    /* ALPN supported protocols                 */
-    int transport;              /* TLS or DTLS?                             */
+    int32_t transport;              /* TLS or DTLS?                             */
     uint32_t hs_to_min;         /* Initial value of DTLS handshake timer    */
     uint32_t hs_to_max;         /* Max value of DTLS handshake timer        */
-    int fallback;               /* is this a fallback connection?           */
-    int extended_ms;            /* negotiate extended master secret?        */
-    int etm;                    /* negotiate encrypt then mac?              */
+    int32_t fallback;               /* is this a fallback connection?           */
+    int32_t extended_ms;            /* negotiate extended master secret?        */
+    int32_t etm;                    /* negotiate encrypt then mac?              */
 } opt;
 
-static void my_debug( void *ctx, int level,
-                      const char *file, int line,
+static void my_debug( void *ctx, int32_t level,
+                      const char *file, int32_t line,
                       const char *str )
 {
     const char *p, *basename;
@@ -338,10 +338,10 @@ static void my_debug( void *ctx, int level,
  * Test recv/send functions that make sure each try returns
  * WANT_READ/WANT_WRITE at least once before sucesseding
  */
-static int my_recv( void *ctx, unsigned char *buf, size_t len )
+static int32_t my_recv( void *ctx, unsigned char *buf, size_t len )
 {
-    static int first_try = 1;
-    int ret;
+    static int32_t first_try = 1;
+    int32_t ret;
 
     if( first_try )
     {
@@ -355,10 +355,10 @@ static int my_recv( void *ctx, unsigned char *buf, size_t len )
     return( ret );
 }
 
-static int my_send( void *ctx, const unsigned char *buf, size_t len )
+static int32_t my_send( void *ctx, const unsigned char *buf, size_t len )
 {
-    static int first_try = 1;
-    int ret;
+    static int32_t first_try = 1;
+    int32_t ret;
 
     if( first_try )
     {
@@ -376,7 +376,7 @@ static int my_send( void *ctx, const unsigned char *buf, size_t len )
 /*
  * Enabled if debug_level > 1 in code below
  */
-static int my_verify( void *data, mbedtls_x509_crt *crt, int depth, uint32_t *flags )
+static int32_t my_verify( void *data, mbedtls_x509_crt *crt, int32_t depth, uint32_t *flags )
 {
     char buf[1024];
     ((void) data);
@@ -397,9 +397,9 @@ static int my_verify( void *data, mbedtls_x509_crt *crt, int depth, uint32_t *fl
 }
 #endif /* MBEDTLS_X509_CRT_PARSE_C */
 
-int main( int argc, char *argv[] )
+int32_t main( int32_t argc, char *argv[] )
 {
-    int ret = 0, len, tail_len, i, written, frags, retry_left;
+    int32_t ret = 0, len, tail_len, i, written, frags, retry_left;
     mbedtls_net_context server_fd;
     unsigned char buf[MBEDTLS_SSL_MAX_CONTENT_LEN + 1];
 #if defined(MBEDTLS_KEY_EXCHANGE__SOME__PSK_ENABLED)
@@ -426,7 +426,7 @@ int main( int argc, char *argv[] )
     mbedtls_pk_context pkey;
 #endif
     char *p, *q;
-    const int *list;
+    const int32_t *list;
 
     /*
      * Make sure memory references are valid.
@@ -523,7 +523,7 @@ int main( int argc, char *argv[] )
             opt.server_port = q;
         else if( strcmp( p, "dtls" ) == 0 )
         {
-            int t = atoi( q );
+            int32_t t = atoi( q );
             if( t == 0 )
                 opt.transport = MBEDTLS_SSL_TRANSPORT_STREAM;
             else if( t == 1 )
@@ -912,7 +912,7 @@ int main( int argc, char *argv[] )
         i = 0;
 
         /* Leave room for a final NULL in alpn_list */
-        while( i < (int) sizeof alpn_list - 1 && *p != '\0' )
+        while( i < (int32_t) sizeof alpn_list - 1 && *p != '\0' )
         {
             alpn_list[i++] = p;
 
@@ -1280,7 +1280,7 @@ int main( int argc, char *argv[] )
 
 #if defined(MBEDTLS_SSL_MAX_FRAGMENT_LENGTH)
     mbedtls_printf( "    [ Maximum fragment length is %u ]\n",
-                    (unsigned int) mbedtls_ssl_get_max_frag_len( &ssl ) );
+                    (uint32_t) mbedtls_ssl_get_max_frag_len( &ssl ) );
 #endif
 
 #if defined(MBEDTLS_SSL_ALPN)
@@ -1366,7 +1366,7 @@ send_request:
 
     len = mbedtls_snprintf( (char *) buf, sizeof(buf) - 1, GET_REQUEST,
                     opt.request_page );
-    tail_len = (int) strlen( GET_REQUEST_END );
+    tail_len = (int32_t) strlen( GET_REQUEST_END );
 
     /* Add padding to GET request to reach opt.request_size in length */
     if( opt.request_size != DFL_REQUEST_SIZE &&

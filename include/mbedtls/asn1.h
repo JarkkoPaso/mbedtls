@@ -117,7 +117,7 @@ extern "C" {
  */
 typedef struct mbedtls_asn1_buf
 {
-    int tag;                /**< ASN1 type, e.g. MBEDTLS_ASN1_UTF8_STRING. */
+    int32_t tag;            /**< ASN1 type, e.g. MBEDTLS_ASN1_UTF8_STRING. */
     size_t len;             /**< ASN1 length, in octets. */
     unsigned char *p;       /**< ASN1 data, e.g. in ASCII. */
 }
@@ -168,7 +168,7 @@ mbedtls_asn1_named_data;
  *              end of data, MBEDTLS_ERR_ASN1_INVALID_LENGTH if length is
  *              unparseable.
  */
-int mbedtls_asn1_get_len( unsigned char **p,
+int32_t mbedtls_asn1_get_len( unsigned char **p,
                   const unsigned char *end,
                   size_t *len );
 
@@ -184,9 +184,9 @@ int mbedtls_asn1_get_len( unsigned char **p,
  * \return      0 if successful, MBEDTLS_ERR_ASN1_UNEXPECTED_TAG if tag did
  *              not match requested tag, or another specific ASN.1 error code.
  */
-int mbedtls_asn1_get_tag( unsigned char **p,
+int32_t mbedtls_asn1_get_tag( unsigned char **p,
                   const unsigned char *end,
-                  size_t *len, int tag );
+                  size_t *len, int32_t tag );
 
 /**
  * \brief       Retrieve a boolean ASN.1 tag and its value.
@@ -198,9 +198,9 @@ int mbedtls_asn1_get_tag( unsigned char **p,
  *
  * \return      0 if successful or a specific ASN.1 error code.
  */
-int mbedtls_asn1_get_bool( unsigned char **p,
+int32_t mbedtls_asn1_get_bool( unsigned char **p,
                    const unsigned char *end,
-                   int *val );
+                   int32_t *val );
 
 /**
  * \brief       Retrieve an integer ASN.1 tag and its value.
@@ -212,9 +212,9 @@ int mbedtls_asn1_get_bool( unsigned char **p,
  *
  * \return      0 if successful or a specific ASN.1 error code.
  */
-int mbedtls_asn1_get_int( unsigned char **p,
+int32_t mbedtls_asn1_get_int( unsigned char **p,
                   const unsigned char *end,
-                  int *val );
+                  int32_t *val );
 
 /**
  * \brief       Retrieve a bitstring ASN.1 tag and its value.
@@ -226,7 +226,7 @@ int mbedtls_asn1_get_int( unsigned char **p,
  *
  * \return      0 if successful or a specific ASN.1 error code.
  */
-int mbedtls_asn1_get_bitstring( unsigned char **p, const unsigned char *end,
+int32_t mbedtls_asn1_get_bitstring( unsigned char **p, const unsigned char *end,
                         mbedtls_asn1_bitstring *bs);
 
 /**
@@ -240,7 +240,7 @@ int mbedtls_asn1_get_bitstring( unsigned char **p, const unsigned char *end,
  *
  * \return      0 if successful or a specific ASN.1 error code.
  */
-int mbedtls_asn1_get_bitstring_null( unsigned char **p, const unsigned char *end,
+int32_t mbedtls_asn1_get_bitstring_null( unsigned char **p, const unsigned char *end,
                              size_t *len );
 
 /**
@@ -254,10 +254,10 @@ int mbedtls_asn1_get_bitstring_null( unsigned char **p, const unsigned char *end
  *
  * \return      0 if successful or a specific ASN.1 error code.
  */
-int mbedtls_asn1_get_sequence_of( unsigned char **p,
+int32_t mbedtls_asn1_get_sequence_of( unsigned char **p,
                           const unsigned char *end,
                           mbedtls_asn1_sequence *cur,
-                          int tag);
+                          int32_t tag);
 
 #if defined(MBEDTLS_BIGNUM_C)
 /**
@@ -270,7 +270,7 @@ int mbedtls_asn1_get_sequence_of( unsigned char **p,
  *
  * \return      0 if successful or a specific ASN.1 or MPI error code.
  */
-int mbedtls_asn1_get_mpi( unsigned char **p,
+int32_t mbedtls_asn1_get_mpi( unsigned char **p,
                   const unsigned char *end,
                   mbedtls_mpi *X );
 #endif /* MBEDTLS_BIGNUM_C */
@@ -287,7 +287,7 @@ int mbedtls_asn1_get_mpi( unsigned char **p,
  *
  * \return      0 if successful or a specific ASN.1 or MPI error code.
  */
-int mbedtls_asn1_get_alg( unsigned char **p,
+int32_t mbedtls_asn1_get_alg( unsigned char **p,
                   const unsigned char *end,
                   mbedtls_asn1_buf *alg, mbedtls_asn1_buf *params );
 
@@ -303,7 +303,7 @@ int mbedtls_asn1_get_alg( unsigned char **p,
  *
  * \return      0 if successful or a specific ASN.1 or MPI error code.
  */
-int mbedtls_asn1_get_alg_null( unsigned char **p,
+int32_t mbedtls_asn1_get_alg_null( unsigned char **p,
                        const unsigned char *end,
                        mbedtls_asn1_buf *alg );
 

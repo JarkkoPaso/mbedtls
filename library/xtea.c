@@ -88,7 +88,7 @@ void mbedtls_xtea_free( mbedtls_xtea_context *ctx )
  */
 void mbedtls_xtea_setup( mbedtls_xtea_context *ctx, const unsigned char key[16] )
 {
-    int i;
+    int32_t i;
 
     memset( ctx, 0, sizeof(mbedtls_xtea_context) );
 
@@ -101,7 +101,7 @@ void mbedtls_xtea_setup( mbedtls_xtea_context *ctx, const unsigned char key[16] 
 /*
  * XTEA encrypt function
  */
-int mbedtls_xtea_crypt_ecb( mbedtls_xtea_context *ctx, int mode,
+int32_t mbedtls_xtea_crypt_ecb( mbedtls_xtea_context *ctx, int32_t mode,
                     const unsigned char input[8], unsigned char output[8])
 {
     uint32_t *k, v0, v1, i;
@@ -144,11 +144,11 @@ int mbedtls_xtea_crypt_ecb( mbedtls_xtea_context *ctx, int mode,
 /*
  * XTEA-CBC buffer encryption/decryption
  */
-int mbedtls_xtea_crypt_cbc( mbedtls_xtea_context *ctx, int mode, size_t length,
+int32_t mbedtls_xtea_crypt_cbc( mbedtls_xtea_context *ctx, int32_t mode, size_t length,
                     unsigned char iv[8], const unsigned char *input,
                     unsigned char *output)
 {
-    int i;
+    int32_t i;
     unsigned char temp[8];
 
     if( length % 8 )
@@ -237,9 +237,9 @@ static const unsigned char xtea_test_ct[6][8] =
 /*
  * Checkup routine
  */
-int mbedtls_xtea_self_test( int verbose )
+int32_t mbedtls_xtea_self_test( int32_t verbose )
 {
-    int i, ret = 0;
+    int32_t i, ret = 0;
     unsigned char buf[8];
     mbedtls_xtea_context ctx;
 

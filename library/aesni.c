@@ -45,10 +45,10 @@
 /*
  * AES-NI support detection routine
  */
-int mbedtls_aesni_has_support( unsigned int what )
+int32_t mbedtls_aesni_has_support( uint32_t what )
 {
-    static int done = 0;
-    static unsigned int c = 0;
+    static int32_t done = 0;
+    static uint32_t c = 0;
 
     if( ! done )
     {
@@ -92,8 +92,8 @@ int mbedtls_aesni_has_support( unsigned int what )
 /*
  * AES-NI AES-ECB block en(de)cryption
  */
-int mbedtls_aesni_crypt_ecb( mbedtls_aes_context *ctx,
-                     int mode,
+int32_t mbedtls_aesni_crypt_ecb( mbedtls_aes_context *ctx,
+                     int32_t mode,
                      const unsigned char input[16],
                      unsigned char output[16] )
 {
@@ -250,7 +250,7 @@ void mbedtls_aesni_gcm_mult( unsigned char c[16],
  * Compute decryption round keys from encryption round keys
  */
 void mbedtls_aesni_inverse_key( unsigned char *invkey,
-                        const unsigned char *fwdkey, int nr )
+                        const unsigned char *fwdkey, int32_t nr )
 {
     unsigned char *ik = invkey;
     const unsigned char *fk = fwdkey + 16 * nr;
@@ -444,7 +444,7 @@ static void aesni_setkey_enc_256( unsigned char *rk,
 /*
  * Key expansion, wrapper
  */
-int mbedtls_aesni_setkey_enc( unsigned char *rk,
+int32_t mbedtls_aesni_setkey_enc( unsigned char *rk,
                       const unsigned char *key,
                       size_t bits )
 {

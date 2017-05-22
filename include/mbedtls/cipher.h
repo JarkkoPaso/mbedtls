@@ -193,20 +193,20 @@ typedef struct {
 
     /** Cipher key length, in bits (default length for variable sized ciphers)
      *  (Includes parity bits for ciphers like DES) */
-    unsigned int key_bitlen;
+    uint32_t key_bitlen;
 
     /** Name of the cipher */
     const char * name;
 
     /** IV/NONCE size, in bytes.
      *  For cipher that accept many sizes: recommended size */
-    unsigned int iv_size;
+    uint32_t iv_size;
 
     /** Flags for variable IV size, variable key size, etc. */
-    int flags;
+    int32_t flags;
 
     /** block size, in bytes */
-    unsigned int block_size;
+    uint32_t block_size;
 
     /** Base cipher information and functions */
     const mbedtls_cipher_base_t *base;
@@ -221,7 +221,7 @@ typedef struct {
     const mbedtls_cipher_info_t *cipher_info;
 
     /** Key length to use */
-    int key_bitlen;
+    int32_t key_bitlen;
 
     /** Operation that the context's key has been initialised for */
     mbedtls_operation_t operation;
@@ -229,7 +229,7 @@ typedef struct {
 #if defined(MBEDTLS_CIPHER_MODE_WITH_PADDING)
     /** Padding functions to use, if relevant for cipher mode */
     void (*add_padding)( unsigned char *output, size_t olen, size_t data_len );
-    int (*get_padding)( unsigned char *input, size_t ilen, size_t *data_len );
+    int32_t (*get_padding)( unsigned char *input, size_t ilen, size_t *data_len );
 #endif
 
     /** Buffer for data that hasn't been encrypted yet */
@@ -259,7 +259,7 @@ typedef struct {
  * \return              a statically allocated array of ciphers, the last entry
  *                      is 0.
  */
-const int *mbedtls_cipher_list( void );
+const int32_t *mbedtls_cipher_list( void );
 
 /**
  * \brief               Returns the cipher information structure associated
@@ -296,7 +296,7 @@ const mbedtls_cipher_info_t *mbedtls_cipher_info_from_type( const mbedtls_cipher
  *                      given cipher_type, or NULL if not found.
  */
 const mbedtls_cipher_info_t *mbedtls_cipher_info_from_values( const mbedtls_cipher_id_t cipher_id,
-                                              int key_bitlen,
+                                              int32_t key_bitlen,
                                               const mbedtls_cipher_mode_t mode );
 
 /**
@@ -327,7 +327,7 @@ void mbedtls_cipher_free( mbedtls_cipher_context_t *ctx );
  *                      MBEDTLS_ERR_CIPHER_ALLOC_FAILED if allocation of the
  *                      cipher-specific context failed.
  */
-int mbedtls_cipher_setup( mbedtls_cipher_context_t *ctx, const mbedtls_cipher_info_t *cipher_info );
+int32_t mbedtls_cipher_setup( mbedtls_cipher_context_t *ctx, const mbedtls_cipher_info_t *cipher_info );
 
 /**
  * \brief               Returns the block size of the given cipher.
@@ -337,7 +337,7 @@ int mbedtls_cipher_setup( mbedtls_cipher_context_t *ctx, const mbedtls_cipher_in
  * \return              size of the cipher's blocks, or 0 if ctx has not been
  *                      initialised.
  */
-static inline unsigned int mbedtls_cipher_get_block_size( const mbedtls_cipher_context_t *ctx )
+static inline uint32_t mbedtls_cipher_get_block_size( const mbedtls_cipher_context_t *ctx )
 {
     if( NULL == ctx || NULL == ctx->cipher_info )
         return 0;
@@ -371,15 +371,15 @@ static inline mbedtls_cipher_mode_t mbedtls_cipher_get_cipher_mode( const mbedtl
  *                      (0 for ciphers not using IV/NONCE).
  *                      If IV has already been set: actual size.
  */
-static inline int mbedtls_cipher_get_iv_size( const mbedtls_cipher_context_t *ctx )
+static inline int32_t mbedtls_cipher_get_iv_size( const mbedtls_cipher_context_t *ctx )
 {
     if( NULL == ctx || NULL == ctx->cipher_info )
         return 0;
 
     if( ctx->iv_size != 0 )
-        return (int) ctx->iv_size;
+        return (int32_t) ctx->iv_size;
 
-    return (int) ctx->cipher_info->iv_size;
+    return (int32_t) ctx->cipher_info->iv_size;
 }
 
 /**
@@ -422,12 +422,12 @@ static inline const char *mbedtls_cipher_get_name( const mbedtls_cipher_context_
  *                      MBEDTLS_KEY_LENGTH_NONE if ctx has not been
  *                      initialised.
  */
-static inline int mbedtls_cipher_get_key_bitlen( const mbedtls_cipher_context_t *ctx )
+static inline int32_t mbedtls_cipher_get_key_bitlen( const mbedtls_cipher_context_t *ctx )
 {
     if( NULL == ctx || NULL == ctx->cipher_info )
         return MBEDTLS_KEY_LENGTH_NONE;
 
-    return (int) ctx->cipher_info->key_bitlen;
+    return (int32_t) ctx->cipher_info->key_bitlen;
 }
 
 /**
@@ -462,8 +462,8 @@ static inline mbedtls_operation_t mbedtls_cipher_get_operation( const mbedtls_ci
  *                      parameter verification fails or a cipher specific
  *                      error code.
  */
-int mbedtls_cipher_setkey( mbedtls_cipher_context_t *ctx, const unsigned char *key,
-                   int key_bitlen, const mbedtls_operation_t operation );
+int32_t mbedtls_cipher_setkey( mbedtls_cipher_context_t *ctx, const unsigned char *key,
+                   int32_t key_bitlen, const mbedtls_operation_t operation );
 
 #if defined(MBEDTLS_CIPHER_MODE_WITH_PADDING)
 /**
@@ -478,7 +478,7 @@ int mbedtls_cipher_setkey( mbedtls_cipher_context_t *ctx, const unsigned char *k
  *                      MBEDTLS_ERR_CIPHER_BAD_INPUT_DATA if the cipher mode
  *                      does not support padding.
  */
-int mbedtls_cipher_set_padding_mode( mbedtls_cipher_context_t *ctx, mbedtls_cipher_padding_t mode );
+int32_t mbedtls_cipher_set_padding_mode( mbedtls_cipher_context_t *ctx, mbedtls_cipher_padding_t mode );
 #endif /* MBEDTLS_CIPHER_MODE_WITH_PADDING */
 
 /**
@@ -494,7 +494,7 @@ int mbedtls_cipher_set_padding_mode( mbedtls_cipher_context_t *ctx, mbedtls_ciph
  * \note                Some ciphers don't use IVs nor NONCE. For these
  *                      ciphers, this function has no effect.
  */
-int mbedtls_cipher_set_iv( mbedtls_cipher_context_t *ctx,
+int32_t mbedtls_cipher_set_iv( mbedtls_cipher_context_t *ctx,
                    const unsigned char *iv, size_t iv_len );
 
 /**
@@ -505,7 +505,7 @@ int mbedtls_cipher_set_iv( mbedtls_cipher_context_t *ctx,
  * \returns             0 on success, MBEDTLS_ERR_CIPHER_BAD_INPUT_DATA
  *                      if parameter verification fails.
  */
-int mbedtls_cipher_reset( mbedtls_cipher_context_t *ctx );
+int32_t mbedtls_cipher_reset( mbedtls_cipher_context_t *ctx );
 
 #if defined(MBEDTLS_GCM_C)
 /**
@@ -519,7 +519,7 @@ int mbedtls_cipher_reset( mbedtls_cipher_context_t *ctx );
  *
  * \return              0 on success, or a specific error code.
  */
-int mbedtls_cipher_update_ad( mbedtls_cipher_context_t *ctx,
+int32_t mbedtls_cipher_update_ad( mbedtls_cipher_context_t *ctx,
                       const unsigned char *ad, size_t ad_len );
 #endif /* MBEDTLS_GCM_C */
 
@@ -552,7 +552,7 @@ int mbedtls_cipher_update_ad( mbedtls_cipher_context_t *ctx,
  *                      function, except the last one before mbedtls_cipher_finish(),
  *                      must have ilen a multiple of the block size.
  */
-int mbedtls_cipher_update( mbedtls_cipher_context_t *ctx, const unsigned char *input,
+int32_t mbedtls_cipher_update( mbedtls_cipher_context_t *ctx, const unsigned char *input,
                    size_t ilen, unsigned char *output, size_t *olen );
 
 /**
@@ -572,7 +572,7 @@ int mbedtls_cipher_update( mbedtls_cipher_context_t *ctx, const unsigned char *i
  *                      MBEDTLS_ERR_CIPHER_INVALID_PADDING on invalid padding
  *                      while decrypting or a cipher specific error code.
  */
-int mbedtls_cipher_finish( mbedtls_cipher_context_t *ctx,
+int32_t mbedtls_cipher_finish( mbedtls_cipher_context_t *ctx,
                    unsigned char *output, size_t *olen );
 
 #if defined(MBEDTLS_GCM_C)
@@ -587,7 +587,7 @@ int mbedtls_cipher_finish( mbedtls_cipher_context_t *ctx,
  *
  * \return              0 on success, or a specific error code.
  */
-int mbedtls_cipher_write_tag( mbedtls_cipher_context_t *ctx,
+int32_t mbedtls_cipher_write_tag( mbedtls_cipher_context_t *ctx,
                       unsigned char *tag, size_t tag_len );
 
 /**
@@ -601,7 +601,7 @@ int mbedtls_cipher_write_tag( mbedtls_cipher_context_t *ctx,
  *
  * \return              0 on success, or a specific error code.
  */
-int mbedtls_cipher_check_tag( mbedtls_cipher_context_t *ctx,
+int32_t mbedtls_cipher_check_tag( mbedtls_cipher_context_t *ctx,
                       const unsigned char *tag, size_t tag_len );
 #endif /* MBEDTLS_GCM_C */
 
@@ -632,7 +632,7 @@ int mbedtls_cipher_check_tag( mbedtls_cipher_context_t *ctx,
  *                      while decrypting, or
  *                      a cipher specific error code.
  */
-int mbedtls_cipher_crypt( mbedtls_cipher_context_t *ctx,
+int32_t mbedtls_cipher_crypt( mbedtls_cipher_context_t *ctx,
                   const unsigned char *iv, size_t iv_len,
                   const unsigned char *input, size_t ilen,
                   unsigned char *output, size_t *olen );
@@ -660,7 +660,7 @@ int mbedtls_cipher_crypt( mbedtls_cipher_context_t *ctx,
  *                      MBEDTLS_ERR_CIPHER_BAD_INPUT_DATA, or
  *                      a cipher specific error code.
  */
-int mbedtls_cipher_auth_encrypt( mbedtls_cipher_context_t *ctx,
+int32_t mbedtls_cipher_auth_encrypt( mbedtls_cipher_context_t *ctx,
                          const unsigned char *iv, size_t iv_len,
                          const unsigned char *ad, size_t ad_len,
                          const unsigned char *input, size_t ilen,
@@ -694,7 +694,7 @@ int mbedtls_cipher_auth_encrypt( mbedtls_cipher_context_t *ctx,
  *                      is zeroed out to prevent the unauthentic plaintext to
  *                      be used by mistake, making this interface safer.
  */
-int mbedtls_cipher_auth_decrypt( mbedtls_cipher_context_t *ctx,
+int32_t mbedtls_cipher_auth_decrypt( mbedtls_cipher_context_t *ctx,
                          const unsigned char *iv, size_t iv_len,
                          const unsigned char *ad, size_t ad_len,
                          const unsigned char *input, size_t ilen,

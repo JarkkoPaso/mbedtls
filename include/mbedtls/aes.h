@@ -57,7 +57,7 @@ extern "C" {
  */
 typedef struct
 {
-    int nr;                     /*!<  number of rounds  */
+    int32_t nr;                 /*!<  number of rounds  */
     uint32_t *rk;               /*!<  AES round keys    */
     uint32_t buf[68];           /*!<  unaligned data    */
 }
@@ -86,8 +86,8 @@ void mbedtls_aes_free( mbedtls_aes_context *ctx );
  *
  * \return         0 if successful, or MBEDTLS_ERR_AES_INVALID_KEY_LENGTH
  */
-int mbedtls_aes_setkey_enc( mbedtls_aes_context *ctx, const unsigned char *key,
-                    unsigned int keybits );
+int32_t mbedtls_aes_setkey_enc( mbedtls_aes_context *ctx, const unsigned char *key,
+                    uint32_t keybits );
 
 /**
  * \brief          AES key schedule (decryption)
@@ -98,8 +98,8 @@ int mbedtls_aes_setkey_enc( mbedtls_aes_context *ctx, const unsigned char *key,
  *
  * \return         0 if successful, or MBEDTLS_ERR_AES_INVALID_KEY_LENGTH
  */
-int mbedtls_aes_setkey_dec( mbedtls_aes_context *ctx, const unsigned char *key,
-                    unsigned int keybits );
+int32_t mbedtls_aes_setkey_dec( mbedtls_aes_context *ctx, const unsigned char *key,
+                    uint32_t keybits );
 
 /**
  * \brief          AES-ECB block encryption/decryption
@@ -111,8 +111,8 @@ int mbedtls_aes_setkey_dec( mbedtls_aes_context *ctx, const unsigned char *key,
  *
  * \return         0 if successful
  */
-int mbedtls_aes_crypt_ecb( mbedtls_aes_context *ctx,
-                    int mode,
+int32_t mbedtls_aes_crypt_ecb( mbedtls_aes_context *ctx,
+                    int32_t mode,
                     const unsigned char input[16],
                     unsigned char output[16] );
 
@@ -139,8 +139,8 @@ int mbedtls_aes_crypt_ecb( mbedtls_aes_context *ctx,
  *
  * \return         0 if successful, or MBEDTLS_ERR_AES_INVALID_INPUT_LENGTH
  */
-int mbedtls_aes_crypt_cbc( mbedtls_aes_context *ctx,
-                    int mode,
+int32_t mbedtls_aes_crypt_cbc( mbedtls_aes_context *ctx,
+                    int32_t mode,
                     size_t length,
                     unsigned char iv[16],
                     const unsigned char *input,
@@ -173,8 +173,8 @@ int mbedtls_aes_crypt_cbc( mbedtls_aes_context *ctx,
  *
  * \return         0 if successful
  */
-int mbedtls_aes_crypt_cfb128( mbedtls_aes_context *ctx,
-                       int mode,
+int32_t mbedtls_aes_crypt_cfb128( mbedtls_aes_context *ctx,
+                       int32_t mode,
                        size_t length,
                        size_t *iv_off,
                        unsigned char iv[16],
@@ -205,8 +205,8 @@ int mbedtls_aes_crypt_cfb128( mbedtls_aes_context *ctx,
  *
  * \return         0 if successful
  */
-int mbedtls_aes_crypt_cfb8( mbedtls_aes_context *ctx,
-                    int mode,
+int32_t mbedtls_aes_crypt_cfb8( mbedtls_aes_context *ctx,
+                    int32_t mode,
                     size_t length,
                     unsigned char iv[16],
                     const unsigned char *input,
@@ -236,7 +236,7 @@ int mbedtls_aes_crypt_cfb8( mbedtls_aes_context *ctx,
  *
  * \return         0 if successful
  */
-int mbedtls_aes_crypt_ctr( mbedtls_aes_context *ctx,
+int32_t mbedtls_aes_crypt_ctr( mbedtls_aes_context *ctx,
                        size_t length,
                        size_t *nc_off,
                        unsigned char nonce_counter[16],
@@ -288,7 +288,7 @@ extern "C" {
  *
  * \return         0 if successful, or 1 if the test failed
  */
-int mbedtls_aes_self_test( int verbose );
+int32_t mbedtls_aes_self_test( int32_t verbose );
 
 #ifdef __cplusplus
 }

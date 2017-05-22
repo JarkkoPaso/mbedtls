@@ -37,15 +37,15 @@
 #endif
 
 #if !defined(MBEDTLS_MD5_C)
-int main( void )
+int32_t main( void )
 {
     mbedtls_printf("MBEDTLS_MD5_C not defined.\n");
     return( 0 );
 }
 #else
-int main( void )
+int32_t main( void )
 {
-    int i;
+    int32_t i;
     unsigned char digest[16];
     char str[] = "Hello, world!";
 

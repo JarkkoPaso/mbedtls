@@ -37,7 +37,7 @@
 #if !defined(MBEDTLS_BIGNUM_C) || !defined(MBEDTLS_ENTROPY_C) ||   \
     !defined(MBEDTLS_FS_IO) || !defined(MBEDTLS_CTR_DRBG_C) ||     \
     !defined(MBEDTLS_GENPRIME)
-int main( void )
+int32_t main( void )
 {
     mbedtls_printf("MBEDTLS_BIGNUM_C and/or MBEDTLS_ENTROPY_C and/or "
            "MBEDTLS_FS_IO and/or MBEDTLS_CTR_DRBG_C and/or "
@@ -66,16 +66,16 @@ int main( void )
  */
 #define GENERATOR "4"
 
-int main( int argc, char **argv )
+int32_t main( int32_t argc, char **argv )
 {
-    int ret = 1;
+    int32_t ret = 1;
     mbedtls_mpi G, P, Q;
     mbedtls_entropy_context entropy;
     mbedtls_ctr_drbg_context ctr_drbg;
     const char *pers = "dh_genprime";
     FILE *fout;
-    int nbits = DFL_BITS;
-    int i;
+    int32_t nbits = DFL_BITS;
+    int32_t i;
     char *p, *q;
 
     mbedtls_mpi_init( &G ); mbedtls_mpi_init( &P ); mbedtls_mpi_init( &Q );

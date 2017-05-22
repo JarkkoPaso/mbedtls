@@ -50,7 +50,7 @@
 #if !defined(MBEDTLS_BIGNUM_C) || !defined(MBEDTLS_RSA_C) ||  \
     !defined(MBEDTLS_FS_IO) || !defined(MBEDTLS_ENTROPY_C) || \
     !defined(MBEDTLS_CTR_DRBG_C)
-int main( void )
+int32_t main( void )
 {
     mbedtls_printf("MBEDTLS_BIGNUM_C and/or MBEDTLS_RSA_C and/or "
            "MBEDTLS_FS_IO and/or MBEDTLS_ENTROPY_C and/or "
@@ -58,10 +58,10 @@ int main( void )
     return( 0 );
 }
 #else
-int main( int argc, char *argv[] )
+int32_t main( int32_t argc, char *argv[] )
 {
     FILE *f;
-    int return_val, exit_val, c;
+    int32_t return_val, exit_val, c;
     size_t i;
     mbedtls_rsa_context rsa;
     mbedtls_entropy_context entropy;
@@ -88,7 +88,6 @@ int main( int argc, char *argv[] )
     mbedtls_printf( "\n  . Seeding the random number generator..." );
     fflush( stdout );
 
-    mbedtls_rsa_init( &rsa, MBEDTLS_RSA_PKCS_V15, 0 );
     mbedtls_ctr_drbg_init( &ctr_drbg );
     mbedtls_entropy_init( &entropy );
 
@@ -147,7 +146,7 @@ int main( int argc, char *argv[] )
     i = 0;
 
     while( fscanf( f, "%02X", &c ) > 0 &&
-           i < (int) sizeof( buf ) )
+           i < (int32_t) sizeof( buf ) )
         buf[i++] = (unsigned char) c;
 
     fclose( f );

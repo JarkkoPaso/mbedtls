@@ -23,12 +23,12 @@
 
 #include <windows.h>
 
-extern int main( int, const char ** );
+extern int32_t main( int32_t, const char ** );
 
-int _tmain( int argc, _TCHAR* targv[] )
+int32_t _tmain( int32_t argc, _TCHAR* targv[] )
 {
     char **argv;
-    int i;
+    int32_t i;
 
     argv = ( char ** ) calloc( argc, sizeof( char * ) );
 

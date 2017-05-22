@@ -36,7 +36,7 @@
 #endif
 
 #if !defined(MBEDTLS_TIMING_C)
-int main( void )
+int32_t main( void )
 {
     mbedtls_printf("MBEDTLS_TIMING_C not defined.\n");
     return( 0 );
@@ -164,7 +164,7 @@ do {                                                                    \
 #define TIME_PUBLIC( TITLE, TYPE, CODE )                                \
 do {                                                                    \
     unsigned long ii;                                                   \
-    int ret;                                                            \
+    int32_t ret;                                                            \
     MEMORY_MEASURE_INIT;                                                \
                                                                         \
     mbedtls_printf( HEADER_FORMAT, TITLE );                             \
@@ -189,10 +189,10 @@ do {                                                                    \
     }                                                                   \
 } while( 0 )
 
-static int myrand( void *rng_state, unsigned char *output, size_t len )
+static int32_t myrand( void *rng_state, unsigned char *output, size_t len )
 {
     size_t use_len;
-    int rnd;
+    int32_t rnd;
 
     if( rng_state != NULL )
         rng_state  = NULL;
@@ -200,8 +200,8 @@ static int myrand( void *rng_state, unsigned char *output, size_t len )
     while( len > 0 )
     {
         use_len = len;
-        if( use_len > sizeof(int) )
-            use_len = sizeof(int);
+        if( use_len > sizeof(int32_t) )
+            use_len = sizeof(int32_t);
 
         rnd = rand();
         memcpy( output, &rnd, use_len );
@@ -243,9 +243,9 @@ typedef struct {
          rsa, dhm, ecdsa, ecdh;
 } todo_list;
 
-int main( int argc, char *argv[] )
+int32_t main( int32_t argc, char *argv[] )
 {
-    int i;
+    int32_t i;
     unsigned char tmp[200];
     char title[TITLE_LEN];
     todo_list todo;
@@ -411,7 +411,7 @@ int main( int argc, char *argv[] )
 #if defined(MBEDTLS_CIPHER_MODE_CBC)
     if( todo.aes_cbc )
     {
-        int keysize;
+        int32_t keysize;
         mbedtls_aes_context aes;
         mbedtls_aes_init( &aes );
         for( keysize = 128; keysize <= 256; keysize += 64 )
@@ -431,7 +431,7 @@ int main( int argc, char *argv[] )
 #if defined(MBEDTLS_GCM_C)
     if( todo.aes_gcm )
     {
-        int keysize;
+        int32_t keysize;
         mbedtls_gcm_context gcm;
 
         mbedtls_gcm_init( &gcm );
@@ -454,7 +454,7 @@ int main( int argc, char *argv[] )
 #if defined(MBEDTLS_CCM_C)
     if( todo.aes_ccm )
     {
-        int keysize;
+        int32_t keysize;
         mbedtls_ccm_context ccm;
 
         mbedtls_ccm_init( &ccm );
@@ -480,7 +480,7 @@ int main( int argc, char *argv[] )
         unsigned char output[16];
         const mbedtls_cipher_info_t *cipher_info;
         mbedtls_cipher_type_t cipher_type;
-        int keysize;
+        int32_t keysize;
 
         for( keysize = 128, cipher_type = MBEDTLS_CIPHER_AES_128_ECB;
              keysize <= 256;
@@ -510,7 +510,7 @@ int main( int argc, char *argv[] )
 #if defined(MBEDTLS_CAMELLIA_C) && defined(MBEDTLS_CIPHER_MODE_CBC)
     if( todo.camellia )
     {
-        int keysize;
+        int32_t keysize;
         mbedtls_camellia_context camellia;
         mbedtls_camellia_init( &camellia );
         for( keysize = 128; keysize <= 256; keysize += 64 )
@@ -532,7 +532,7 @@ int main( int argc, char *argv[] )
 #if defined(MBEDTLS_BLOWFISH_C) && defined(MBEDTLS_CIPHER_MODE_CBC)
     if( todo.blowfish )
     {
-        int keysize;
+        int32_t keysize;
         mbedtls_blowfish_context blowfish;
         mbedtls_blowfish_init( &blowfish );
 
@@ -641,7 +641,7 @@ int main( int argc, char *argv[] )
 #if defined(MBEDTLS_RSA_C) && defined(MBEDTLS_GENPRIME)
     if( todo.rsa )
     {
-        int keysize;
+        int32_t keysize;
         mbedtls_rsa_context rsa;
         for( keysize = 2048; keysize <= 4096; keysize *= 2 )
         {
@@ -666,7 +666,7 @@ int main( int argc, char *argv[] )
 #if defined(MBEDTLS_DHM_C) && defined(MBEDTLS_BIGNUM_C)
     if( todo.dhm )
     {
-        int dhm_sizes[] = { 2048, 3072 };
+        int32_t dhm_sizes[] = { 2048, 3072 };
         const char *dhm_P[] = {
             MBEDTLS_DHM_RFC3526_MODP_2048_P,
             MBEDTLS_DHM_RFC3526_MODP_3072_P,
@@ -689,13 +689,13 @@ int main( int argc, char *argv[] )
             }
 
             dhm.len = mbedtls_mpi_size( &dhm.P );
-            mbedtls_dhm_make_public( &dhm, (int) dhm.len, buf, dhm.len, myrand, NULL );
+            mbedtls_dhm_make_public( &dhm, (int32_t) dhm.len, buf, dhm.len, myrand, NULL );
             if( mbedtls_mpi_copy( &dhm.GY, &dhm.GX ) != 0 )
                 mbedtls_exit( 1 );
 
             mbedtls_snprintf( title, sizeof( title ), "DHE-%d", dhm_sizes[i] );
             TIME_PUBLIC( title, "handshake",
-                    ret |= mbedtls_dhm_make_public( &dhm, (int) dhm.len, buf, dhm.len,
+                    ret |= mbedtls_dhm_make_public( &dhm, (int32_t) dhm.len, buf, dhm.len,
                                             myrand, NULL );
                     ret |= mbedtls_dhm_calc_secret( &dhm, buf, sizeof( buf ), &olen, myrand, NULL ) );
 

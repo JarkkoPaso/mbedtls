@@ -25,8 +25,8 @@
  *  http://www.ietf.org/rfc/rfc3279.txt (Alg IDs for CRLs)
  *  http://www.ietf.org/rfc/rfc2986.txt (CSRs, aka PKCS#10)
  *
- *  http://www.itu.int/ITU-T/studygroups/com17/languages/X.680-0207.pdf
- *  http://www.itu.int/ITU-T/studygroups/com17/languages/X.690-0207.pdf
+ *  http://www.itu.int32_t/ITU-T/studygroups/com17/languages/X.680-0207.pdf
+ *  http://www.itu.int32_t/ITU-T/studygroups/com17/languages/X.690-0207.pdf
  */
 
 #if !defined(MBEDTLS_CONFIG_FILE)
@@ -68,11 +68,11 @@ static void mbedtls_zeroize( void *v, size_t n ) {
 /*
  *  Version  ::=  INTEGER  {  v1(0)  }
  */
-static int x509_csr_get_version( unsigned char **p,
+static int32_t x509_csr_get_version( unsigned char **p,
                              const unsigned char *end,
-                             int *ver )
+                             int32_t *ver )
 {
-    int ret;
+    int32_t ret;
 
     if( ( ret = mbedtls_asn1_get_int( p, end, ver ) ) != 0 )
     {
@@ -91,10 +91,10 @@ static int x509_csr_get_version( unsigned char **p,
 /*
  * Parse a CSR in DER format
  */
-int mbedtls_x509_csr_parse_der( mbedtls_x509_csr *csr,
+int32_t mbedtls_x509_csr_parse_der( mbedtls_x509_csr *csr,
                         const unsigned char *buf, size_t buflen )
 {
-    int ret;
+    int32_t ret;
     size_t len;
     unsigned char *p, *end;
     mbedtls_x509_buf sig_params;
@@ -263,10 +263,10 @@ int mbedtls_x509_csr_parse_der( mbedtls_x509_csr *csr,
 /*
  * Parse a CSR, allowing for PEM or raw DER encoding
  */
-int mbedtls_x509_csr_parse( mbedtls_x509_csr *csr, const unsigned char *buf, size_t buflen )
+int32_t mbedtls_x509_csr_parse( mbedtls_x509_csr *csr, const unsigned char *buf, size_t buflen )
 {
+    int32_t ret;
 #if defined(MBEDTLS_PEM_PARSE_C)
-    int ret;
     size_t use_len;
     mbedtls_pem_context pem;
 #endif
@@ -314,9 +314,9 @@ int mbedtls_x509_csr_parse( mbedtls_x509_csr *csr, const unsigned char *buf, siz
 /*
  * Load a CSR into the structure
  */
-int mbedtls_x509_csr_parse_file( mbedtls_x509_csr *csr, const char *path )
+int32_t mbedtls_x509_csr_parse_file( mbedtls_x509_csr *csr, const char *path )
 {
-    int ret;
+    int32_t ret;
     size_t n;
     unsigned char *buf;
 
@@ -337,10 +337,10 @@ int mbedtls_x509_csr_parse_file( mbedtls_x509_csr *csr, const char *path )
 /*
  * Return an informational string about the CSR.
  */
-int mbedtls_x509_csr_info( char *buf, size_t size, const char *prefix,
+int32_t mbedtls_x509_csr_info( char *buf, size_t size, const char *prefix,
                    const mbedtls_x509_csr *csr )
 {
-    int ret;
+    int32_t ret;
     size_t n;
     char *p;
     char key_size_str[BEFORE_COLON];
@@ -371,10 +371,10 @@ int mbedtls_x509_csr_info( char *buf, size_t size, const char *prefix,
     }
 
     ret = mbedtls_snprintf( p, n, "\n%s%-" BC "s: %d bits\n", prefix, key_size_str,
-                          (int) mbedtls_pk_get_bitlen( &csr->pk ) );
+                          (int32_t) mbedtls_pk_get_bitlen( &csr->pk ) );
     MBEDTLS_X509_SAFE_SNPRINTF;
 
-    return( (int) ( size - n ) );
+    return( (int32_t) ( size - n ) );
 }
 
 /*

@@ -49,7 +49,7 @@ typedef struct {
     unsigned char base_ectr[16];/*!< First ECTR for tag */
     unsigned char y[16];        /*!< Y working value */
     unsigned char buf[16];      /*!< buf working value */
-    int mode;                   /*!< Encrypt or Decrypt */
+    int32_t mode;               /*!< Encrypt or Decrypt */
 }
 mbedtls_gcm_context;
 
@@ -72,10 +72,10 @@ void mbedtls_gcm_init( mbedtls_gcm_context *ctx );
  *
  * \return          0 if successful, or a cipher specific error code
  */
-int mbedtls_gcm_setkey( mbedtls_gcm_context *ctx,
+int32_t mbedtls_gcm_setkey( mbedtls_gcm_context *ctx,
                         mbedtls_cipher_id_t cipher,
                         const unsigned char *key,
-                        unsigned int keybits );
+                        uint32_t keybits );
 
 /**
  * \brief           GCM buffer encryption/decryption using a block cipher
@@ -99,8 +99,8 @@ int mbedtls_gcm_setkey( mbedtls_gcm_context *ctx,
  *
  * \return         0 if successful
  */
-int mbedtls_gcm_crypt_and_tag( mbedtls_gcm_context *ctx,
-                       int mode,
+int32_t mbedtls_gcm_crypt_and_tag( mbedtls_gcm_context *ctx,
+                       int32_t mode,
                        size_t length,
                        const unsigned char *iv,
                        size_t iv_len,
@@ -132,7 +132,7 @@ int mbedtls_gcm_crypt_and_tag( mbedtls_gcm_context *ctx,
  * \return         0 if successful and authenticated,
  *                 MBEDTLS_ERR_GCM_AUTH_FAILED if tag does not match
  */
-int mbedtls_gcm_auth_decrypt( mbedtls_gcm_context *ctx,
+int32_t mbedtls_gcm_auth_decrypt( mbedtls_gcm_context *ctx,
                       size_t length,
                       const unsigned char *iv,
                       size_t iv_len,
@@ -155,8 +155,8 @@ int mbedtls_gcm_auth_decrypt( mbedtls_gcm_context *ctx,
  *
  * \return         0 if successful
  */
-int mbedtls_gcm_starts( mbedtls_gcm_context *ctx,
-                int mode,
+int32_t mbedtls_gcm_starts( mbedtls_gcm_context *ctx,
+                int32_t mode,
                 const unsigned char *iv,
                 size_t iv_len,
                 const unsigned char *add,
@@ -179,7 +179,7 @@ int mbedtls_gcm_starts( mbedtls_gcm_context *ctx,
  *
  * \return         0 if successful or MBEDTLS_ERR_GCM_BAD_INPUT
  */
-int mbedtls_gcm_update( mbedtls_gcm_context *ctx,
+int32_t mbedtls_gcm_update( mbedtls_gcm_context *ctx,
                 size_t length,
                 const unsigned char *input,
                 unsigned char *output );
@@ -195,7 +195,7 @@ int mbedtls_gcm_update( mbedtls_gcm_context *ctx,
  *
  * \return          0 if successful or MBEDTLS_ERR_GCM_BAD_INPUT
  */
-int mbedtls_gcm_finish( mbedtls_gcm_context *ctx,
+int32_t mbedtls_gcm_finish( mbedtls_gcm_context *ctx,
                 unsigned char *tag,
                 size_t tag_len );
 
@@ -211,7 +211,7 @@ void mbedtls_gcm_free( mbedtls_gcm_context *ctx );
  *
  * \return         0 if successful, or 1 if the test failed
  */
-int mbedtls_gcm_self_test( int verbose );
+int32_t mbedtls_gcm_self_test( int32_t verbose );
 
 #ifdef __cplusplus
 }

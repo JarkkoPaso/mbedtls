@@ -40,16 +40,16 @@
 #endif
 
 #if !defined(MBEDTLS_ENTROPY_C) || !defined(MBEDTLS_FS_IO)
-int main( void )
+int32_t main( void )
 {
     mbedtls_printf("MBEDTLS_ENTROPY_C and/or MBEDTLS_FS_IO not defined.\n");
     return( 0 );
 }
 #else
-int main( int argc, char *argv[] )
+int32_t main( int32_t argc, char *argv[] )
 {
     FILE *f;
-    int i, k, ret;
+    int32_t i, k, ret;
     mbedtls_entropy_context entropy;
     unsigned char buf[MBEDTLS_ENTROPY_BLOCK_SIZE];
 

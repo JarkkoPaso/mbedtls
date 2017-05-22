@@ -45,15 +45,15 @@
     "\n where <errorcode> can be a decimal or hexadecimal (starts with 0x or -0x)\n"
 
 #if !defined(MBEDTLS_ERROR_C) && !defined(MBEDTLS_ERROR_STRERROR_DUMMY)
-int main( void )
+int32_t main( void )
 {
     mbedtls_printf("MBEDTLS_ERROR_C and/or MBEDTLS_ERROR_STRERROR_DUMMY not defined.\n");
     return( 0 );
 }
 #else
-int main( int argc, char *argv[] )
+int32_t main( int32_t argc, char *argv[] )
 {
-    long int val;
+    long int32_t val;
     char *end = argv[1];
 
     if( argc != 2 )
@@ -79,7 +79,7 @@ int main( int argc, char *argv[] )
     {
         char error_buf[200];
         mbedtls_strerror( val, error_buf, 200 );
-        mbedtls_printf("Last error was: -0x%04x - %s\n\n", (int) -val, error_buf );
+        mbedtls_printf("Last error was: -0x%04x - %s\n\n", (int32_t) -val, error_buf );
     }
 
 #if defined(_WIN32)

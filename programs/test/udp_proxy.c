@@ -43,7 +43,7 @@
 #endif
 
 #if !defined(MBEDTLS_NET_C)
-int main( void )
+int32_t main( void )
 {
     mbedtls_printf( "MBEDTLS_NET_C not defined.\n" );
     return( 0 );
@@ -120,16 +120,16 @@ static struct options
     const char *listen_addr;    /* address for accepting client connections */
     const char *listen_port;    /* port for accepting client connections    */
 
-    int duplicate;              /* duplicate 1 in N packets (none if 0)     */
-    int delay;                  /* delay 1 packet in N (none if 0)          */
-    int delay_ccs;              /* delay ChangeCipherSpec                   */
-    int drop;                   /* drop 1 packet in N (none if 0)           */
-    int mtu;                    /* drop packets larger than this            */
-    int bad_ad;                 /* inject corrupted ApplicationData record  */
-    int protect_hvr;            /* never drop or delay HelloVerifyRequest   */
-    int protect_len;            /* never drop/delay packet of the given size*/
+    int32_t duplicate;              /* duplicate 1 in N packets (none if 0)     */
+    int32_t delay;                  /* delay 1 packet in N (none if 0)          */
+    int32_t delay_ccs;              /* delay ChangeCipherSpec                   */
+    int32_t drop;                   /* drop 1 packet in N (none if 0)           */
+    int32_t mtu;                    /* drop packets larger than this            */
+    int32_t bad_ad;                 /* inject corrupted ApplicationData record  */
+    int32_t protect_hvr;            /* never drop or delay HelloVerifyRequest   */
+    int32_t protect_len;            /* never drop/delay packet of the given size*/
 
-    unsigned int seed;          /* seed for "random" events                 */
+    uint32_t seed;          /* seed for "random" events                 */
 } opt;
 
 static void exit_usage( const char *name, const char *value )
@@ -143,9 +143,9 @@ static void exit_usage( const char *name, const char *value )
     exit( 1 );
 }
 
-static void get_options( int argc, char *argv[] )
+static void get_options( int32_t argc, char *argv[] )
 {
-    int i;
+    int32_t i;
     char *p, *q;
 
     opt.server_addr    = DFL_SERVER_ADDR;
@@ -309,9 +309,9 @@ void print_packet( const packet *p, const char *why )
     fflush( stdout );
 }
 
-int send_packet( const packet *p, const char *why )
+int32_t send_packet( const packet *p, const char *why )
 {
-    int ret;
+    int32_t ret;
     mbedtls_net_context *dst = p->dst;
 
     /* insert corrupted ApplicationData record? */
@@ -398,11 +398,11 @@ void update_dropped( const packet *p )
     }
 }
 
-int handle_message( const char *way,
+int32_t handle_message( const char *way,
                     mbedtls_net_context *dst,
                     mbedtls_net_context *src )
 {
-    int ret;
+    int32_t ret;
     packet cur;
     size_t id;
 
@@ -466,13 +466,13 @@ int handle_message( const char *way,
     return( 0 );
 }
 
-int main( int argc, char *argv[] )
+int32_t main( int32_t argc, char *argv[] )
 {
-    int ret;
+    int32_t ret;
 
     mbedtls_net_context listen_fd, client_fd, server_fd;
 
-    int nb_fds;
+    int32_t nb_fds;
     fd_set read_fds;
 
     mbedtls_net_init( &listen_fd );
@@ -491,7 +491,7 @@ int main( int argc, char *argv[] )
      */
     if( opt.seed == 0 )
     {
-        opt.seed = (unsigned int) time( NULL );
+        opt.seed = (uint32_t) time( NULL );
         mbedtls_printf( "  . Pseudo-random seed: %u\n", opt.seed );
     }
 

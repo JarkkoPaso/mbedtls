@@ -72,9 +72,9 @@
 #include "mbedtls/memory_buffer_alloc.h"
 #endif
 
-static int test_snprintf( size_t n, const char ref_buf[10], int ref_ret )
+static int32_t test_snprintf( size_t n, const char ref_buf[10], int32_t ref_ret )
 {
-    int ret;
+    int32_t ret;
     char buf[10] = "xxxxxxxxx";
     const char ref[10] = "xxxxxxxxx";
 
@@ -92,7 +92,7 @@ static int test_snprintf( size_t n, const char ref_buf[10], int ref_ret )
     return( 0 );
 }
 
-static int run_test_snprintf( void )
+static int32_t run_test_snprintf( void )
 {
     return( test_snprintf( 0, "xxxxxxxxx",  -1 ) != 0 ||
             test_snprintf( 1, "",           -1 ) != 0 ||
@@ -111,7 +111,7 @@ static int run_test_snprintf( void )
     defined(MBEDTLS_ENTROPY_NV_SEED) && !defined(MBEDTLS_NO_PLATFORM_ENTROPY)
 static void create_entropy_seed_file( void )
 {
-    int result;
+    int32_t result;
     size_t output_len = 0;
     unsigned char seed_value[MBEDTLS_ENTROPY_BLOCK_SIZE];
 
@@ -136,9 +136,9 @@ static void create_entropy_seed_file( void )
 }
 #endif
 
-int main( int argc, char *argv[] )
+int32_t main( int32_t argc, char *argv[] )
 {
-    int v, suites_tested = 0, suites_failed = 0;
+    int32_t v, suites_tested = 0, suites_failed = 0;
 #if defined(MBEDTLS_MEMORY_BUFFER_ALLOC_C) && defined(MBEDTLS_SELF_TEST)
     unsigned char buf[1000000];
 #endif

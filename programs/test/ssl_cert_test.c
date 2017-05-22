@@ -46,7 +46,7 @@
 
 #if !defined(MBEDTLS_RSA_C) || !defined(MBEDTLS_X509_CRT_PARSE_C) || \
     !defined(MBEDTLS_FS_IO) || !defined(MBEDTLS_X509_CRL_PARSE_C)
-int main( void )
+int32_t main( void )
 {
     mbedtls_printf("MBEDTLS_RSA_C and/or MBEDTLS_X509_CRT_PARSE_C "
            "MBEDTLS_FS_IO and/or MBEDTLS_X509_CRL_PARSE_C "
@@ -78,9 +78,9 @@ const char *client_private_keys[MAX_CLIENT_CERTS] =
     "cert_digest.key"
 };
 
-int main( void )
+int32_t main( void )
 {
-    int ret, i;
+    int32_t ret, i;
     mbedtls_x509_crt cacert;
     mbedtls_x509_crl crl;
     char buf[10240];

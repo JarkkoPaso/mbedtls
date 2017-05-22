@@ -572,7 +572,7 @@ static inline void ecp_mpi_set1( mbedtls_mpi *X )
 /*
  * Make group available from embedded constants
  */
-static int ecp_group_load( mbedtls_ecp_group *grp,
+static int32_t ecp_group_load( mbedtls_ecp_group *grp,
                            const mbedtls_mpi_uint *p,  size_t plen,
                            const mbedtls_mpi_uint *a,  size_t alen,
                            const mbedtls_mpi_uint *b,  size_t blen,
@@ -601,19 +601,19 @@ static int ecp_group_load( mbedtls_ecp_group *grp,
 #if defined(MBEDTLS_ECP_NIST_OPTIM)
 /* Forward declarations */
 #if defined(MBEDTLS_ECP_DP_SECP192R1_ENABLED)
-static int ecp_mod_p192( mbedtls_mpi * );
+static int32_t ecp_mod_p192( mbedtls_mpi * );
 #endif
 #if defined(MBEDTLS_ECP_DP_SECP224R1_ENABLED)
-static int ecp_mod_p224( mbedtls_mpi * );
+static int32_t ecp_mod_p224( mbedtls_mpi * );
 #endif
 #if defined(MBEDTLS_ECP_DP_SECP256R1_ENABLED)
-static int ecp_mod_p256( mbedtls_mpi * );
+static int32_t ecp_mod_p256( mbedtls_mpi * );
 #endif
 #if defined(MBEDTLS_ECP_DP_SECP384R1_ENABLED)
-static int ecp_mod_p384( mbedtls_mpi * );
+static int32_t ecp_mod_p384( mbedtls_mpi * );
 #endif
 #if defined(MBEDTLS_ECP_DP_SECP521R1_ENABLED)
-static int ecp_mod_p521( mbedtls_mpi * );
+static int32_t ecp_mod_p521( mbedtls_mpi * );
 #endif
 
 #define NIST_MODP( P )      grp->modp = ecp_mod_ ## P;
@@ -623,16 +623,16 @@ static int ecp_mod_p521( mbedtls_mpi * );
 
 /* Additional forward declarations */
 #if defined(MBEDTLS_ECP_DP_CURVE25519_ENABLED)
-static int ecp_mod_p255( mbedtls_mpi * );
+static int32_t ecp_mod_p255( mbedtls_mpi * );
 #endif
 #if defined(MBEDTLS_ECP_DP_SECP192K1_ENABLED)
-static int ecp_mod_p192k1( mbedtls_mpi * );
+static int32_t ecp_mod_p192k1( mbedtls_mpi * );
 #endif
 #if defined(MBEDTLS_ECP_DP_SECP224K1_ENABLED)
-static int ecp_mod_p224k1( mbedtls_mpi * );
+static int32_t ecp_mod_p224k1( mbedtls_mpi * );
 #endif
 #if defined(MBEDTLS_ECP_DP_SECP256K1_ENABLED)
-static int ecp_mod_p256k1( mbedtls_mpi * );
+static int32_t ecp_mod_p256k1( mbedtls_mpi * );
 #endif
 
 #define LOAD_GROUP_A( G )   ecp_group_load( grp,            \
@@ -655,9 +655,9 @@ static int ecp_mod_p256k1( mbedtls_mpi * );
 /*
  * Specialized function for creating the Curve25519 group
  */
-static int ecp_use_curve25519( mbedtls_ecp_group *grp )
+static int32_t ecp_use_curve25519( mbedtls_ecp_group *grp )
 {
-    int ret;
+    int32_t ret;
 
     /* Actually ( A + 2 ) / 4 */
     MBEDTLS_MPI_CHK( mbedtls_mpi_read_string( &grp->A, 16, "01DB42" ) );
@@ -688,7 +688,7 @@ cleanup:
 /*
  * Set a group using well-known domain parameters
  */
-int mbedtls_ecp_group_load( mbedtls_ecp_group *grp, mbedtls_ecp_group_id id )
+int32_t mbedtls_ecp_group_load( mbedtls_ecp_group *grp, mbedtls_ecp_group_id id )
 {
     mbedtls_ecp_group_free( grp );
 
@@ -828,9 +828,9 @@ static inline void carry64( mbedtls_mpi_uint *dst, mbedtls_mpi_uint *carry )
 /*
  * Fast quasi-reduction modulo p192 (FIPS 186-3 D.2.1)
  */
-static int ecp_mod_p192( mbedtls_mpi *N )
+static int32_t ecp_mod_p192( mbedtls_mpi *N )
 {
-    int ret;
+    int32_t ret;
     mbedtls_mpi_uint c = 0;
     mbedtls_mpi_uint *p, *end;
 
@@ -920,7 +920,7 @@ static inline void sub32( uint32_t *dst, uint32_t src, signed char *carry )
  * (see fix_negative for the motivation of C)
  */
 #define INIT( b )                                           \
-    int ret;                                                \
+    int32_t ret;                                                \
     signed char c = 0, cc;                                  \
     uint32_t cur;                                           \
     size_t i = 0, bits = b;                                 \
@@ -953,9 +953,9 @@ static inline void sub32( uint32_t *dst, uint32_t src, signed char *carry )
  * If the result is negative, we get it in the form
  * c * 2^(bits + 32) + N, with c negative and N positive shorter than 'bits'
  */
-static inline int fix_negative( mbedtls_mpi *N, signed char c, mbedtls_mpi *C, size_t bits )
+static inline int32_t fix_negative( mbedtls_mpi *N, signed char c, mbedtls_mpi *C, size_t bits )
 {
-    int ret;
+    int32_t ret;
 
     /* C = - c * 2^(bits + 32) */
 #if !defined(MBEDTLS_HAVE_INT64)
@@ -980,7 +980,7 @@ cleanup:
 /*
  * Fast quasi-reduction modulo p224 (FIPS 186-3 D.2.2)
  */
-static int ecp_mod_p224( mbedtls_mpi *N )
+static int32_t ecp_mod_p224( mbedtls_mpi *N )
 {
     INIT( 224 );
 
@@ -1001,7 +1001,7 @@ cleanup:
 /*
  * Fast quasi-reduction modulo p256 (FIPS 186-3 D.2.3)
  */
-static int ecp_mod_p256( mbedtls_mpi *N )
+static int32_t ecp_mod_p256( mbedtls_mpi *N )
 {
     INIT( 256 );
 
@@ -1038,7 +1038,7 @@ cleanup:
 /*
  * Fast quasi-reduction modulo p384 (FIPS 186-3 D.2.4)
  */
-static int ecp_mod_p384( mbedtls_mpi *N )
+static int32_t ecp_mod_p384( mbedtls_mpi *N )
 {
     INIT( 384 );
 
@@ -1111,9 +1111,9 @@ cleanup:
  * Fast quasi-reduction modulo p521 (FIPS 186-3 D.2.5)
  * Write N as A1 + 2^521 A0, return A0 + A1
  */
-static int ecp_mod_p521( mbedtls_mpi *N )
+static int32_t ecp_mod_p521( mbedtls_mpi *N )
 {
-    int ret;
+    int32_t ret;
     size_t i;
     mbedtls_mpi M;
     mbedtls_mpi_uint Mp[P521_WIDTH + 1];
@@ -1160,9 +1160,9 @@ cleanup:
  * Fast quasi-reduction modulo p255 = 2^255 - 19
  * Write N as A0 + 2^255 A1, return A0 + 19 * A1
  */
-static int ecp_mod_p255( mbedtls_mpi *N )
+static int32_t ecp_mod_p255( mbedtls_mpi *N )
 {
-    int ret;
+    int32_t ret;
     size_t i;
     mbedtls_mpi M;
     mbedtls_mpi_uint Mp[P255_WIDTH + 2];
@@ -1207,13 +1207,13 @@ cleanup:
  */
 #define P_KOBLITZ_MAX   ( 256 / 8 / sizeof( mbedtls_mpi_uint ) )  // Max limbs in P
 #define P_KOBLITZ_R     ( 8 / sizeof( mbedtls_mpi_uint ) )        // Limbs in R
-static inline int ecp_mod_koblitz( mbedtls_mpi *N, mbedtls_mpi_uint *Rp, size_t p_limbs,
+static inline int32_t ecp_mod_koblitz( mbedtls_mpi *N, mbedtls_mpi_uint *Rp, size_t p_limbs,
                                    size_t adjust, size_t shift, mbedtls_mpi_uint mask )
 {
-    int ret;
+    int32_t ret;
     size_t i;
     mbedtls_mpi M, R;
-    mbedtls_mpi_uint Mp[P_KOBLITZ_MAX + P_KOBLITZ_R + 1];
+    mbedtls_mpi_uint Mp[P_KOBLITZ_MAX + P_KOBLITZ_R];
 
     if( N->n < p_limbs )
         return( 0 );
@@ -1235,7 +1235,7 @@ static inline int ecp_mod_koblitz( mbedtls_mpi *N, mbedtls_mpi_uint *Rp, size_t 
     memcpy( Mp, N->p + p_limbs - adjust, M.n * sizeof( mbedtls_mpi_uint ) );
     if( shift != 0 )
         MBEDTLS_MPI_CHK( mbedtls_mpi_shift_r( &M, shift ) );
-    M.n += R.n; /* Make room for multiplication by R */
+    M.n += R.n - adjust; /* Make room for multiplication by R */
 
     /* N = A0 */
     if( mask != 0 )
@@ -1257,7 +1257,7 @@ static inline int ecp_mod_koblitz( mbedtls_mpi *N, mbedtls_mpi_uint *Rp, size_t 
     memcpy( Mp, N->p + p_limbs - adjust, M.n * sizeof( mbedtls_mpi_uint ) );
     if( shift != 0 )
         MBEDTLS_MPI_CHK( mbedtls_mpi_shift_r( &M, shift ) );
-    M.n += R.n; /* Make room for multiplication by R */
+    M.n += R.n - adjust; /* Make room for multiplication by R */
 
     /* N = A0 */
     if( mask != 0 )
@@ -1281,7 +1281,7 @@ cleanup:
  * Fast quasi-reduction modulo p192k1 = 2^192 - R,
  * with R = 2^32 + 2^12 + 2^8 + 2^7 + 2^6 + 2^3 + 1 = 0x0100001119
  */
-static int ecp_mod_p192k1( mbedtls_mpi *N )
+static int32_t ecp_mod_p192k1( mbedtls_mpi *N )
 {
     static mbedtls_mpi_uint Rp[] = {
         BYTES_TO_T_UINT_8( 0xC9, 0x11, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00 ) };
@@ -1295,7 +1295,7 @@ static int ecp_mod_p192k1( mbedtls_mpi *N )
  * Fast quasi-reduction modulo p224k1 = 2^224 - R,
  * with R = 2^32 + 2^12 + 2^11 + 2^9 + 2^7 + 2^4 + 2 + 1 = 0x0100001A93
  */
-static int ecp_mod_p224k1( mbedtls_mpi *N )
+static int32_t ecp_mod_p224k1( mbedtls_mpi *N )
 {
     static mbedtls_mpi_uint Rp[] = {
         BYTES_TO_T_UINT_8( 0x93, 0x1A, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00 ) };
@@ -1314,7 +1314,7 @@ static int ecp_mod_p224k1( mbedtls_mpi *N )
  * Fast quasi-reduction modulo p256k1 = 2^256 - R,
  * with R = 2^32 + 2^9 + 2^8 + 2^7 + 2^6 + 2^4 + 1 = 0x01000003D1
  */
-static int ecp_mod_p256k1( mbedtls_mpi *N )
+static int32_t ecp_mod_p256k1( mbedtls_mpi *N )
 {
     static mbedtls_mpi_uint Rp[] = {
         BYTES_TO_T_UINT_8( 0xD1, 0x03, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00 ) };

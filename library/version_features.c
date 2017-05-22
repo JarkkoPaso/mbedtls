@@ -625,7 +625,7 @@ static const char *features[] = {
     NULL
 };
 
-int mbedtls_version_check_feature( const char *feature )
+int32_t mbedtls_version_check_feature( const char *feature )
 {
     const char **idx = features;
 

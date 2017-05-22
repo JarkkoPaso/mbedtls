@@ -62,7 +62,7 @@ typedef struct
     uint32_t ticket_lifetime;       /*!< lifetime of tickets in seconds     */
 
     /** Callback for getting (pseudo-)random numbers                        */
-    int  (*f_rng)(void *, unsigned char *, size_t);
+    int32_t  (*f_rng)(void *, unsigned char *, size_t);
     void *p_rng;                    /*!< context for the RNG function       */
 
 #if defined(MBEDTLS_THREADING_C)
@@ -102,8 +102,8 @@ void mbedtls_ssl_ticket_init( mbedtls_ssl_ticket_context *ctx );
  * \return          0 if successful,
  *                  or a specific MBEDTLS_ERR_XXX error code
  */
-int mbedtls_ssl_ticket_setup( mbedtls_ssl_ticket_context *ctx,
-    int (*f_rng)(void *, unsigned char *, size_t), void *p_rng,
+int32_t mbedtls_ssl_ticket_setup( mbedtls_ssl_ticket_context *ctx,
+    int32_t (*f_rng)(void *, unsigned char *, size_t), void *p_rng,
     mbedtls_cipher_type_t cipher,
     uint32_t lifetime );
 

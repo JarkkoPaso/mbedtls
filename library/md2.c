@@ -116,7 +116,7 @@ void mbedtls_md2_starts( mbedtls_md2_context *ctx )
 #if !defined(MBEDTLS_MD2_PROCESS_ALT)
 void mbedtls_md2_process( mbedtls_md2_context *ctx )
 {
-    int i, j;
+    int32_t i, j;
     unsigned char t = 0;
 
     for( i = 0; i < 16; i++ )
@@ -158,7 +158,7 @@ void mbedtls_md2_update( mbedtls_md2_context *ctx, const unsigned char *input, s
 
     while( ilen > 0 )
     {
-        if( ilen > 16 - ctx->left )
+        if( ctx->left + ilen > 16 )
             fill = 16 - ctx->left;
         else
             fill = ilen;
@@ -252,9 +252,9 @@ static const unsigned char md2_test_sum[7][16] =
 /*
  * Checkup routine
  */
-int mbedtls_md2_self_test( int verbose )
+int32_t mbedtls_md2_self_test( int32_t verbose )
 {
-    int i;
+    int32_t i;
     unsigned char md2sum[16];
 
     for( i = 0; i < 7; i++ )

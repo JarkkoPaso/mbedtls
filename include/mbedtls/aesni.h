@@ -48,7 +48,7 @@ extern "C" {
  *
  * \return         1 if CPU has support for the feature, 0 otherwise
  */
-int mbedtls_aesni_has_support( unsigned int what );
+int32_t mbedtls_aesni_has_support( uint32_t what );
 
 /**
  * \brief          AES-NI AES-ECB block en(de)cryption
@@ -60,8 +60,8 @@ int mbedtls_aesni_has_support( unsigned int what );
  *
  * \return         0 on success (cannot fail)
  */
-int mbedtls_aesni_crypt_ecb( mbedtls_aes_context *ctx,
-                     int mode,
+int32_t mbedtls_aesni_crypt_ecb( mbedtls_aes_context *ctx,
+                     int32_t mode,
                      const unsigned char input[16],
                      unsigned char output[16] );
 
@@ -87,7 +87,7 @@ void mbedtls_aesni_gcm_mult( unsigned char c[16],
  * \param nr        Number of rounds (that is, number of round keys minus one)
  */
 void mbedtls_aesni_inverse_key( unsigned char *invkey,
-                        const unsigned char *fwdkey, int nr );
+                        const unsigned char *fwdkey, int32_t nr );
 
 /**
  * \brief           Perform key expansion (for encryption)
@@ -98,7 +98,7 @@ void mbedtls_aesni_inverse_key( unsigned char *invkey,
  *
  * \return          0 if successful, or MBEDTLS_ERR_AES_INVALID_KEY_LENGTH
  */
-int mbedtls_aesni_setkey_enc( unsigned char *rk,
+int32_t mbedtls_aesni_setkey_enc( unsigned char *rk,
                       const unsigned char *key,
                       size_t bits );
 

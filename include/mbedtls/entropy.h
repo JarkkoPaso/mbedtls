@@ -100,7 +100,7 @@ extern "C" {
  * \return          0 if no critical failures occurred,
  *                  MBEDTLS_ERR_ENTROPY_SOURCE_FAILED otherwise
  */
-typedef int (*mbedtls_entropy_f_source_ptr)(void *data, unsigned char *output, size_t len,
+typedef int32_t (*mbedtls_entropy_f_source_ptr)(void *data, unsigned char *output, size_t len,
                             size_t *olen);
 
 /**
@@ -112,7 +112,7 @@ typedef struct
     void *          p_source;   /**< The callback data pointer */
     size_t          size;       /**< Amount received in bytes */
     size_t          threshold;  /**< Minimum bytes required before release */
-    int             strong;     /**< Is the source strong? */
+    int32_t         strong;     /**< Is the source strong? */
 }
 mbedtls_entropy_source_state;
 
@@ -126,7 +126,7 @@ typedef struct
 #else
     mbedtls_sha256_context  accumulator;
 #endif
-    int             source_count;
+    int32_t         source_count;
     mbedtls_entropy_source_state    source[MBEDTLS_ENTROPY_MAX_SOURCES];
 #if defined(MBEDTLS_HAVEGE_C)
     mbedtls_havege_state    havege_data;
@@ -135,7 +135,7 @@ typedef struct
     mbedtls_threading_mutex_t mutex;    /*!< mutex                  */
 #endif
 #if defined(MBEDTLS_ENTROPY_NV_SEED)
-    int initial_entropy_run;
+    int32_t initial_entropy_run;
 #endif
 }
 mbedtls_entropy_context;
@@ -171,9 +171,9 @@ void mbedtls_entropy_free( mbedtls_entropy_context *ctx );
  *
  * \return          0 if successful or MBEDTLS_ERR_ENTROPY_MAX_SOURCES
  */
-int mbedtls_entropy_add_source( mbedtls_entropy_context *ctx,
+int32_t mbedtls_entropy_add_source( mbedtls_entropy_context *ctx,
                         mbedtls_entropy_f_source_ptr f_source, void *p_source,
-                        size_t threshold, int strong );
+                        size_t threshold, int32_t strong );
 
 /**
  * \brief           Trigger an extra gather poll for the accumulator
@@ -183,7 +183,7 @@ int mbedtls_entropy_add_source( mbedtls_entropy_context *ctx,
  *
  * \return          0 if successful, or MBEDTLS_ERR_ENTROPY_SOURCE_FAILED
  */
-int mbedtls_entropy_gather( mbedtls_entropy_context *ctx );
+int32_t mbedtls_entropy_gather( mbedtls_entropy_context *ctx );
 
 /**
  * \brief           Retrieve entropy from the accumulator
@@ -196,7 +196,7 @@ int mbedtls_entropy_gather( mbedtls_entropy_context *ctx );
  *
  * \return          0 if successful, or MBEDTLS_ERR_ENTROPY_SOURCE_FAILED
  */
-int mbedtls_entropy_func( void *data, unsigned char *output, size_t len );
+int32_t mbedtls_entropy_func( void *data, unsigned char *output, size_t len );
 
 /**
  * \brief           Add data to the accumulator manually
@@ -208,7 +208,7 @@ int mbedtls_entropy_func( void *data, unsigned char *output, size_t len );
  *
  * \return          0 if successful
  */
-int mbedtls_entropy_update_manual( mbedtls_entropy_context *ctx,
+int32_t mbedtls_entropy_update_manual( mbedtls_entropy_context *ctx,
                            const unsigned char *data, size_t len );
 
 #if defined(MBEDTLS_ENTROPY_NV_SEED)
@@ -220,7 +220,7 @@ int mbedtls_entropy_update_manual( mbedtls_entropy_context *ctx,
  *
  * \return          0 if successful
  */
-int mbedtls_entropy_update_nv_seed( mbedtls_entropy_context *ctx );
+int32_t mbedtls_entropy_update_nv_seed( mbedtls_entropy_context *ctx );
 #endif /* MBEDTLS_ENTROPY_NV_SEED */
 
 #if defined(MBEDTLS_FS_IO)
@@ -234,7 +234,7 @@ int mbedtls_entropy_update_nv_seed( mbedtls_entropy_context *ctx );
  *                      MBEDTLS_ERR_ENTROPY_FILE_IO_ERROR on file error, or
  *                      MBEDTLS_ERR_ENTROPY_SOURCE_FAILED
  */
-int mbedtls_entropy_write_seed_file( mbedtls_entropy_context *ctx, const char *path );
+int32_t mbedtls_entropy_write_seed_file( mbedtls_entropy_context *ctx, const char *path );
 
 /**
  * \brief               Read and update a seed file. Seed is added to this
@@ -248,7 +248,7 @@ int mbedtls_entropy_write_seed_file( mbedtls_entropy_context *ctx, const char *p
  *                      MBEDTLS_ERR_ENTROPY_FILE_IO_ERROR on file error,
  *                      MBEDTLS_ERR_ENTROPY_SOURCE_FAILED
  */
-int mbedtls_entropy_update_seed_file( mbedtls_entropy_context *ctx, const char *path );
+int32_t mbedtls_entropy_update_seed_file( mbedtls_entropy_context *ctx, const char *path );
 #endif /* MBEDTLS_FS_IO */
 
 #if defined(MBEDTLS_SELF_TEST)
@@ -260,7 +260,7 @@ int mbedtls_entropy_update_seed_file( mbedtls_entropy_context *ctx, const char *
  *
  * \return         0 if successful, or 1 if a test failed
  */
-int mbedtls_entropy_self_test( int verbose );
+int32_t mbedtls_entropy_self_test( int32_t verbose );
 
 #if defined(MBEDTLS_ENTROPY_HARDWARE_ALT)
 /**
@@ -276,7 +276,7 @@ int mbedtls_entropy_self_test( int verbose );
  *
  * \return         0 if successful, or 1 if a test failed
  */
-int mbedtls_entropy_source_self_test( int verbose );
+int32_t mbedtls_entropy_source_self_test( int32_t verbose );
 #endif /* MBEDTLS_ENTROPY_HARDWARE_ALT */
 #endif /* MBEDTLS_SELF_TEST */
 

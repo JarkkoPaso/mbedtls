@@ -35,7 +35,7 @@
 #if !defined(MBEDTLS_ECDH_C) || \
     !defined(MBEDTLS_ECP_DP_CURVE25519_ENABLED) || \
     !defined(MBEDTLS_ENTROPY_C) || !defined(MBEDTLS_CTR_DRBG_C)
-int main( void )
+int32_t main( void )
 {
     mbedtls_printf( "MBEDTLS_ECDH_C and/or "
                     "MBEDTLS_ECP_DP_CURVE25519_ENABLED and/or "
@@ -49,9 +49,9 @@ int main( void )
 #include "mbedtls/ctr_drbg.h"
 #include "mbedtls/ecdh.h"
 
-int main( int argc, char *argv[] )
+int32_t main( int32_t argc, char *argv[] )
 {
-    int ret;
+    int32_t ret;
     mbedtls_ecdh_context ctx_cli, ctx_srv;
     mbedtls_entropy_context entropy;
     mbedtls_ctr_drbg_context ctr_drbg;

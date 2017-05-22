@@ -86,13 +86,13 @@ static const char *x509_at_oid_from_name( const char *name, size_t name_len )
     return( cur->oid );
 }
 
-int mbedtls_x509_string_to_names( mbedtls_asn1_named_data **head, const char *name )
+int32_t mbedtls_x509_string_to_names( mbedtls_asn1_named_data **head, const char *name )
 {
-    int ret = 0;
+    int32_t ret = 0;
     const char *s = name, *c = s;
     const char *end = s + strlen( s );
     const char *oid = NULL;
-    int in_tag = 1;
+    int32_t in_tag = 1;
     char data[MBEDTLS_X509_MAX_DN_NAME_SIZE];
     char *d = data;
 
@@ -163,8 +163,8 @@ exit:
 /* The first byte of the value in the mbedtls_asn1_named_data structure is reserved
  * to store the critical boolean for us
  */
-int mbedtls_x509_set_extension( mbedtls_asn1_named_data **head, const char *oid, size_t oid_len,
-                        int critical, const unsigned char *val, size_t val_len )
+int32_t mbedtls_x509_set_extension( mbedtls_asn1_named_data **head, const char *oid, size_t oid_len,
+                        int32_t critical, const unsigned char *val, size_t val_len )
 {
     mbedtls_asn1_named_data *cur;
 
@@ -192,11 +192,11 @@ int mbedtls_x509_set_extension( mbedtls_asn1_named_data **head, const char *oid,
  *
  *  AttributeValue ::= ANY DEFINED BY AttributeType
  */
-static int x509_write_name( unsigned char **p, unsigned char *start,
+static int32_t x509_write_name( unsigned char **p, unsigned char *start,
                             const char *oid, size_t oid_len,
                             const unsigned char *name, size_t name_len )
 {
-    int ret;
+    int32_t ret;
     size_t len = 0;
 
     // Write PrintableString for all except MBEDTLS_OID_PKCS9_EMAIL
@@ -227,13 +227,13 @@ static int x509_write_name( unsigned char **p, unsigned char *start,
     MBEDTLS_ASN1_CHK_ADD( len, mbedtls_asn1_write_tag( p, start, MBEDTLS_ASN1_CONSTRUCTED |
                                                  MBEDTLS_ASN1_SET ) );
 
-    return( (int) len );
+    return( (int32_t) len );
 }
 
-int mbedtls_x509_write_names( unsigned char **p, unsigned char *start,
+int32_t mbedtls_x509_write_names( unsigned char **p, unsigned char *start,
                       mbedtls_asn1_named_data *first )
 {
-    int ret;
+    int32_t ret;
     size_t len = 0;
     mbedtls_asn1_named_data *cur = first;
 
@@ -249,14 +249,14 @@ int mbedtls_x509_write_names( unsigned char **p, unsigned char *start,
     MBEDTLS_ASN1_CHK_ADD( len, mbedtls_asn1_write_tag( p, start, MBEDTLS_ASN1_CONSTRUCTED |
                                                  MBEDTLS_ASN1_SEQUENCE ) );
 
-    return( (int) len );
+    return( (int32_t) len );
 }
 
-int mbedtls_x509_write_sig( unsigned char **p, unsigned char *start,
+int32_t mbedtls_x509_write_sig( unsigned char **p, unsigned char *start,
                     const char *oid, size_t oid_len,
                     unsigned char *sig, size_t size )
 {
-    int ret;
+    int32_t ret;
     size_t len = 0;
 
     if( *p < start || (size_t)( *p - start ) < size )
@@ -280,13 +280,13 @@ int mbedtls_x509_write_sig( unsigned char **p, unsigned char *start,
     MBEDTLS_ASN1_CHK_ADD( len, mbedtls_asn1_write_algorithm_identifier( p, start, oid,
                                                         oid_len, 0 ) );
 
-    return( (int) len );
+    return( (int32_t) len );
 }
 
-static int x509_write_extension( unsigned char **p, unsigned char *start,
+static int32_t x509_write_extension( unsigned char **p, unsigned char *start,
                                  mbedtls_asn1_named_data *ext )
 {
-    int ret;
+    int32_t ret;
     size_t len = 0;
 
     MBEDTLS_ASN1_CHK_ADD( len, mbedtls_asn1_write_raw_buffer( p, start, ext->val.p + 1,
@@ -308,7 +308,7 @@ static int x509_write_extension( unsigned char **p, unsigned char *start,
     MBEDTLS_ASN1_CHK_ADD( len, mbedtls_asn1_write_tag( p, start, MBEDTLS_ASN1_CONSTRUCTED |
                                                  MBEDTLS_ASN1_SEQUENCE ) );
 
-    return( (int) len );
+    return( (int32_t) len );
 }
 
 /*
@@ -321,10 +321,10 @@ static int x509_write_extension( unsigned char **p, unsigned char *start,
  *                 -- by extnID
  *     }
  */
-int mbedtls_x509_write_extensions( unsigned char **p, unsigned char *start,
+int32_t mbedtls_x509_write_extensions( unsigned char **p, unsigned char *start,
                            mbedtls_asn1_named_data *first )
 {
-    int ret;
+    int32_t ret;
     size_t len = 0;
     mbedtls_asn1_named_data *cur_ext = first;
 
@@ -334,7 +334,7 @@ int mbedtls_x509_write_extensions( unsigned char **p, unsigned char *start,
         cur_ext = cur_ext->next;
     }
 
-    return( (int) len );
+    return( (int32_t) len );
 }
 
 #endif /* MBEDTLS_X509_CREATE_C */

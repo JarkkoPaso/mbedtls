@@ -41,15 +41,15 @@
 #endif
 
 #if !defined(MBEDTLS_MD_C) || !defined(MBEDTLS_FS_IO)
-int main( void )
+int32_t main( void )
 {
     mbedtls_printf("MBEDTLS_MD_C and/or MBEDTLS_FS_IO not defined.\n");
     return( 0 );
 }
 #else
-static int generic_wrapper( const mbedtls_md_info_t *md_info, char *filename, unsigned char *sum )
+static int32_t generic_wrapper( const mbedtls_md_info_t *md_info, char *filename, unsigned char *sum )
 {
-    int ret = mbedtls_md_file( md_info, filename, sum );
+    int32_t ret = mbedtls_md_file( md_info, filename, sum );
 
     if( ret == 1 )
         mbedtls_fprintf( stderr, "failed to open: %s\n", filename );
@@ -60,9 +60,9 @@ static int generic_wrapper( const mbedtls_md_info_t *md_info, char *filename, un
     return( ret );
 }
 
-static int generic_print( const mbedtls_md_info_t *md_info, char *filename )
+static int32_t generic_print( const mbedtls_md_info_t *md_info, char *filename )
 {
-    int i;
+    int32_t i;
     unsigned char sum[MBEDTLS_MD_MAX_SIZE];
 
     if( generic_wrapper( md_info, filename, sum ) != 0 )
@@ -75,13 +75,13 @@ static int generic_print( const mbedtls_md_info_t *md_info, char *filename )
     return( 0 );
 }
 
-static int generic_check( const mbedtls_md_info_t *md_info, char *filename )
+static int32_t generic_check( const mbedtls_md_info_t *md_info, char *filename )
 {
-    int i;
+    int32_t i;
     size_t n;
     FILE *f;
-    int nb_err1, nb_err2;
-    int nb_tot1, nb_tot2;
+    int32_t nb_err1, nb_err2;
+    int32_t nb_tot1, nb_tot2;
     unsigned char sum[MBEDTLS_MD_MAX_SIZE];
     char line[1024];
     char diff;
@@ -104,7 +104,7 @@ static int generic_check( const mbedtls_md_info_t *md_info, char *filename )
 
     n = sizeof( line );
 
-    while( fgets( line, (int) n - 1, f ) != NULL )
+    while( fgets( line, (int32_t) n - 1, f ) != NULL )
     {
         n = strlen( line );
 
@@ -167,9 +167,9 @@ static int generic_check( const mbedtls_md_info_t *md_info, char *filename )
     return( nb_err1 != 0 || nb_err2 != 0 );
 }
 
-int main( int argc, char *argv[] )
+int32_t main( int32_t argc, char *argv[] )
 {
-    int ret, i;
+    int32_t ret, i;
     const mbedtls_md_info_t *md_info;
     mbedtls_md_context_t md_ctx;
 
@@ -177,7 +177,7 @@ int main( int argc, char *argv[] )
 
     if( argc == 1 )
     {
-        const int *list;
+        const int32_t *list;
 
         mbedtls_printf( "print mode:  generic_sum <mbedtls_md> <file> <file> ...\n" );
         mbedtls_printf( "check mode:  generic_sum <mbedtls_md> -c <checksum file>\n" );
