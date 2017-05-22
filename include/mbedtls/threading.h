@@ -72,8 +72,8 @@ typedef struct
  */
 void mbedtls_threading_set_alt( void (*mutex_init)( mbedtls_threading_mutex_t * ),
                        void (*mutex_free)( mbedtls_threading_mutex_t * ),
-                       int (*mutex_lock)( mbedtls_threading_mutex_t * ),
-                       int (*mutex_unlock)( mbedtls_threading_mutex_t * ) );
+                       int32_t (*mutex_lock)( mbedtls_threading_mutex_t * ),
+                       int32_t (*mutex_unlock)( mbedtls_threading_mutex_t * ) );
 
 /**
  * \brief               Free global mutexes.
@@ -89,8 +89,8 @@ void mbedtls_threading_free_alt( void );
  */
 extern void (*mbedtls_mutex_init)( mbedtls_threading_mutex_t *mutex );
 extern void (*mbedtls_mutex_free)( mbedtls_threading_mutex_t *mutex );
-extern int (*mbedtls_mutex_lock)( mbedtls_threading_mutex_t *mutex );
-extern int (*mbedtls_mutex_unlock)( mbedtls_threading_mutex_t *mutex );
+extern int32_t (*mbedtls_mutex_lock)( mbedtls_threading_mutex_t *mutex );
+extern int32_t (*mbedtls_mutex_unlock)( mbedtls_threading_mutex_t *mutex );
 
 /*
  * Global mutexes

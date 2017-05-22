@@ -63,7 +63,7 @@
 
 #if !defined(MBEDTLS_BIGNUM_C) ||                                  \
     !defined(MBEDTLS_PK_PARSE_C) || !defined(MBEDTLS_FS_IO)
-int main( void )
+int32_t main( void )
 {
     mbedtls_printf("MBEDTLS_BIGNUM_C and/or "
            "MBEDTLS_PK_PARSE_C and/or MBEDTLS_FS_IO not defined.\n");
@@ -75,18 +75,18 @@ int main( void )
  */
 struct options
 {
-    int mode;                   /* the mode to run the application in   */
+    int32_t mode;                   /* the mode to run the application in   */
     const char *filename;       /* filename of the key file             */
     const char *password;       /* password for the private key         */
     const char *password_file;  /* password_file for the private key    */
 } opt;
 
-int main( int argc, char *argv[] )
+int32_t main( int32_t argc, char *argv[] )
 {
-    int ret = 0;
+    int32_t ret = 0;
     mbedtls_pk_context pk;
     char buf[1024];
-    int i;
+    int32_t i;
     char *p, *q;
 
     /*
@@ -159,7 +159,7 @@ int main( int argc, char *argv[] )
             }
             fclose( f );
 
-            i = (int) strlen( buf );
+            i = (int32_t) strlen( buf );
             if( buf[i - 1] == '\n' ) buf[i - 1] = '\0';
             if( buf[i - 2] == '\r' ) buf[i - 2] = '\0';
             opt.password = buf;

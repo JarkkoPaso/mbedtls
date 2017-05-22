@@ -41,7 +41,7 @@
     !defined(MBEDTLS_NET_C) || !defined(MBEDTLS_RSA_C) ||         \
     !defined(MBEDTLS_CTR_DRBG_C) || !defined(MBEDTLS_X509_CRT_PARSE_C) || \
     !defined(MBEDTLS_FS_IO)
-int main( void )
+int32_t main( void )
 {
     mbedtls_printf("MBEDTLS_BIGNUM_C and/or MBEDTLS_ENTROPY_C and/or "
            "MBEDTLS_SSL_TLS_C and/or MBEDTLS_SSL_CLI_C and/or "
@@ -141,9 +141,9 @@ struct options
 {
     const char *server_name;    /* hostname of the server (client only)     */
     const char *server_port;    /* port on which the ssl service runs       */
-    int debug_level;            /* level of debugging                       */
-    int authentication;         /* if authentication is required            */
-    int mode;                   /* SSL/TLS (0) or STARTTLS (1)              */
+    int32_t debug_level;            /* level of debugging                       */
+    int32_t authentication;         /* if authentication is required            */
+    int32_t mode;                   /* SSL/TLS (0) or STARTTLS (1)              */
     const char *user_name;      /* username to use for authentication       */
     const char *user_pwd;       /* password to use for authentication       */
     const char *mail_from;      /* E-Mail address to use as sender          */
@@ -151,11 +151,11 @@ struct options
     const char *ca_file;        /* the file with the CA certificate(s)      */
     const char *crt_file;       /* the file with the client certificate     */
     const char *key_file;       /* the file with the client key             */
-    int force_ciphersuite[2];   /* protocol/ciphersuite to use, or all      */
+    int32_t force_ciphersuite[2];   /* protocol/ciphersuite to use, or all      */
 } opt;
 
-static void my_debug( void *ctx, int level,
-                      const char *file, int line,
+static void my_debug( void *ctx, int32_t level,
+                      const char *file, int32_t line,
                       const char *str )
 {
     ((void) level);
@@ -164,9 +164,9 @@ static void my_debug( void *ctx, int level,
     fflush(  (FILE *) ctx  );
 }
 
-static int do_handshake( mbedtls_ssl_context *ssl )
+static int32_t do_handshake( mbedtls_ssl_context *ssl )
 {
-    int ret;
+    int32_t ret;
     uint32_t flags;
     unsigned char buf[1024];
     memset(buf, 0, 1024);
@@ -219,9 +219,9 @@ static int do_handshake( mbedtls_ssl_context *ssl )
     return( 0 );
 }
 
-static int write_ssl_data( mbedtls_ssl_context *ssl, unsigned char *buf, size_t len )
+static int32_t write_ssl_data( mbedtls_ssl_context *ssl, unsigned char *buf, size_t len )
 {
-    int ret;
+    int32_t ret;
 
     mbedtls_printf("\n%s", buf);
     while( len && ( ret = mbedtls_ssl_write( ssl, buf, len ) ) <= 0 )
@@ -236,9 +236,9 @@ static int write_ssl_data( mbedtls_ssl_context *ssl, unsigned char *buf, size_t 
     return( 0 );
 }
 
-static int write_ssl_and_get_response( mbedtls_ssl_context *ssl, unsigned char *buf, size_t len )
+static int32_t write_ssl_and_get_response( mbedtls_ssl_context *ssl, unsigned char *buf, size_t len )
 {
-    int ret;
+    int32_t ret;
     unsigned char data[128];
     char code[4];
     size_t i, idx = 0;
@@ -294,9 +294,9 @@ static int write_ssl_and_get_response( mbedtls_ssl_context *ssl, unsigned char *
     while( 1 );
 }
 
-static int write_and_get_response( mbedtls_net_context *sock_fd, unsigned char *buf, size_t len )
+static int32_t write_and_get_response( mbedtls_net_context *sock_fd, unsigned char *buf, size_t len )
 {
-    int ret;
+    int32_t ret;
     unsigned char data[128];
     char code[4];
     size_t i, idx = 0;
@@ -344,9 +344,9 @@ static int write_and_get_response( mbedtls_net_context *sock_fd, unsigned char *
     while( 1 );
 }
 
-int main( int argc, char *argv[] )
+int32_t main( int32_t argc, char *argv[] )
 {
-    int ret = 0, len;
+    int32_t ret = 0, len;
     mbedtls_net_context server_fd;
     unsigned char buf[1024];
 #if defined(MBEDTLS_BASE64_C)
@@ -362,10 +362,10 @@ int main( int argc, char *argv[] )
     mbedtls_x509_crt cacert;
     mbedtls_x509_crt clicert;
     mbedtls_pk_context pkey;
-    int i;
+    int32_t i;
     size_t n;
     char *p, *q;
-    const int *list;
+    const int32_t *list;
 
     /*
      * Make sure memory references are valid in case we exit early.
@@ -494,13 +494,13 @@ int main( int argc, char *argv[] )
         ret = mbedtls_x509_crt_parse_file( &cacert, opt.ca_file );
     else
 #endif
-#if defined(MBEDTLS_CERTS_C) && defined(MBEDTLS_PEM_PARSE_C)
+#if defined(MBEDTLS_CERTS_C)
         ret = mbedtls_x509_crt_parse( &cacert, (const unsigned char *) mbedtls_test_cas_pem,
                               mbedtls_test_cas_pem_len );
 #else
     {
         ret = 1;
-        mbedtls_printf("MBEDTLS_CERTS_C and/or MBEDTLS_PEM_PARSE_C not defined.");
+        mbedtls_printf("MBEDTLS_CERTS_C not defined.");
     }
 #endif
     if( ret < 0 )

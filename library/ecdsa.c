@@ -46,10 +46,10 @@
  * Derive a suitable integer for group grp from a buffer of length len
  * SEC1 4.1.3 step 5 aka SEC1 4.1.4 step 3
  */
-static int derive_mpi( const mbedtls_ecp_group *grp, mbedtls_mpi *x,
+static int32_t derive_mpi( const mbedtls_ecp_group *grp, mbedtls_mpi *x,
                        const unsigned char *buf, size_t blen )
 {
-    int ret;
+    int32_t ret;
     size_t n_size = ( grp->nbits + 7 ) / 8;
     size_t use_size = blen > n_size ? n_size : blen;
 
@@ -69,11 +69,11 @@ cleanup:
  * Compute ECDSA signature of a hashed message (SEC1 4.1.3)
  * Obviously, compared to SEC1 4.1.3, we skip step 4 (hash message)
  */
-int mbedtls_ecdsa_sign( mbedtls_ecp_group *grp, mbedtls_mpi *r, mbedtls_mpi *s,
+int32_t mbedtls_ecdsa_sign( mbedtls_ecp_group *grp, mbedtls_mpi *r, mbedtls_mpi *s,
                 const mbedtls_mpi *d, const unsigned char *buf, size_t blen,
-                int (*f_rng)(void *, unsigned char *, size_t), void *p_rng )
+                int32_t (*f_rng)(void *, unsigned char *, size_t), void *p_rng )
 {
-    int ret, key_tries, sign_tries, blind_tries;
+    int32_t ret, key_tries, sign_tries, blind_tries;
     mbedtls_ecp_point R;
     mbedtls_mpi k, e, t;
 
@@ -158,11 +158,11 @@ cleanup:
 /*
  * Deterministic signature wrapper
  */
-int mbedtls_ecdsa_sign_det( mbedtls_ecp_group *grp, mbedtls_mpi *r, mbedtls_mpi *s,
+int32_t mbedtls_ecdsa_sign_det( mbedtls_ecp_group *grp, mbedtls_mpi *r, mbedtls_mpi *s,
                     const mbedtls_mpi *d, const unsigned char *buf, size_t blen,
                     mbedtls_md_type_t md_alg )
 {
-    int ret;
+    int32_t ret;
     mbedtls_hmac_drbg_context rng_ctx;
     unsigned char data[2 * MBEDTLS_ECP_MAX_BYTES];
     size_t grp_len = ( grp->nbits + 7 ) / 8;
@@ -196,11 +196,11 @@ cleanup:
  * Verify ECDSA signature of hashed message (SEC1 4.1.4)
  * Obviously, compared to SEC1 4.1.3, we skip step 2 (hash message)
  */
-int mbedtls_ecdsa_verify( mbedtls_ecp_group *grp,
+int32_t mbedtls_ecdsa_verify( mbedtls_ecp_group *grp,
                   const unsigned char *buf, size_t blen,
                   const mbedtls_ecp_point *Q, const mbedtls_mpi *r, const mbedtls_mpi *s)
 {
-    int ret;
+    int32_t ret;
     mbedtls_mpi e, s_inv, u1, u2;
     mbedtls_ecp_point R;
 
@@ -281,10 +281,10 @@ cleanup:
 /*
  * Convert a signature (given by context) to ASN.1
  */
-static int ecdsa_signature_to_asn1( const mbedtls_mpi *r, const mbedtls_mpi *s,
+static int32_t ecdsa_signature_to_asn1( const mbedtls_mpi *r, const mbedtls_mpi *s,
                                     unsigned char *sig, size_t *slen )
 {
-    int ret;
+    int32_t ret;
     unsigned char buf[MBEDTLS_ECDSA_MAX_LEN];
     unsigned char *p = buf + sizeof( buf );
     size_t len = 0;
@@ -305,13 +305,13 @@ static int ecdsa_signature_to_asn1( const mbedtls_mpi *r, const mbedtls_mpi *s,
 /*
  * Compute and write signature
  */
-int mbedtls_ecdsa_write_signature( mbedtls_ecdsa_context *ctx, mbedtls_md_type_t md_alg,
+int32_t mbedtls_ecdsa_write_signature( mbedtls_ecdsa_context *ctx, mbedtls_md_type_t md_alg,
                            const unsigned char *hash, size_t hlen,
                            unsigned char *sig, size_t *slen,
-                           int (*f_rng)(void *, unsigned char *, size_t),
+                           int32_t (*f_rng)(void *, unsigned char *, size_t),
                            void *p_rng )
 {
-    int ret;
+    int32_t ret;
     mbedtls_mpi r, s;
 
     mbedtls_mpi_init( &r );
@@ -341,7 +341,7 @@ cleanup:
 
 #if ! defined(MBEDTLS_DEPRECATED_REMOVED) && \
     defined(MBEDTLS_ECDSA_DETERMINISTIC)
-int mbedtls_ecdsa_write_signature_det( mbedtls_ecdsa_context *ctx,
+int32_t mbedtls_ecdsa_write_signature_det( mbedtls_ecdsa_context *ctx,
                                const unsigned char *hash, size_t hlen,
                                unsigned char *sig, size_t *slen,
                                mbedtls_md_type_t md_alg )
@@ -354,11 +354,11 @@ int mbedtls_ecdsa_write_signature_det( mbedtls_ecdsa_context *ctx,
 /*
  * Read and check signature
  */
-int mbedtls_ecdsa_read_signature( mbedtls_ecdsa_context *ctx,
+int32_t mbedtls_ecdsa_read_signature( mbedtls_ecdsa_context *ctx,
                           const unsigned char *hash, size_t hlen,
                           const unsigned char *sig, size_t slen )
 {
-    int ret;
+    int32_t ret;
     unsigned char *p = (unsigned char *) sig;
     const unsigned char *end = sig + slen;
     size_t len;
@@ -405,8 +405,8 @@ cleanup:
 /*
  * Generate key pair
  */
-int mbedtls_ecdsa_genkey( mbedtls_ecdsa_context *ctx, mbedtls_ecp_group_id gid,
-                  int (*f_rng)(void *, unsigned char *, size_t), void *p_rng )
+int32_t mbedtls_ecdsa_genkey( mbedtls_ecdsa_context *ctx, mbedtls_ecp_group_id gid,
+                  int32_t (*f_rng)(void *, unsigned char *, size_t), void *p_rng )
 {
     return( mbedtls_ecp_group_load( &ctx->grp, gid ) ||
             mbedtls_ecp_gen_keypair( &ctx->grp, &ctx->d, &ctx->Q, f_rng, p_rng ) );
@@ -415,9 +415,9 @@ int mbedtls_ecdsa_genkey( mbedtls_ecdsa_context *ctx, mbedtls_ecp_group_id gid,
 /*
  * Set context from an mbedtls_ecp_keypair
  */
-int mbedtls_ecdsa_from_keypair( mbedtls_ecdsa_context *ctx, const mbedtls_ecp_keypair *key )
+int32_t mbedtls_ecdsa_from_keypair( mbedtls_ecdsa_context *ctx, const mbedtls_ecp_keypair *key )
 {
-    int ret;
+    int32_t ret;
 
     if( ( ret = mbedtls_ecp_group_copy( &ctx->grp, &key->grp ) ) != 0 ||
         ( ret = mbedtls_mpi_copy( &ctx->d, &key->d ) ) != 0 ||

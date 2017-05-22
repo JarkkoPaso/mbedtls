@@ -150,10 +150,10 @@
 #endif
 
 
-void mbedtls_strerror( int ret, char *buf, size_t buflen )
+void mbedtls_strerror( int32_t ret, char *buf, size_t buflen )
 {
     size_t len;
-    int use_ret;
+    int32_t use_ret;
 
     if( buflen == 0 )
         return;
@@ -694,7 +694,7 @@ void mbedtls_strerror( int ret, char *buf, size_t buflen )
 /*
  * Provide an non-function in case MBEDTLS_ERROR_C is not defined
  */
-void mbedtls_strerror( int ret, char *buf, size_t buflen )
+void mbedtls_strerror( int32_t ret, char *buf, size_t buflen )
 {
     ((void) ret);
 

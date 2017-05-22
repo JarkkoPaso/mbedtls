@@ -430,7 +430,7 @@ mbedtls_ssl_states;
  * \note           The callback is allowed to send fewer bytes than requested.
  *                 It must always return the number of bytes actually sent.
  */
-typedef int mbedtls_ssl_send_t( void *ctx,
+typedef int32_t mbedtls_ssl_send_t( void *ctx,
                                 const unsigned char *buf,
                                 size_t len );
 
@@ -453,7 +453,7 @@ typedef int mbedtls_ssl_send_t( void *ctx,
  *                 buffer. It must always return the number of bytes actually
  *                 received and written to the buffer.
  */
-typedef int mbedtls_ssl_recv_t( void *ctx,
+typedef int32_t mbedtls_ssl_recv_t( void *ctx,
                                 unsigned char *buf,
                                 size_t len );
 
@@ -479,7 +479,7 @@ typedef int mbedtls_ssl_recv_t( void *ctx,
  *                 buffer. It must always return the number of bytes actually
  *                 received and written to the buffer.
  */
-typedef int mbedtls_ssl_recv_timeout_t( void *ctx,
+typedef int32_t mbedtls_ssl_recv_timeout_t( void *ctx,
                                         unsigned char *buf,
                                         size_t len,
                                         uint32_t timeout );
@@ -520,7 +520,7 @@ typedef void mbedtls_ssl_set_timer_t( void * ctx,
  *                  1 if only the intermediate delay has passed,
  *                  2 if the final delay has passed.
  */
-typedef int mbedtls_ssl_get_timer_t( void * ctx );
+typedef int32_t mbedtls_ssl_get_timer_t( void * ctx );
 
 
 /* Defined below */
@@ -546,8 +546,8 @@ struct mbedtls_ssl_session
 #if defined(MBEDTLS_HAVE_TIME)
     mbedtls_time_t start;       /*!< starting time      */
 #endif
-    int ciphersuite;            /*!< chosen ciphersuite */
-    int compression;            /*!< chosen compression */
+    int32_t ciphersuite;            /*!< chosen ciphersuite */
+    int32_t compression;            /*!< chosen compression */
     size_t id_len;              /*!< session id length  */
     unsigned char id[32];       /*!< session identifier */
     unsigned char master[48];   /*!< the master secret  */
@@ -568,11 +568,11 @@ struct mbedtls_ssl_session
 #endif /* MBEDTLS_SSL_MAX_FRAGMENT_LENGTH */
 
 #if defined(MBEDTLS_SSL_TRUNCATED_HMAC)
-    int trunc_hmac;             /*!< flag for truncated hmac activation   */
+    int32_t trunc_hmac;             /*!< flag for truncated hmac activation   */
 #endif /* MBEDTLS_SSL_TRUNCATED_HMAC */
 
 #if defined(MBEDTLS_SSL_ENCRYPT_THEN_MAC)
-    int encrypt_then_mac;       /*!< flag for EtM activation                */
+    int32_t encrypt_then_mac;       /*!< flag for EtM activation                */
 #endif
 };
 
@@ -587,62 +587,62 @@ struct mbedtls_ssl_config
      * Pointers
      */
 
-    const int *ciphersuite_list[4]; /*!< allowed ciphersuites per version   */
+    const int32_t *ciphersuite_list[4]; /*!< allowed ciphersuites per version   */
 
     /** Callback for printing debug output                                  */
-    void (*f_dbg)(void *, int, const char *, int, const char *);
+    void (*f_dbg)(void *, int32_t, const char *, int32_t, const char *);
     void *p_dbg;                    /*!< context for the debug function     */
 
     /** Callback for getting (pseudo-)random numbers                        */
-    int  (*f_rng)(void *, unsigned char *, size_t);
+    int32_t  (*f_rng)(void *, unsigned char *, size_t);
     void *p_rng;                    /*!< context for the RNG function       */
 
     /** Callback to retrieve a session from the cache                       */
-    int (*f_get_cache)(void *, mbedtls_ssl_session *);
+    int32_t (*f_get_cache)(void *, mbedtls_ssl_session *);
     /** Callback to store a session into the cache                          */
-    int (*f_set_cache)(void *, const mbedtls_ssl_session *);
+    int32_t (*f_set_cache)(void *, const mbedtls_ssl_session *);
     void *p_cache;                  /*!< context for cache callbacks        */
 
 #if defined(MBEDTLS_SSL_SERVER_NAME_INDICATION)
     /** Callback for setting cert according to SNI extension                */
-    int (*f_sni)(void *, mbedtls_ssl_context *, const unsigned char *, size_t);
+    int32_t (*f_sni)(void *, mbedtls_ssl_context *, const unsigned char *, size_t);
     void *p_sni;                    /*!< context for SNI callback           */
 #endif
 
 #if defined(MBEDTLS_X509_CRT_PARSE_C)
     /** Callback to customize X.509 certificate chain verification          */
-    int (*f_vrfy)(void *, mbedtls_x509_crt *, int, uint32_t *);
+    int32_t (*f_vrfy)(void *, mbedtls_x509_crt *, int32_t, uint32_t *);
     void *p_vrfy;                   /*!< context for X.509 verify calllback */
 #endif
 
 #if defined(MBEDTLS_KEY_EXCHANGE__SOME__PSK_ENABLED)
     /** Callback to retrieve PSK key from identity                          */
-    int (*f_psk)(void *, mbedtls_ssl_context *, const unsigned char *, size_t);
+    int32_t (*f_psk)(void *, mbedtls_ssl_context *, const unsigned char *, size_t);
     void *p_psk;                    /*!< context for PSK callback           */
 #endif
 
 #if defined(MBEDTLS_SSL_DTLS_HELLO_VERIFY) && defined(MBEDTLS_SSL_SRV_C)
     /** Callback to create & write a cookie for ClientHello veirifcation    */
-    int (*f_cookie_write)( void *, unsigned char **, unsigned char *,
+    int32_t (*f_cookie_write)( void *, unsigned char **, unsigned char *,
                            const unsigned char *, size_t );
     /** Callback to verify validity of a ClientHello cookie                 */
-    int (*f_cookie_check)( void *, const unsigned char *, size_t,
+    int32_t (*f_cookie_check)( void *, const unsigned char *, size_t,
                            const unsigned char *, size_t );
     void *p_cookie;                 /*!< context for the cookie callbacks   */
 #endif
 
 #if defined(MBEDTLS_SSL_SESSION_TICKETS) && defined(MBEDTLS_SSL_SRV_C)
     /** Callback to create & write a session ticket                         */
-    int (*f_ticket_write)( void *, const mbedtls_ssl_session *,
+    int32_t (*f_ticket_write)( void *, const mbedtls_ssl_session *,
             unsigned char *, const unsigned char *, size_t *, uint32_t * );
     /** Callback to parse a session ticket into a session structure         */
-    int (*f_ticket_parse)( void *, mbedtls_ssl_session *, unsigned char *, size_t);
+    int32_t (*f_ticket_parse)( void *, mbedtls_ssl_session *, unsigned char *, size_t);
     void *p_ticket;                 /*!< context for the ticket callbacks   */
 #endif /* MBEDTLS_SSL_SESSION_TICKETS && MBEDTLS_SSL_SRV_C */
 
 #if defined(MBEDTLS_SSL_EXPORT_KEYS)
     /** Callback to export key block and master secret                      */
-    int (*f_export_keys)( void *, const unsigned char *,
+    int32_t (*f_export_keys)( void *, const unsigned char *,
             const unsigned char *, size_t, size_t, size_t );
     void *p_export_keys;            /*!< context for key export callback    */
 #endif
@@ -655,7 +655,7 @@ struct mbedtls_ssl_config
 #endif /* MBEDTLS_X509_CRT_PARSE_C */
 
 #if defined(MBEDTLS_KEY_EXCHANGE__WITH_CERT__ENABLED)
-    const int *sig_hashes;          /*!< allowed signature hashes           */
+    const int32_t *sig_hashes;          /*!< allowed signature hashes           */
 #endif
 
 #if defined(MBEDTLS_ECP_C)
@@ -679,7 +679,7 @@ struct mbedtls_ssl_config
 #endif
 
     /*
-     * Numerical settings (int then char)
+     * Numerical settings (int32_t then char)
      */
 
     uint32_t read_timeout;          /*!< timeout for mbedtls_ssl_read (ms)  */
@@ -692,17 +692,17 @@ struct mbedtls_ssl_config
 #endif
 
 #if defined(MBEDTLS_SSL_RENEGOTIATION)
-    int renego_max_records;         /*!< grace period for renegotiation     */
+    int32_t renego_max_records;         /*!< grace period for renegotiation     */
     unsigned char renego_period[8]; /*!< value of the record counters
                                          that triggers renegotiation        */
 #endif
 
 #if defined(MBEDTLS_SSL_DTLS_BADMAC_LIMIT)
-    unsigned int badmac_limit;      /*!< limit of records with a bad MAC    */
+    uint32_t badmac_limit;      /*!< limit of records with a bad MAC    */
 #endif
 
 #if defined(MBEDTLS_DHM_C) && defined(MBEDTLS_SSL_CLI_C)
-    unsigned int dhm_min_bitlen;    /*!< min. bit length of the DHM prime   */
+    uint32_t dhm_min_bitlen;    /*!< min. bit length of the DHM prime   */
 #endif
 
     unsigned char max_major_ver;    /*!< max. major version used            */
@@ -714,40 +714,40 @@ struct mbedtls_ssl_config
      * Flags (bitfields)
      */
 
-    unsigned int endpoint : 1;      /*!< 0: client, 1: server               */
-    unsigned int transport : 1;     /*!< stream (TLS) or datagram (DTLS)    */
-    unsigned int authmode : 2;      /*!< MBEDTLS_SSL_VERIFY_XXX             */
+    uint32_t endpoint : 1;      /*!< 0: client, 1: server               */
+    uint32_t transport : 1;     /*!< stream (TLS) or datagram (DTLS)    */
+    uint32_t authmode : 2;      /*!< MBEDTLS_SSL_VERIFY_XXX             */
     /* needed even with renego disabled for LEGACY_BREAK_HANDSHAKE          */
-    unsigned int allow_legacy_renegotiation : 2 ; /*!< MBEDTLS_LEGACY_XXX   */
+    uint32_t allow_legacy_renegotiation : 2 ; /*!< MBEDTLS_LEGACY_XXX   */
 #if defined(MBEDTLS_ARC4_C)
-    unsigned int arc4_disabled : 1; /*!< blacklist RC4 ciphersuites?        */
+    uint32_t arc4_disabled : 1; /*!< blacklist RC4 ciphersuites?        */
 #endif
 #if defined(MBEDTLS_SSL_MAX_FRAGMENT_LENGTH)
-    unsigned int mfl_code : 3;      /*!< desired fragment length            */
+    uint32_t mfl_code : 3;      /*!< desired fragment length            */
 #endif
 #if defined(MBEDTLS_SSL_ENCRYPT_THEN_MAC)
-    unsigned int encrypt_then_mac : 1 ; /*!< negotiate encrypt-then-mac?    */
+    uint32_t encrypt_then_mac : 1 ; /*!< negotiate encrypt-then-mac?    */
 #endif
 #if defined(MBEDTLS_SSL_EXTENDED_MASTER_SECRET)
-    unsigned int extended_ms : 1;   /*!< negotiate extended master secret?  */
+    uint32_t extended_ms : 1;   /*!< negotiate extended master secret?  */
 #endif
 #if defined(MBEDTLS_SSL_DTLS_ANTI_REPLAY)
-    unsigned int anti_replay : 1;   /*!< detect and prevent replay?         */
+    uint32_t anti_replay : 1;   /*!< detect and prevent replay?         */
 #endif
 #if defined(MBEDTLS_SSL_CBC_RECORD_SPLITTING)
-    unsigned int cbc_record_splitting : 1;  /*!< do cbc record splitting    */
+    uint32_t cbc_record_splitting : 1;  /*!< do cbc record splitting    */
 #endif
 #if defined(MBEDTLS_SSL_RENEGOTIATION)
-    unsigned int disable_renegotiation : 1; /*!< disable renegotiation?     */
+    uint32_t disable_renegotiation : 1; /*!< disable renegotiation?     */
 #endif
 #if defined(MBEDTLS_SSL_TRUNCATED_HMAC)
-    unsigned int trunc_hmac : 1;    /*!< negotiate truncated hmac?          */
+    uint32_t trunc_hmac : 1;    /*!< negotiate truncated hmac?          */
 #endif
 #if defined(MBEDTLS_SSL_SESSION_TICKETS)
-    unsigned int session_tickets : 1;   /*!< use session tickets?           */
+    uint32_t session_tickets : 1;   /*!< use session tickets?           */
 #endif
 #if defined(MBEDTLS_SSL_FALLBACK_SCSV) && defined(MBEDTLS_SSL_CLI_C)
-    unsigned int fallback : 1;      /*!< is this a fallback?                */
+    uint32_t fallback : 1;      /*!< is this a fallback?                */
 #endif
 };
 
@@ -759,16 +759,16 @@ struct mbedtls_ssl_context
     /*
      * Miscellaneous
      */
-    int state;                  /*!< SSL handshake: current state     */
+    int32_t state;                  /*!< SSL handshake: current state     */
 #if defined(MBEDTLS_SSL_RENEGOTIATION)
-    int renego_status;          /*!< Initial, in progress, pending?   */
-    int renego_records_seen;    /*!< Records since renego request, or with DTLS,
+    int32_t renego_status;          /*!< Initial, in progress, pending?   */
+    int32_t renego_records_seen;    /*!< Records since renego request, or with DTLS,
                                   number of retransmissions of request if
                                   renego_max_records is < 0           */
 #endif
 
-    int major_ver;              /*!< equal to  MBEDTLS_SSL_MAJOR_VERSION_3    */
-    int minor_ver;              /*!< either 0 (SSL3) or 1 (TLS1.0)    */
+    int32_t major_ver;              /*!< equal to  MBEDTLS_SSL_MAJOR_VERSION_3    */
+    int32_t minor_ver;              /*!< either 0 (SSL3) or 1 (TLS1.0)    */
 
 #if defined(MBEDTLS_SSL_DTLS_BADMAC_LIMIT)
     unsigned badmac_seen;       /*!< records with a bad MAC received    */
@@ -821,7 +821,7 @@ struct mbedtls_ssl_context
     unsigned char *in_msg;      /*!< message contents (in_iv+ivlen)   */
     unsigned char *in_offt;     /*!< read offset in application data  */
 
-    int in_msgtype;             /*!< record header: message type      */
+    int32_t in_msgtype;             /*!< record header: message type      */
     size_t in_msglen;           /*!< record header: message length    */
     size_t in_left;             /*!< amount of data read so far       */
 #if defined(MBEDTLS_SSL_PROTO_DTLS)
@@ -836,8 +836,8 @@ struct mbedtls_ssl_context
 
     size_t in_hslen;            /*!< current handshake message length,
                                      including the handshake header   */
-    int nb_zero;                /*!< # of 0-length encrypted messages */
-    int record_read;            /*!< record is already present        */
+    int32_t nb_zero;                /*!< # of 0-length encrypted messages */
+    int32_t record_read;            /*!< record is already present        */
 
     /*
      * Record layer (outgoing data)
@@ -849,7 +849,7 @@ struct mbedtls_ssl_context
     unsigned char *out_iv;      /*!< ivlen-byte IV                    */
     unsigned char *out_msg;     /*!< message contents (out_iv+ivlen)  */
 
-    int out_msgtype;            /*!< record header: message type      */
+    int32_t out_msgtype;            /*!< record header: message type      */
     size_t out_msglen;          /*!< record header: message length    */
     size_t out_left;            /*!< amount of data not yet written   */
 
@@ -863,7 +863,7 @@ struct mbedtls_ssl_context
     /*
      * PKI layer
      */
-    int client_auth;                    /*!<  flag for client auth.   */
+    int32_t client_auth;                    /*!<  flag for client auth.   */
 
     /*
      * User settings
@@ -889,7 +889,7 @@ struct mbedtls_ssl_context
      * Secure renegotiation
      */
     /* needed to know when to send extension on server */
-    int secure_renegotiation;           /*!<  does peer support legacy or
+    int32_t secure_renegotiation;           /*!<  does peer support legacy or
                                               secure renegotiation           */
 #if defined(MBEDTLS_SSL_RENEGOTIATION)
     size_t verify_data_len;             /*!<  length of verify data stored   */
@@ -903,18 +903,18 @@ struct mbedtls_ssl_context
 #define MBEDTLS_SSL_CHANNEL_OUTBOUND    0
 #define MBEDTLS_SSL_CHANNEL_INBOUND     1
 
-extern int (*mbedtls_ssl_hw_record_init)(mbedtls_ssl_context *ssl,
+extern int32_t (*mbedtls_ssl_hw_record_init)(mbedtls_ssl_context *ssl,
                 const unsigned char *key_enc, const unsigned char *key_dec,
                 size_t keylen,
                 const unsigned char *iv_enc,  const unsigned char *iv_dec,
                 size_t ivlen,
                 const unsigned char *mac_enc, const unsigned char *mac_dec,
                 size_t maclen);
-extern int (*mbedtls_ssl_hw_record_activate)(mbedtls_ssl_context *ssl, int direction);
-extern int (*mbedtls_ssl_hw_record_reset)(mbedtls_ssl_context *ssl);
-extern int (*mbedtls_ssl_hw_record_write)(mbedtls_ssl_context *ssl);
-extern int (*mbedtls_ssl_hw_record_read)(mbedtls_ssl_context *ssl);
-extern int (*mbedtls_ssl_hw_record_finish)(mbedtls_ssl_context *ssl);
+extern int32_t (*mbedtls_ssl_hw_record_activate)(mbedtls_ssl_context *ssl, int32_t direction);
+extern int32_t (*mbedtls_ssl_hw_record_reset)(mbedtls_ssl_context *ssl);
+extern int32_t (*mbedtls_ssl_hw_record_write)(mbedtls_ssl_context *ssl);
+extern int32_t (*mbedtls_ssl_hw_record_read)(mbedtls_ssl_context *ssl);
+extern int32_t (*mbedtls_ssl_hw_record_finish)(mbedtls_ssl_context *ssl);
 #endif /* MBEDTLS_SSL_HW_RECORD_ACCEL */
 
 /**
@@ -923,7 +923,7 @@ extern int (*mbedtls_ssl_hw_record_finish)(mbedtls_ssl_context *ssl);
  * \return              a statically allocated array of ciphersuites, the last
  *                      entry is 0.
  */
-const int *mbedtls_ssl_list_ciphersuites( void );
+const int32_t *mbedtls_ssl_list_ciphersuites( void );
 
 /**
  * \brief               Return the name of the ciphersuite associated with the
@@ -933,7 +933,7 @@ const int *mbedtls_ssl_list_ciphersuites( void );
  *
  * \return              a string containing the ciphersuite name
  */
-const char *mbedtls_ssl_get_ciphersuite_name( const int ciphersuite_id );
+const char *mbedtls_ssl_get_ciphersuite_name( const int32_t ciphersuite_id );
 
 /**
  * \brief               Return the ID of the ciphersuite associated with the
@@ -943,7 +943,7 @@ const char *mbedtls_ssl_get_ciphersuite_name( const int ciphersuite_id );
  *
  * \return              the ID with the ciphersuite or 0 if not found
  */
-int mbedtls_ssl_get_ciphersuite_id( const char *ciphersuite_name );
+int32_t mbedtls_ssl_get_ciphersuite_id( const char *ciphersuite_name );
 
 /**
  * \brief          Initialize an SSL context
@@ -969,7 +969,7 @@ void mbedtls_ssl_init( mbedtls_ssl_context *ssl );
  * \return         0 if successful, or MBEDTLS_ERR_SSL_ALLOC_FAILED if
  *                 memory allocation failed
  */
-int mbedtls_ssl_setup( mbedtls_ssl_context *ssl,
+int32_t mbedtls_ssl_setup( mbedtls_ssl_context *ssl,
                        const mbedtls_ssl_config *conf );
 
 /**
@@ -982,7 +982,7 @@ int mbedtls_ssl_setup( mbedtls_ssl_context *ssl,
                    MBEDTLS_ERR_SSL_HW_ACCEL_FAILED or
  *                 MBEDTLS_ERR_SSL_COMPRESSION_FAILED
  */
-int mbedtls_ssl_session_reset( mbedtls_ssl_context *ssl );
+int32_t mbedtls_ssl_session_reset( mbedtls_ssl_context *ssl );
 
 /**
  * \brief          Set the current endpoint type
@@ -990,7 +990,7 @@ int mbedtls_ssl_session_reset( mbedtls_ssl_context *ssl );
  * \param conf     SSL configuration
  * \param endpoint must be MBEDTLS_SSL_IS_CLIENT or MBEDTLS_SSL_IS_SERVER
  */
-void mbedtls_ssl_conf_endpoint( mbedtls_ssl_config *conf, int endpoint );
+void mbedtls_ssl_conf_endpoint( mbedtls_ssl_config *conf, int32_t endpoint );
 
 /**
  * \brief           Set the transport type (TLS or DTLS).
@@ -1006,7 +1006,7 @@ void mbedtls_ssl_conf_endpoint( mbedtls_ssl_config *conf, int endpoint );
  *                  MBEDTLS_SSL_TRANSPORT_STREAM for TLS,
  *                  MBEDTLS_SSL_TRANSPORT_DATAGRAM for DTLS.
  */
-void mbedtls_ssl_conf_transport( mbedtls_ssl_config *conf, int transport );
+void mbedtls_ssl_conf_transport( mbedtls_ssl_config *conf, int32_t transport );
 
 /**
  * \brief          Set the certificate verification mode
@@ -1034,7 +1034,7 @@ void mbedtls_ssl_conf_transport( mbedtls_ssl_config *conf, int transport );
  * the verification as soon as possible. For example, REQUIRED was protecting
  * against the "triple handshake" attack even before it was found.
  */
-void mbedtls_ssl_conf_authmode( mbedtls_ssl_config *conf, int authmode );
+void mbedtls_ssl_conf_authmode( mbedtls_ssl_config *conf, int32_t authmode );
 
 #if defined(MBEDTLS_X509_CRT_PARSE_C)
 /**
@@ -1049,7 +1049,7 @@ void mbedtls_ssl_conf_authmode( mbedtls_ssl_config *conf, int authmode );
  * \param p_vrfy   verification parameter
  */
 void mbedtls_ssl_conf_verify( mbedtls_ssl_config *conf,
-                     int (*f_vrfy)(void *, mbedtls_x509_crt *, int, uint32_t *),
+                     int32_t (*f_vrfy)(void *, mbedtls_x509_crt *, int32_t, uint32_t *),
                      void *p_vrfy );
 #endif /* MBEDTLS_X509_CRT_PARSE_C */
 
@@ -1061,7 +1061,7 @@ void mbedtls_ssl_conf_verify( mbedtls_ssl_config *conf,
  * \param p_rng    RNG parameter
  */
 void mbedtls_ssl_conf_rng( mbedtls_ssl_config *conf,
-                  int (*f_rng)(void *, unsigned char *, size_t),
+                  int32_t (*f_rng)(void *, unsigned char *, size_t),
                   void *p_rng );
 
 /**
@@ -1069,9 +1069,9 @@ void mbedtls_ssl_conf_rng( mbedtls_ssl_config *conf,
  *
  *                 The callback has the following argument:
  *                 void *           opaque context for the callback
- *                 int              debug level
+ *                 int32_t              debug level
  *                 const char *     file name
- *                 int              line number
+ *                 int32_t              line number
  *                 const char *     message
  *
  * \param conf     SSL configuration
@@ -1079,7 +1079,7 @@ void mbedtls_ssl_conf_rng( mbedtls_ssl_config *conf,
  * \param p_dbg    debug parameter
  */
 void mbedtls_ssl_conf_dbg( mbedtls_ssl_config *conf,
-                  void (*f_dbg)(void *, int, const char *, int, const char *),
+                  void (*f_dbg)(void *, int32_t, const char *, int32_t, const char *),
                   void  *p_dbg );
 
 /**
@@ -1146,7 +1146,7 @@ void mbedtls_ssl_conf_read_timeout( mbedtls_ssl_config *conf, uint32_t timeout )
  *
  * \note           See the documentation of \c mbedtls_ssl_set_timer_t and
  *                 \c mbedtls_ssl_get_timer_t for the conventions this pair of
- *                 callbacks must follow.
+ *                 callbacks must fallow.
  *
  * \note           On some platforms, timing.c provides
  *                 \c mbedtls_timing_set_delay() and
@@ -1180,7 +1180,7 @@ void mbedtls_ssl_set_timer_cb( mbedtls_ssl_context *ssl,
  * \return          0 if successful, or
  *                  a specific MBEDTLS_ERR_XXX code.
  */
-typedef int mbedtls_ssl_ticket_write_t( void *p_ticket,
+typedef int32_t mbedtls_ssl_ticket_write_t( void *p_ticket,
                                         const mbedtls_ssl_session *session,
                                         unsigned char *start,
                                         const unsigned char *end,
@@ -1208,7 +1208,7 @@ typedef int mbedtls_ssl_ticket_write_t( void *p_ticket,
  * \return          0 if successful, or
  *                  a specific MBEDTLS_ERR_XXX code.
  */
-typedef int mbedtls_ssl_export_keys_t( void *p_expkey,
+typedef int32_t mbedtls_ssl_export_keys_t( void *p_expkey,
                                 const unsigned char *ms,
                                 const unsigned char *kb,
                                 size_t maclen,
@@ -1239,7 +1239,7 @@ typedef int mbedtls_ssl_export_keys_t( void *p_expkey,
  *                  MBEDTLS_ERR_SSL_SESSION_TICKET_EXPIRED if expired, or
  *                  any other non-zero code for other failures.
  */
-typedef int mbedtls_ssl_ticket_parse_t( void *p_ticket,
+typedef int32_t mbedtls_ssl_ticket_parse_t( void *p_ticket,
                                         mbedtls_ssl_session *session,
                                         unsigned char *buf,
                                         size_t len );
@@ -1295,7 +1295,7 @@ void mbedtls_ssl_conf_export_keys_cb( mbedtls_ssl_config *conf,
  * \return         The callback must return 0 on success,
  *                 or a negative error code.
  */
-typedef int mbedtls_ssl_cookie_write_t( void *ctx,
+typedef int32_t mbedtls_ssl_cookie_write_t( void *ctx,
                                 unsigned char **p, unsigned char *end,
                                 const unsigned char *info, size_t ilen );
 
@@ -1312,7 +1312,7 @@ typedef int mbedtls_ssl_cookie_write_t( void *ctx,
  * \return         The callback must return 0 if cookie is valid,
  *                 or a negative error code.
  */
-typedef int mbedtls_ssl_cookie_check_t( void *ctx,
+typedef int32_t mbedtls_ssl_cookie_check_t( void *ctx,
                                 const unsigned char *cookie, size_t clen,
                                 const unsigned char *info, size_t ilen );
 
@@ -1369,7 +1369,7 @@ void mbedtls_ssl_conf_dtls_cookies( mbedtls_ssl_config *conf,
  *                 MBEDTLS_ERR_SSL_BAD_INPUT_DATA if used on client,
  *                 MBEDTLS_ERR_SSL_ALLOC_FAILED if out of memory.
  */
-int mbedtls_ssl_set_client_transport_id( mbedtls_ssl_context *ssl,
+int32_t mbedtls_ssl_set_client_transport_id( mbedtls_ssl_context *ssl,
                                  const unsigned char *info,
                                  size_t ilen );
 
@@ -1496,8 +1496,8 @@ void mbedtls_ssl_conf_handshake_timeout( mbedtls_ssl_config *conf, uint32_t min,
  */
 void mbedtls_ssl_conf_session_cache( mbedtls_ssl_config *conf,
         void *p_cache,
-        int (*f_get_cache)(void *, mbedtls_ssl_session *),
-        int (*f_set_cache)(void *, const mbedtls_ssl_session *) );
+        int32_t (*f_get_cache)(void *, mbedtls_ssl_session *),
+        int32_t (*f_set_cache)(void *, const mbedtls_ssl_session *) );
 #endif /* MBEDTLS_SSL_SRV_C */
 
 #if defined(MBEDTLS_SSL_CLI_C)
@@ -1515,7 +1515,7 @@ void mbedtls_ssl_conf_session_cache( mbedtls_ssl_config *conf,
  *
  * \sa             mbedtls_ssl_get_session()
  */
-int mbedtls_ssl_set_session( mbedtls_ssl_context *ssl, const mbedtls_ssl_session *session );
+int32_t mbedtls_ssl_set_session( mbedtls_ssl_context *ssl, const mbedtls_ssl_session *session );
 #endif /* MBEDTLS_SSL_CLI_C */
 
 /**
@@ -1534,7 +1534,7 @@ int mbedtls_ssl_set_session( mbedtls_ssl_context *ssl, const mbedtls_ssl_session
  * \param ciphersuites  0-terminated list of allowed ciphersuites
  */
 void mbedtls_ssl_conf_ciphersuites( mbedtls_ssl_config *conf,
-                                   const int *ciphersuites );
+                                   const int32_t *ciphersuites );
 
 /**
  * \brief               Set the list of allowed ciphersuites and the
@@ -1556,8 +1556,8 @@ void mbedtls_ssl_conf_ciphersuites( mbedtls_ssl_config *conf,
  *                      and MBEDTLS_SSL_MINOR_VERSION_3 for DTLS 1.2
  */
 void mbedtls_ssl_conf_ciphersuites_for_version( mbedtls_ssl_config *conf,
-                                       const int *ciphersuites,
-                                       int major, int minor );
+                                       const int32_t *ciphersuites,
+                                       int32_t major, int32_t minor );
 
 #if defined(MBEDTLS_X509_CRT_PARSE_C)
 /**
@@ -1612,7 +1612,7 @@ void mbedtls_ssl_conf_ca_chain( mbedtls_ssl_config *conf,
  *
  * \return         0 on success or MBEDTLS_ERR_SSL_ALLOC_FAILED
  */
-int mbedtls_ssl_conf_own_cert( mbedtls_ssl_config *conf,
+int32_t mbedtls_ssl_conf_own_cert( mbedtls_ssl_config *conf,
                               mbedtls_x509_crt *own_cert,
                               mbedtls_pk_context *pk_key );
 #endif /* MBEDTLS_X509_CRT_PARSE_C */
@@ -1638,7 +1638,7 @@ int mbedtls_ssl_conf_own_cert( mbedtls_ssl_config *conf,
  *
  * \return         0 if successful or MBEDTLS_ERR_SSL_ALLOC_FAILED
  */
-int mbedtls_ssl_conf_psk( mbedtls_ssl_config *conf,
+int32_t mbedtls_ssl_conf_psk( mbedtls_ssl_config *conf,
                 const unsigned char *psk, size_t psk_len,
                 const unsigned char *psk_identity, size_t psk_identity_len );
 
@@ -1655,7 +1655,7 @@ int mbedtls_ssl_conf_psk( mbedtls_ssl_config *conf,
  *
  * \return         0 if successful or MBEDTLS_ERR_SSL_ALLOC_FAILED
  */
-int mbedtls_ssl_set_hs_psk( mbedtls_ssl_context *ssl,
+int32_t mbedtls_ssl_set_hs_psk( mbedtls_ssl_context *ssl,
                             const unsigned char *psk, size_t psk_len );
 
 /**
@@ -1683,7 +1683,7 @@ int mbedtls_ssl_set_hs_psk( mbedtls_ssl_context *ssl,
  * \param p_psk    PSK identity parameter
  */
 void mbedtls_ssl_conf_psk_cb( mbedtls_ssl_config *conf,
-                     int (*f_psk)(void *, mbedtls_ssl_context *, const unsigned char *,
+                     int32_t (*f_psk)(void *, mbedtls_ssl_context *, const unsigned char *,
                                   size_t),
                      void *p_psk );
 #endif /* MBEDTLS_KEY_EXCHANGE__SOME__PSK_ENABLED */
@@ -1700,7 +1700,7 @@ void mbedtls_ssl_conf_psk_cb( mbedtls_ssl_config *conf,
  *
  * \return         0 if successful
  */
-int mbedtls_ssl_conf_dh_param( mbedtls_ssl_config *conf, const char *dhm_P, const char *dhm_G );
+int32_t mbedtls_ssl_conf_dh_param( mbedtls_ssl_config *conf, const char *dhm_P, const char *dhm_G );
 
 /**
  * \brief          Set the Diffie-Hellman public P and G values,
@@ -1711,7 +1711,7 @@ int mbedtls_ssl_conf_dh_param( mbedtls_ssl_config *conf, const char *dhm_P, cons
  *
  * \return         0 if successful
  */
-int mbedtls_ssl_conf_dh_param_ctx( mbedtls_ssl_config *conf, mbedtls_dhm_context *dhm_ctx );
+int32_t mbedtls_ssl_conf_dh_param_ctx( mbedtls_ssl_config *conf, mbedtls_dhm_context *dhm_ctx );
 #endif /* MBEDTLS_DHM_C && defined(MBEDTLS_SSL_SRV_C) */
 
 #if defined(MBEDTLS_DHM_C) && defined(MBEDTLS_SSL_CLI_C)
@@ -1724,7 +1724,7 @@ int mbedtls_ssl_conf_dh_param_ctx( mbedtls_ssl_config *conf, mbedtls_dhm_context
  * \param bitlen   Minimum bit length of the DHM prime
  */
 void mbedtls_ssl_conf_dhm_min_bitlen( mbedtls_ssl_config *conf,
-                                      unsigned int bitlen );
+                                      uint32_t bitlen );
 #endif /* MBEDTLS_DHM_C && MBEDTLS_SSL_CLI_C */
 
 #if defined(MBEDTLS_ECP_C)
@@ -1779,7 +1779,7 @@ void mbedtls_ssl_conf_curves( mbedtls_ssl_config *conf,
  *                 terminated by \c MBEDTLS_MD_NONE.
  */
 void mbedtls_ssl_conf_sig_hashes( mbedtls_ssl_config *conf,
-                                  const int *hashes );
+                                  const int32_t *hashes );
 #endif /* MBEDTLS_KEY_EXCHANGE__WITH_CERT__ENABLED */
 
 #if defined(MBEDTLS_X509_CRT_PARSE_C)
@@ -1794,7 +1794,7 @@ void mbedtls_ssl_conf_sig_hashes( mbedtls_ssl_config *conf,
  *
  * \return         0 if successful or MBEDTLS_ERR_SSL_ALLOC_FAILED
  */
-int mbedtls_ssl_set_hostname( mbedtls_ssl_context *ssl, const char *hostname );
+int32_t mbedtls_ssl_set_hostname( mbedtls_ssl_context *ssl, const char *hostname );
 #endif /* MBEDTLS_X509_CRT_PARSE_C */
 
 #if defined(MBEDTLS_SSL_SERVER_NAME_INDICATION)
@@ -1810,7 +1810,7 @@ int mbedtls_ssl_set_hostname( mbedtls_ssl_context *ssl, const char *hostname );
  *
  * \return         0 on success or MBEDTLS_ERR_SSL_ALLOC_FAILED
  */
-int mbedtls_ssl_set_hs_own_cert( mbedtls_ssl_context *ssl,
+int32_t mbedtls_ssl_set_hs_own_cert( mbedtls_ssl_context *ssl,
                                  mbedtls_x509_crt *own_cert,
                                  mbedtls_pk_context *pk_key );
 
@@ -1840,7 +1840,7 @@ void mbedtls_ssl_set_hs_ca_chain( mbedtls_ssl_context *ssl,
  *                 MBEDTLS_SSL_VERIFY_REQUIRED
  */
 void mbedtls_ssl_set_hs_authmode( mbedtls_ssl_context *ssl,
-                                  int authmode );
+                                  int32_t authmode );
 
 /**
  * \brief          Set server side ServerName TLS extension callback
@@ -1866,7 +1866,7 @@ void mbedtls_ssl_set_hs_authmode( mbedtls_ssl_context *ssl,
  * \param p_sni    verification parameter
  */
 void mbedtls_ssl_conf_sni( mbedtls_ssl_config *conf,
-                  int (*f_sni)(void *, mbedtls_ssl_context *, const unsigned char *,
+                  int32_t (*f_sni)(void *, mbedtls_ssl_context *, const unsigned char *,
                                size_t),
                   void *p_sni );
 #endif /* MBEDTLS_SSL_SERVER_NAME_INDICATION */
@@ -1889,7 +1889,7 @@ void mbedtls_ssl_conf_sni( mbedtls_ssl_config *conf,
  *
  * \return         0 on success, or a negative error code.
  */
-int mbedtls_ssl_set_hs_ecjpake_password( mbedtls_ssl_context *ssl,
+int32_t mbedtls_ssl_set_hs_ecjpake_password( mbedtls_ssl_context *ssl,
                                          const unsigned char *pw,
                                          size_t pw_len );
 #endif /*MBEDTLS_KEY_EXCHANGE_ECJPAKE_ENABLED */
@@ -1907,7 +1907,7 @@ int mbedtls_ssl_set_hs_ecjpake_password( mbedtls_ssl_context *ssl,
  *
  * \return         0 on success, or MBEDTLS_ERR_SSL_BAD_INPUT_DATA.
  */
-int mbedtls_ssl_conf_alpn_protocols( mbedtls_ssl_config *conf, const char **protos );
+int32_t mbedtls_ssl_conf_alpn_protocols( mbedtls_ssl_config *conf, const char **protos );
 
 /**
  * \brief          Get the name of the negotiated Application Layer Protocol.
@@ -1937,7 +1937,7 @@ const char *mbedtls_ssl_get_alpn_protocol( const mbedtls_ssl_context *ssl );
  *                 MBEDTLS_SSL_MINOR_VERSION_1 and MBEDTLS_SSL_MINOR_VERSION_2,
  *                 MBEDTLS_SSL_MINOR_VERSION_3 supported)
  */
-void mbedtls_ssl_conf_max_version( mbedtls_ssl_config *conf, int major, int minor );
+void mbedtls_ssl_conf_max_version( mbedtls_ssl_config *conf, int32_t major, int32_t minor );
 
 /**
  * \brief          Set the minimum accepted SSL/TLS protocol version
@@ -1957,7 +1957,7 @@ void mbedtls_ssl_conf_max_version( mbedtls_ssl_config *conf, int major, int mino
  *                 MBEDTLS_SSL_MINOR_VERSION_1 and MBEDTLS_SSL_MINOR_VERSION_2,
  *                 MBEDTLS_SSL_MINOR_VERSION_3 supported)
  */
-void mbedtls_ssl_conf_min_version( mbedtls_ssl_config *conf, int major, int minor );
+void mbedtls_ssl_conf_min_version( mbedtls_ssl_config *conf, int32_t major, int32_t minor );
 
 #if defined(MBEDTLS_SSL_FALLBACK_SCSV) && defined(MBEDTLS_SSL_CLI_C)
 /**
@@ -2047,7 +2047,7 @@ void mbedtls_ssl_conf_arc4_support( mbedtls_ssl_config *conf, char arc4 );
  *
  * \return         0 if successful or MBEDTLS_ERR_SSL_BAD_INPUT_DATA
  */
-int mbedtls_ssl_conf_max_frag_len( mbedtls_ssl_config *conf, unsigned char mfl_code );
+int32_t mbedtls_ssl_conf_max_frag_len( mbedtls_ssl_config *conf, unsigned char mfl_code );
 #endif /* MBEDTLS_SSL_MAX_FRAGMENT_LENGTH */
 
 #if defined(MBEDTLS_SSL_TRUNCATED_HMAC)
@@ -2059,7 +2059,7 @@ int mbedtls_ssl_conf_max_frag_len( mbedtls_ssl_config *conf, unsigned char mfl_c
  * \param truncate Enable or disable (MBEDTLS_SSL_TRUNC_HMAC_ENABLED or
  *                                    MBEDTLS_SSL_TRUNC_HMAC_DISABLED)
  */
-void mbedtls_ssl_conf_truncated_hmac( mbedtls_ssl_config *conf, int truncate );
+void mbedtls_ssl_conf_truncated_hmac( mbedtls_ssl_config *conf, int32_t truncate );
 #endif /* MBEDTLS_SSL_TRUNCATED_HMAC */
 
 #if defined(MBEDTLS_SSL_CBC_RECORD_SPLITTING)
@@ -2088,7 +2088,7 @@ void mbedtls_ssl_conf_cbc_record_splitting( mbedtls_ssl_config *conf, char split
  * \param use_tickets   Enable or disable (MBEDTLS_SSL_SESSION_TICKETS_ENABLED or
  *                                         MBEDTLS_SSL_SESSION_TICKETS_DISABLED)
  */
-void mbedtls_ssl_conf_session_tickets( mbedtls_ssl_config *conf, int use_tickets );
+void mbedtls_ssl_conf_session_tickets( mbedtls_ssl_config *conf, int32_t use_tickets );
 #endif /* MBEDTLS_SSL_SESSION_TICKETS && MBEDTLS_SSL_CLI_C */
 
 #if defined(MBEDTLS_SSL_RENEGOTIATION)
@@ -2109,7 +2109,7 @@ void mbedtls_ssl_conf_session_tickets( mbedtls_ssl_config *conf, int use_tickets
  * \param renegotiation     Enable or disable (MBEDTLS_SSL_RENEGOTIATION_ENABLED or
  *                                             MBEDTLS_SSL_RENEGOTIATION_DISABLED)
  */
-void mbedtls_ssl_conf_renegotiation( mbedtls_ssl_config *conf, int renegotiation );
+void mbedtls_ssl_conf_renegotiation( mbedtls_ssl_config *conf, int32_t renegotiation );
 #endif /* MBEDTLS_SSL_RENEGOTIATION */
 
 /**
@@ -2139,7 +2139,7 @@ void mbedtls_ssl_conf_renegotiation( mbedtls_ssl_config *conf, int renegotiation
  *                                        SSL_ALLOW_LEGACY_RENEGOTIATION or
  *                                        MBEDTLS_SSL_LEGACY_BREAK_HANDSHAKE)
  */
-void mbedtls_ssl_conf_legacy_renegotiation( mbedtls_ssl_config *conf, int allow_legacy );
+void mbedtls_ssl_conf_legacy_renegotiation( mbedtls_ssl_config *conf, int32_t allow_legacy );
 
 #if defined(MBEDTLS_SSL_RENEGOTIATION)
 /**
@@ -2179,11 +2179,11 @@ void mbedtls_ssl_conf_legacy_renegotiation( mbedtls_ssl_config *conf, int allow_
  *                 enforce renegotiation, or a non-negative value to enforce
  *                 it but allow for a grace period of max_records records.
  */
-void mbedtls_ssl_conf_renegotiation_enforced( mbedtls_ssl_config *conf, int max_records );
+void mbedtls_ssl_conf_renegotiation_enforced( mbedtls_ssl_config *conf, int32_t max_records );
 
 /**
  * \brief          Set record counter threshold for periodic renegotiation.
- *                 (Default: 2^48 - 1)
+ *                 (Default: 2^64 - 256.)
  *
  *                 Renegotiation is automatically triggered when a record
  *                 counter (outgoing or ingoing) crosses the defined
@@ -2194,17 +2194,9 @@ void mbedtls_ssl_conf_renegotiation_enforced( mbedtls_ssl_config *conf, int max_
  *                 Lower values can be used to enforce policies such as "keys
  *                 must be refreshed every N packets with cipher X".
  *
- *                 The renegotiation period can be disabled by setting
- *                 conf->disable_renegotiation to
- *                 MBEDTLS_SSL_RENEGOTIATION_DISABLED.
- *
- * \note           When the configured transport is
- *                 MBEDTLS_SSL_TRANSPORT_DATAGRAM the maximum renegotiation
- *                 period is 2^48 - 1, and for MBEDTLS_SSL_TRANSPORT_STREAM,
- *                 the maximum renegotiation period is 2^64 - 1.
- *
  * \param conf     SSL configuration
  * \param period   The threshold value: a big-endian 64-bit number.
+ *                 Set to 2^64 - 1 to disable periodic renegotiation
  */
 void mbedtls_ssl_conf_renegotiation_period( mbedtls_ssl_config *conf,
                                    const unsigned char period[8] );
@@ -2260,7 +2252,7 @@ const char *mbedtls_ssl_get_version( const mbedtls_ssl_context *ssl );
  *                 MBEDTLS_ERR_SSL_FEATURE_UNAVAILABLE if compression is
  *                 enabled, which makes expansion much less predictable
  */
-int mbedtls_ssl_get_record_expansion( const mbedtls_ssl_context *ssl );
+int32_t mbedtls_ssl_get_record_expansion( const mbedtls_ssl_context *ssl );
 
 #if defined(MBEDTLS_SSL_MAX_FRAGMENT_LENGTH)
 /**
@@ -2317,7 +2309,7 @@ const mbedtls_x509_crt *mbedtls_ssl_get_peer_cert( const mbedtls_ssl_context *ss
  *
  * \sa             mbedtls_ssl_set_session()
  */
-int mbedtls_ssl_get_session( const mbedtls_ssl_context *ssl, mbedtls_ssl_session *session );
+int32_t mbedtls_ssl_get_session( const mbedtls_ssl_context *ssl, mbedtls_ssl_session *session );
 #endif /* MBEDTLS_SSL_CLI_C */
 
 /**
@@ -2341,7 +2333,7 @@ int mbedtls_ssl_get_session( const mbedtls_ssl_context *ssl, mbedtls_ssl_session
  *                 purposes, as it is an expected return value rather than an
  *                 actual error, but you still need to reset/free the context.
  */
-int mbedtls_ssl_handshake( mbedtls_ssl_context *ssl );
+int32_t mbedtls_ssl_handshake( mbedtls_ssl_context *ssl );
 
 /**
  * \brief          Perform a single step of the SSL handshake
@@ -2362,7 +2354,7 @@ int mbedtls_ssl_handshake( mbedtls_ssl_context *ssl );
  *                 MBEDTLS_ERR_SSL_WANT_READ or MBEDTLS_ERR_SSL_WANT_WRITE, or
  *                 a specific SSL error code.
  */
-int mbedtls_ssl_handshake_step( mbedtls_ssl_context *ssl );
+int32_t mbedtls_ssl_handshake_step( mbedtls_ssl_context *ssl );
 
 #if defined(MBEDTLS_SSL_RENEGOTIATION)
 /**
@@ -2383,7 +2375,7 @@ int mbedtls_ssl_handshake_step( mbedtls_ssl_context *ssl );
  *                 \c mbedtls_ssl_session_reset() on it before re-using it for
  *                 a new connection; the current connection must be closed.
  */
-int mbedtls_ssl_renegotiate( mbedtls_ssl_context *ssl );
+int32_t mbedtls_ssl_renegotiate( mbedtls_ssl_context *ssl );
 #endif /* MBEDTLS_SSL_RENEGOTIATION */
 
 /**
@@ -2420,7 +2412,7 @@ int mbedtls_ssl_renegotiate( mbedtls_ssl_context *ssl );
  *                 again, or not transmitting the new identity to the
  *                 application layer, would allow authentication bypass!
  */
-int mbedtls_ssl_read( mbedtls_ssl_context *ssl, unsigned char *buf, size_t len );
+int32_t mbedtls_ssl_read( mbedtls_ssl_context *ssl, unsigned char *buf, size_t len );
 
 /**
  * \brief          Try to write exactly 'len' application data bytes
@@ -2436,7 +2428,7 @@ int mbedtls_ssl_read( mbedtls_ssl_context *ssl, unsigned char *buf, size_t len )
  * \param len      how many bytes must be written
  *
  * \return         the number of bytes actually written (may be less than len),
- *                 or MBEDTLS_ERR_SSL_WANT_WRITE or MBEDTLS_ERR_SSL_WANT_READ,
+ *                 or MBEDTLS_ERR_SSL_WANT_WRITE of MBEDTLS_ERR_SSL_WANT_READ,
  *                 or another negative error code.
  *
  * \note           If this function returns something other than a positive
@@ -2457,7 +2449,7 @@ int mbedtls_ssl_read( mbedtls_ssl_context *ssl, unsigned char *buf, size_t len )
  *                 \c mbedtls_ssl_get_max_frag_len() may be used to query the
  *                 active maximum fragment length.
  */
-int mbedtls_ssl_write( mbedtls_ssl_context *ssl, const unsigned char *buf, size_t len );
+int32_t mbedtls_ssl_write( mbedtls_ssl_context *ssl, const unsigned char *buf, size_t len );
 
 /**
  * \brief           Send an alert message
@@ -2475,7 +2467,7 @@ int mbedtls_ssl_write( mbedtls_ssl_context *ssl, const unsigned char *buf, size_
  *                 \c mbedtls_ssl_session_reset() on it before re-using it for
  *                 a new connection; the current connection must be closed.
  */
-int mbedtls_ssl_send_alert_message( mbedtls_ssl_context *ssl,
+int32_t mbedtls_ssl_send_alert_message( mbedtls_ssl_context *ssl,
                             unsigned char level,
                             unsigned char message );
 /**
@@ -2491,7 +2483,7 @@ int mbedtls_ssl_send_alert_message( mbedtls_ssl_context *ssl,
  *                 \c mbedtls_ssl_session_reset() on it before re-using it for
  *                 a new connection; the current connection must be closed.
  */
-int mbedtls_ssl_close_notify( mbedtls_ssl_context *ssl );
+int32_t mbedtls_ssl_close_notify( mbedtls_ssl_context *ssl );
 
 /**
  * \brief          Free referenced items in an SSL context and clear memory
@@ -2521,14 +2513,15 @@ void mbedtls_ssl_config_init( mbedtls_ssl_config *conf );
  * \param transport MBEDTLS_SSL_TRANSPORT_STREAM for TLS, or
  *                  MBEDTLS_SSL_TRANSPORT_DATAGRAM for DTLS
  * \param preset   a MBEDTLS_SSL_PRESET_XXX value
+ *                 (currently unused).
  *
  * \note           See \c mbedtls_ssl_conf_transport() for notes on DTLS.
  *
  * \return         0 if successful, or
  *                 MBEDTLS_ERR_XXX_ALLOC_FAILED on memory allocation error.
  */
-int mbedtls_ssl_config_defaults( mbedtls_ssl_config *conf,
-                                 int endpoint, int transport, int preset );
+int32_t mbedtls_ssl_config_defaults( mbedtls_ssl_config *conf,
+                                 int32_t endpoint, int32_t transport, int32_t preset );
 
 /**
  * \brief          Free an SSL configuration context

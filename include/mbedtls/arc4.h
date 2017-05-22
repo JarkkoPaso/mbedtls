@@ -44,8 +44,8 @@ extern "C" {
  */
 typedef struct
 {
-    int x;                      /*!< permutation index */
-    int y;                      /*!< permutation index */
+    int32_t x;                  /*!< permutation index */
+    int32_t y;                  /*!< permutation index */
     unsigned char m[256];       /*!< permutation table */
 }
 mbedtls_arc4_context;
@@ -72,7 +72,7 @@ void mbedtls_arc4_free( mbedtls_arc4_context *ctx );
  * \param keylen   length of the key, in bytes
  */
 void mbedtls_arc4_setup( mbedtls_arc4_context *ctx, const unsigned char *key,
-                 unsigned int keylen );
+                 uint32_t keylen );
 
 /**
  * \brief          ARC4 cipher function
@@ -84,7 +84,7 @@ void mbedtls_arc4_setup( mbedtls_arc4_context *ctx, const unsigned char *key,
  *
  * \return         0 if successful
  */
-int mbedtls_arc4_crypt( mbedtls_arc4_context *ctx, size_t length, const unsigned char *input,
+int32_t mbedtls_arc4_crypt( mbedtls_arc4_context *ctx, size_t length, const unsigned char *input,
                 unsigned char *output );
 
 #ifdef __cplusplus
@@ -104,7 +104,7 @@ extern "C" {
  *
  * \return         0 if successful, or 1 if the test failed
  */
-int mbedtls_arc4_self_test( int verbose );
+int32_t mbedtls_arc4_self_test( int32_t verbose );
 
 #ifdef __cplusplus
 }

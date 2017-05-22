@@ -36,9 +36,9 @@ extern "C" {
  */
 typedef struct
 {
-    int PT1, PT2, offset[2];
-    int pool[MBEDTLS_HAVEGE_COLLECT_SIZE];
-    int WALK[8192];
+    int32_t PT1, PT2, offset[2];
+    int32_t pool[MBEDTLS_HAVEGE_COLLECT_SIZE];
+    int32_t WALK[8192];
 }
 mbedtls_havege_state;
 
@@ -65,7 +65,7 @@ void mbedtls_havege_free( mbedtls_havege_state *hs );
  *
  * \return         0
  */
-int mbedtls_havege_random( void *p_rng, unsigned char *output, size_t len );
+int32_t mbedtls_havege_random( void *p_rng, unsigned char *output, size_t len );
 
 #ifdef __cplusplus
 }

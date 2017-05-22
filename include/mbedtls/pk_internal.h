@@ -44,34 +44,34 @@ struct mbedtls_pk_info_t
     size_t (*get_bitlen)( const void * );
 
     /** Tell if the context implements this type (e.g. ECKEY can do ECDSA) */
-    int (*can_do)( mbedtls_pk_type_t type );
+    int32_t (*can_do)( mbedtls_pk_type_t type );
 
     /** Verify signature */
-    int (*verify_func)( void *ctx, mbedtls_md_type_t md_alg,
+    int32_t (*verify_func)( void *ctx, mbedtls_md_type_t md_alg,
                         const unsigned char *hash, size_t hash_len,
                         const unsigned char *sig, size_t sig_len );
 
     /** Make signature */
-    int (*sign_func)( void *ctx, mbedtls_md_type_t md_alg,
+    int32_t (*sign_func)( void *ctx, mbedtls_md_type_t md_alg,
                       const unsigned char *hash, size_t hash_len,
                       unsigned char *sig, size_t *sig_len,
-                      int (*f_rng)(void *, unsigned char *, size_t),
+                      int32_t (*f_rng)(void *, unsigned char *, size_t),
                       void *p_rng );
 
     /** Decrypt message */
-    int (*decrypt_func)( void *ctx, const unsigned char *input, size_t ilen,
+    int32_t (*decrypt_func)( void *ctx, const unsigned char *input, size_t ilen,
                          unsigned char *output, size_t *olen, size_t osize,
-                         int (*f_rng)(void *, unsigned char *, size_t),
+                         int32_t (*f_rng)(void *, unsigned char *, size_t),
                          void *p_rng );
 
     /** Encrypt message */
-    int (*encrypt_func)( void *ctx, const unsigned char *input, size_t ilen,
+    int32_t (*encrypt_func)( void *ctx, const unsigned char *input, size_t ilen,
                          unsigned char *output, size_t *olen, size_t osize,
-                         int (*f_rng)(void *, unsigned char *, size_t),
+                         int32_t (*f_rng)(void *, unsigned char *, size_t),
                          void *p_rng );
 
     /** Check public-private key pair */
-    int (*check_pair_func)( const void *pub, const void *prv );
+    int32_t (*check_pair_func)( const void *pub, const void *prv );
 
     /** Allocate a new context */
     void * (*ctx_alloc_func)( void );

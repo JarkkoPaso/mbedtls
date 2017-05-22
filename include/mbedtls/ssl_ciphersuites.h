@@ -287,32 +287,32 @@ typedef struct mbedtls_ssl_ciphersuite_t mbedtls_ssl_ciphersuite_t;
  */
 struct mbedtls_ssl_ciphersuite_t
 {
-    int id;
+    int32_t id;
     const char * name;
 
     mbedtls_cipher_type_t cipher;
     mbedtls_md_type_t mac;
     mbedtls_key_exchange_type_t key_exchange;
 
-    int min_major_ver;
-    int min_minor_ver;
-    int max_major_ver;
-    int max_minor_ver;
+    int32_t min_major_ver;
+    int32_t min_minor_ver;
+    int32_t max_major_ver;
+    int32_t max_minor_ver;
 
     unsigned char flags;
 };
 
-const int *mbedtls_ssl_list_ciphersuites( void );
+const int32_t *mbedtls_ssl_list_ciphersuites( void );
 
 const mbedtls_ssl_ciphersuite_t *mbedtls_ssl_ciphersuite_from_string( const char *ciphersuite_name );
-const mbedtls_ssl_ciphersuite_t *mbedtls_ssl_ciphersuite_from_id( int ciphersuite_id );
+const mbedtls_ssl_ciphersuite_t *mbedtls_ssl_ciphersuite_from_id( int32_t ciphersuite_id );
 
 #if defined(MBEDTLS_PK_C)
 mbedtls_pk_type_t mbedtls_ssl_get_ciphersuite_sig_pk_alg( const mbedtls_ssl_ciphersuite_t *info );
 #endif
 
-int mbedtls_ssl_ciphersuite_uses_ec( const mbedtls_ssl_ciphersuite_t *info );
-int mbedtls_ssl_ciphersuite_uses_psk( const mbedtls_ssl_ciphersuite_t *info );
+int32_t mbedtls_ssl_ciphersuite_uses_ec( const mbedtls_ssl_ciphersuite_t *info );
+int32_t mbedtls_ssl_ciphersuite_uses_psk( const mbedtls_ssl_ciphersuite_t *info );
 
 #ifdef __cplusplus
 }

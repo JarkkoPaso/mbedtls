@@ -58,7 +58,7 @@ static void mbedtls_zeroize( void *v, size_t n ) {
  * ------------------------------------------------------------------------
  */
 
-#define SWAP(X,Y) { int *T = X; X = Y; Y = T; }
+#define SWAP(X,Y) { int32_t *T = X; X = Y; Y = T; }
 
 #define TST1_ENTER if( PTEST & 1 ) { PTEST ^= 3; PTEST >>= 1;
 #define TST2_ENTER if( PTEST & 1 ) { PTEST ^= 3; PTEST >>= 1;
@@ -81,7 +81,7 @@ static void mbedtls_zeroize( void *v, size_t n ) {
     PTX = (PT1 >> 18) & 7;                              \
     PT1 &= 0x1FFF;                                      \
     PT2 &= 0x1FFF;                                      \
-    CLK = (int) mbedtls_timing_hardclock();                            \
+    CLK = (int32_t) mbedtls_timing_hardclock();                            \
                                                         \
     i = 0;                                              \
     A = &WALK[PT1    ]; RES[i++] ^= *A;                 \
@@ -104,7 +104,7 @@ static void mbedtls_zeroize( void *v, size_t n ) {
                                                         \
     IN = (*A >> (5)) ^ (*A << (27)) ^ CLK;              \
     *A = (*B >> (6)) ^ (*B << (26)) ^ CLK;              \
-    *B = IN; CLK = (int) mbedtls_timing_hardclock();                   \
+    *B = IN; CLK = (int32_t) mbedtls_timing_hardclock();                   \
     *C = (*C >> (7)) ^ (*C << (25)) ^ CLK;              \
     *D = (*D >> (8)) ^ (*D << (24)) ^ CLK;              \
                                                         \
@@ -162,10 +162,10 @@ static void mbedtls_zeroize( void *v, size_t n ) {
  */
 static void havege_fill( mbedtls_havege_state *hs )
 {
-    int i, n = 0;
-    int  U1,  U2, *A, *B, *C, *D;
-    int PT1, PT2, *WALK, RES[16];
-    int PTX, PTY, CLK, PTEST, IN;
+    int32_t i, n = 0;
+    int32_t  U1,  U2, *A, *B, *C, *D;
+    int32_t PT1, PT2, *WALK, RES[16];
+    int32_t PTX, PTY, CLK, PTEST, IN;
 
     WALK = hs->WALK;
     PT1  = hs->PT1;
@@ -214,9 +214,9 @@ void mbedtls_havege_free( mbedtls_havege_state *hs )
 /*
  * HAVEGE rand function
  */
-int mbedtls_havege_random( void *p_rng, unsigned char *buf, size_t len )
+int32_t mbedtls_havege_random( void *p_rng, unsigned char *buf, size_t len )
 {
-    int val;
+    int32_t val;
     size_t use_len;
     mbedtls_havege_state *hs = (mbedtls_havege_state *) p_rng;
     unsigned char *p = buf;
@@ -224,8 +224,8 @@ int mbedtls_havege_random( void *p_rng, unsigned char *buf, size_t len )
     while( len > 0 )
     {
         use_len = len;
-        if( use_len > sizeof(int) )
-            use_len = sizeof(int);
+        if( use_len > sizeof(int32_t) )
+            use_len = sizeof(int32_t);
 
         if( hs->offset[1] >= MBEDTLS_HAVEGE_COLLECT_SIZE )
             havege_fill( hs );

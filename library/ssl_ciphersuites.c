@@ -52,7 +52,7 @@
  * 4. By hash function used when relevant
  * 5. By key exchange/auth again: EC > non-EC
  */
-static const int ciphersuite_preference[] =
+static const int32_t ciphersuite_preference[] =
 {
 #if defined(MBEDTLS_SSL_CIPHERSUITES)
     MBEDTLS_SSL_CIPHERSUITES,
@@ -1694,17 +1694,17 @@ static const mbedtls_ssl_ciphersuite_t ciphersuite_definitions[] =
 };
 
 #if defined(MBEDTLS_SSL_CIPHERSUITES)
-const int *mbedtls_ssl_list_ciphersuites( void )
+const int32_t *mbedtls_ssl_list_ciphersuites( void )
 {
     return( ciphersuite_preference );
 }
 #else
 #define MAX_CIPHERSUITES    sizeof( ciphersuite_definitions     ) /         \
                             sizeof( ciphersuite_definitions[0]  )
-static int supported_ciphersuites[MAX_CIPHERSUITES];
-static int supported_init = 0;
+static int32_t supported_ciphersuites[MAX_CIPHERSUITES];
+static int32_t supported_init = 0;
 
-const int *mbedtls_ssl_list_ciphersuites( void )
+const int32_t *mbedtls_ssl_list_ciphersuites( void )
 {
     /*
      * On initial call filter out all ciphersuites not supported by current
@@ -1712,8 +1712,8 @@ const int *mbedtls_ssl_list_ciphersuites( void )
      */
     if( supported_init == 0 )
     {
-        const int *p;
-        int *q;
+        const int32_t *p;
+        int32_t *q;
 
         for( p = ciphersuite_preference, q = supported_ciphersuites;
              *p != 0 && q < supported_ciphersuites + MAX_CIPHERSUITES - 1;
@@ -1756,7 +1756,7 @@ const mbedtls_ssl_ciphersuite_t *mbedtls_ssl_ciphersuite_from_string(
     return( NULL );
 }
 
-const mbedtls_ssl_ciphersuite_t *mbedtls_ssl_ciphersuite_from_id( int ciphersuite )
+const mbedtls_ssl_ciphersuite_t *mbedtls_ssl_ciphersuite_from_id( int32_t ciphersuite )
 {
     const mbedtls_ssl_ciphersuite_t *cur = ciphersuite_definitions;
 
@@ -1771,7 +1771,7 @@ const mbedtls_ssl_ciphersuite_t *mbedtls_ssl_ciphersuite_from_id( int ciphersuit
     return( NULL );
 }
 
-const char *mbedtls_ssl_get_ciphersuite_name( const int ciphersuite_id )
+const char *mbedtls_ssl_get_ciphersuite_name( const int32_t ciphersuite_id )
 {
     const mbedtls_ssl_ciphersuite_t *cur;
 
@@ -1783,7 +1783,7 @@ const char *mbedtls_ssl_get_ciphersuite_name( const int ciphersuite_id )
     return( cur->name );
 }
 
-int mbedtls_ssl_get_ciphersuite_id( const char *ciphersuite_name )
+int32_t mbedtls_ssl_get_ciphersuite_id( const char *ciphersuite_name )
 {
     const mbedtls_ssl_ciphersuite_t *cur;
 
@@ -1820,7 +1820,7 @@ mbedtls_pk_type_t mbedtls_ssl_get_ciphersuite_sig_pk_alg( const mbedtls_ssl_ciph
 #endif /* MBEDTLS_PK_C */
 
 #if defined(MBEDTLS_ECDH_C) || defined(MBEDTLS_ECDSA_C)
-int mbedtls_ssl_ciphersuite_uses_ec( const mbedtls_ssl_ciphersuite_t *info )
+int32_t mbedtls_ssl_ciphersuite_uses_ec( const mbedtls_ssl_ciphersuite_t *info )
 {
     switch( info->key_exchange )
     {
@@ -1838,7 +1838,7 @@ int mbedtls_ssl_ciphersuite_uses_ec( const mbedtls_ssl_ciphersuite_t *info )
 #endif /* MBEDTLS_ECDH_C || MBEDTLS_ECDSA_C */
 
 #if defined(MBEDTLS_KEY_EXCHANGE__SOME__PSK_ENABLED)
-int mbedtls_ssl_ciphersuite_uses_psk( const mbedtls_ssl_ciphersuite_t *info )
+int32_t mbedtls_ssl_ciphersuite_uses_psk( const mbedtls_ssl_ciphersuite_t *info )
 {
     switch( info->key_exchange )
     {

@@ -98,17 +98,17 @@ void mbedtls_ssl_cookie_free( mbedtls_ssl_cookie_ctx *ctx )
     mbedtls_md_free( &ctx->hmac_ctx );
 
 #if defined(MBEDTLS_THREADING_C)
-    mbedtls_mutex_free( &ctx->mutex );
+    mbedtls_mutex_init( &ctx->mutex );
 #endif
 
     mbedtls_zeroize( ctx, sizeof( mbedtls_ssl_cookie_ctx ) );
 }
 
-int mbedtls_ssl_cookie_setup( mbedtls_ssl_cookie_ctx *ctx,
-                      int (*f_rng)(void *, unsigned char *, size_t),
+int32_t mbedtls_ssl_cookie_setup( mbedtls_ssl_cookie_ctx *ctx,
+                      int32_t (*f_rng)(void *, unsigned char *, size_t),
                       void *p_rng )
 {
-    int ret;
+    int32_t ret;
     unsigned char key[COOKIE_MD_OUTLEN];
 
     if( ( ret = f_rng( p_rng, key, sizeof( key ) ) ) != 0 )
@@ -130,7 +130,7 @@ int mbedtls_ssl_cookie_setup( mbedtls_ssl_cookie_ctx *ctx,
 /*
  * Generate the HMAC part of a cookie
  */
-static int ssl_cookie_hmac( mbedtls_md_context_t *hmac_ctx,
+static int32_t ssl_cookie_hmac( mbedtls_md_context_t *hmac_ctx,
                             const unsigned char time[4],
                             unsigned char **p, unsigned char *end,
                             const unsigned char *cli_id, size_t cli_id_len )
@@ -157,11 +157,11 @@ static int ssl_cookie_hmac( mbedtls_md_context_t *hmac_ctx,
 /*
  * Generate cookie for DTLS ClientHello verification
  */
-int mbedtls_ssl_cookie_write( void *p_ctx,
+int32_t mbedtls_ssl_cookie_write( void *p_ctx,
                       unsigned char **p, unsigned char *end,
                       const unsigned char *cli_id, size_t cli_id_len )
 {
-    int ret;
+    int32_t ret;
     mbedtls_ssl_cookie_ctx *ctx = (mbedtls_ssl_cookie_ctx *) p_ctx;
     unsigned long t;
 
@@ -203,12 +203,12 @@ int mbedtls_ssl_cookie_write( void *p_ctx,
 /*
  * Check a cookie
  */
-int mbedtls_ssl_cookie_check( void *p_ctx,
+int32_t mbedtls_ssl_cookie_check( void *p_ctx,
                       const unsigned char *cookie, size_t cookie_len,
                       const unsigned char *cli_id, size_t cli_id_len )
 {
     unsigned char ref_hmac[COOKIE_HMAC_LEN];
-    int ret = 0;
+    int32_t ret = 0;
     unsigned char *p = ref_hmac;
     mbedtls_ssl_cookie_ctx *ctx = (mbedtls_ssl_cookie_ctx *) p_ctx;
     unsigned long cur_time, cookie_time;

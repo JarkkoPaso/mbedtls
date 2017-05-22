@@ -85,7 +85,7 @@
     "\n"
 
 #if !defined(MBEDTLS_PK_WRITE_C) || !defined(MBEDTLS_FS_IO)
-int main( void )
+int32_t main( void )
 {
     mbedtls_printf( "MBEDTLS_PK_WRITE_C and/or MBEDTLS_FS_IO not defined.\n" );
     return( 0 );
@@ -96,16 +96,16 @@ int main( void )
  */
 struct options
 {
-    int mode;                   /* the mode to run the application in   */
+    int32_t mode;                   /* the mode to run the application in   */
     const char *filename;       /* filename of the key file             */
-    int output_mode;            /* the output mode to use               */
+    int32_t output_mode;            /* the output mode to use               */
     const char *output_file;    /* where to store the constructed key file  */
-    int output_format;          /* the output format to use             */
+    int32_t output_format;          /* the output format to use             */
 } opt;
 
-static int write_public_key( mbedtls_pk_context *key, const char *output_file )
+static int32_t write_public_key( mbedtls_pk_context *key, const char *output_file )
 {
-    int ret;
+    int32_t ret;
     FILE *f;
     unsigned char output_buf[16000];
     unsigned char *c = output_buf;
@@ -145,9 +145,9 @@ static int write_public_key( mbedtls_pk_context *key, const char *output_file )
     return( 0 );
 }
 
-static int write_private_key( mbedtls_pk_context *key, const char *output_file )
+static int32_t write_private_key( mbedtls_pk_context *key, const char *output_file )
 {
-    int ret;
+    int32_t ret;
     FILE *f;
     unsigned char output_buf[16000];
     unsigned char *c = output_buf;
@@ -187,12 +187,12 @@ static int write_private_key( mbedtls_pk_context *key, const char *output_file )
     return( 0 );
 }
 
-int main( int argc, char *argv[] )
+int32_t main( int32_t argc, char *argv[] )
 {
-    int ret = 0;
+    int32_t ret = 0;
     mbedtls_pk_context key;
     char buf[1024];
-    int i;
+    int32_t i;
     char *p, *q;
 
     /*

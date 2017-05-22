@@ -64,7 +64,7 @@ extern "C" {
  */
 typedef struct
 {
-    int fd;             /**< The underlying file descriptor                 */
+    int32_t fd;             /**< The underlying file descriptor                 */
 }
 mbedtls_net_context;
 
@@ -91,7 +91,7 @@ void mbedtls_net_init( mbedtls_net_context *ctx );
  *
  * \note           Sets the socket in connected mode even with UDP.
  */
-int mbedtls_net_connect( mbedtls_net_context *ctx, const char *host, const char *port, int proto );
+int32_t mbedtls_net_connect( mbedtls_net_context *ctx, const char *host, const char *port, int32_t proto );
 
 /**
  * \brief          Create a receiving socket on bind_ip:port in the chosen
@@ -110,7 +110,7 @@ int mbedtls_net_connect( mbedtls_net_context *ctx, const char *host, const char 
  * \note           Regardless of the protocol, opens the sockets and binds it.
  *                 In addition, make the socket listening if protocol is TCP.
  */
-int mbedtls_net_bind( mbedtls_net_context *ctx, const char *bind_ip, const char *port, int proto );
+int32_t mbedtls_net_bind( mbedtls_net_context *ctx, const char *bind_ip, const char *port, int32_t proto );
 
 /**
  * \brief           Accept a connection from a remote client
@@ -127,7 +127,7 @@ int mbedtls_net_bind( mbedtls_net_context *ctx, const char *bind_ip, const char 
  *                  MBEDTLS_ERR_SSL_WANT_READ if bind_fd was set to
  *                  non-blocking and accept() would block.
  */
-int mbedtls_net_accept( mbedtls_net_context *bind_ctx,
+int32_t mbedtls_net_accept( mbedtls_net_context *bind_ctx,
                         mbedtls_net_context *client_ctx,
                         void *client_ip, size_t buf_size, size_t *ip_len );
 
@@ -138,7 +138,7 @@ int mbedtls_net_accept( mbedtls_net_context *bind_ctx,
  *
  * \return         0 if successful, or a non-zero error code
  */
-int mbedtls_net_set_block( mbedtls_net_context *ctx );
+int32_t mbedtls_net_set_block( mbedtls_net_context *ctx );
 
 /**
  * \brief          Set the socket non-blocking
@@ -147,7 +147,7 @@ int mbedtls_net_set_block( mbedtls_net_context *ctx );
  *
  * \return         0 if successful, or a non-zero error code
  */
-int mbedtls_net_set_nonblock( mbedtls_net_context *ctx );
+int32_t mbedtls_net_set_nonblock( mbedtls_net_context *ctx );
 
 /**
  * \brief          Portable usleep helper
@@ -171,7 +171,7 @@ void mbedtls_net_usleep( unsigned long usec );
  *                 or a non-zero error code; with a non-blocking socket,
  *                 MBEDTLS_ERR_SSL_WANT_READ indicates read() would block.
  */
-int mbedtls_net_recv( void *ctx, unsigned char *buf, size_t len );
+int32_t mbedtls_net_recv( void *ctx, unsigned char *buf, size_t len );
 
 /**
  * \brief          Write at most 'len' characters. If no error occurs,
@@ -185,7 +185,7 @@ int mbedtls_net_recv( void *ctx, unsigned char *buf, size_t len );
  *                 or a non-zero error code; with a non-blocking socket,
  *                 MBEDTLS_ERR_SSL_WANT_WRITE indicates write() would block.
  */
-int mbedtls_net_send( void *ctx, const unsigned char *buf, size_t len );
+int32_t mbedtls_net_send( void *ctx, const unsigned char *buf, size_t len );
 
 /**
  * \brief          Read at most 'len' characters, blocking for at most
@@ -208,7 +208,7 @@ int mbedtls_net_send( void *ctx, const unsigned char *buf, size_t len );
  *                 non-blocking. Handling timeouts with non-blocking reads
  *                 requires a different strategy.
  */
-int mbedtls_net_recv_timeout( void *ctx, unsigned char *buf, size_t len,
+int32_t mbedtls_net_recv_timeout( void *ctx, unsigned char *buf, size_t len,
                       uint32_t timeout );
 
 /**

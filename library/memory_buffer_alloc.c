@@ -74,7 +74,7 @@ typedef struct
     size_t          len;
     memory_header   *first;
     memory_header   *first_free;
-    int             verify;
+    int32_t             verify;
 #if defined(MBEDTLS_MEMORY_DEBUG)
     size_t          alloc_count;
     size_t          free_count;
@@ -135,7 +135,7 @@ static void debug_chain()
 }
 #endif /* MBEDTLS_MEMORY_DEBUG */
 
-static int verify_header( memory_header *hdr )
+static int32_t verify_header( memory_header *hdr )
 {
     if( hdr->magic1 != MAGIC1 )
     {
@@ -180,7 +180,7 @@ static int verify_header( memory_header *hdr )
     return( 0 );
 }
 
-static int verify_chain()
+static int32_t verify_chain()
 {
     memory_header *prv = heap.first, *cur = heap.first->next;
 
@@ -495,12 +495,12 @@ static void buffer_alloc_free( void *ptr )
         mbedtls_exit( 1 );
 }
 
-void mbedtls_memory_buffer_set_verify( int verify )
+void mbedtls_memory_buffer_set_verify( int32_t verify )
 {
     heap.verify = verify;
 }
 
-int mbedtls_memory_buffer_alloc_verify()
+int32_t mbedtls_memory_buffer_alloc_verify()
 {
     return verify_chain();
 }
@@ -609,7 +609,7 @@ void mbedtls_memory_buffer_alloc_free()
 }
 
 #if defined(MBEDTLS_SELF_TEST)
-static int check_pointer( void *p )
+static int32_t check_pointer( void *p )
 {
     if( p == NULL )
         return( -1 );
@@ -620,7 +620,7 @@ static int check_pointer( void *p )
     return( 0 );
 }
 
-static int check_all_free( )
+static int32_t check_all_free( )
 {
     if(
 #if defined(MBEDTLS_MEMORY_DEBUG)
@@ -645,11 +645,11 @@ static int check_all_free( )
         goto cleanup;                       \
     }
 
-int mbedtls_memory_buffer_alloc_self_test( int verbose )
+int32_t mbedtls_memory_buffer_alloc_self_test( int32_t verbose )
 {
     unsigned char buf[1024];
     unsigned char *p, *q, *r, *end;
-    int ret = 0;
+    int32_t ret = 0;
 
     if( verbose != 0 )
         mbedtls_printf( "  MBA test #1 (basic alloc-free cycle): " );

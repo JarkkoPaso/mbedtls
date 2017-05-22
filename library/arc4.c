@@ -69,10 +69,10 @@ void mbedtls_arc4_free( mbedtls_arc4_context *ctx )
  * ARC4 key schedule
  */
 void mbedtls_arc4_setup( mbedtls_arc4_context *ctx, const unsigned char *key,
-                 unsigned int keylen )
+                 uint32_t keylen )
 {
-    int i, j, a;
-    unsigned int k;
+    int32_t i, j, a;
+    uint32_t k;
     unsigned char *m;
 
     ctx->x = 0;
@@ -98,10 +98,10 @@ void mbedtls_arc4_setup( mbedtls_arc4_context *ctx, const unsigned char *key,
 /*
  * ARC4 cipher function
  */
-int mbedtls_arc4_crypt( mbedtls_arc4_context *ctx, size_t length, const unsigned char *input,
+int32_t mbedtls_arc4_crypt( mbedtls_arc4_context *ctx, size_t length, const unsigned char *input,
                 unsigned char *output )
 {
-    int x, y, a, b;
+    int32_t x, y, a, b;
     size_t i;
     unsigned char *m;
 
@@ -159,9 +159,9 @@ static const unsigned char arc4_test_ct[3][8] =
 /*
  * Checkup routine
  */
-int mbedtls_arc4_self_test( int verbose )
+int32_t mbedtls_arc4_self_test( int32_t verbose )
 {
-    int i, ret = 0;
+    int32_t i, ret = 0;
     unsigned char ibuf[8];
     unsigned char obuf[8];
     mbedtls_arc4_context ctx;

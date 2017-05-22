@@ -114,7 +114,7 @@ void mbedtls_sha512_clone( mbedtls_sha512_context *dst,
 /*
  * SHA-512 context setup
  */
-void mbedtls_sha512_starts( mbedtls_sha512_context *ctx, int is384 )
+void mbedtls_sha512_starts( mbedtls_sha512_context *ctx, int32_t is384 )
 {
     ctx->total[0] = 0;
     ctx->total[1] = 0;
@@ -198,7 +198,7 @@ static const uint64_t K[80] =
 
 void mbedtls_sha512_process( mbedtls_sha512_context *ctx, const unsigned char data[128] )
 {
-    int i;
+    int32_t i;
     uint64_t temp1, temp2, W[80];
     uint64_t A, B, C, D, E, F, G, H;
 
@@ -273,12 +273,12 @@ void mbedtls_sha512_update( mbedtls_sha512_context *ctx, const unsigned char *in
                     size_t ilen )
 {
     size_t fill;
-    unsigned int left;
+    uint32_t left;
 
     if( ilen == 0 )
         return;
 
-    left = (unsigned int) (ctx->total[0] & 0x7F);
+    left = (uint32_t) (ctx->total[0] & 0x7F);
     fill = 128 - left;
 
     ctx->total[0] += (uint64_t) ilen;
@@ -360,7 +360,7 @@ void mbedtls_sha512_finish( mbedtls_sha512_context *ctx, unsigned char output[64
  * output = SHA-512( input buffer )
  */
 void mbedtls_sha512( const unsigned char *input, size_t ilen,
-             unsigned char output[64], int is384 )
+             unsigned char output[64], int32_t is384 )
 {
     mbedtls_sha512_context ctx;
 
@@ -384,7 +384,7 @@ static const unsigned char sha512_test_buf[3][113] =
     { "" }
 };
 
-static const int sha512_test_buflen[3] =
+static const int32_t sha512_test_buflen[3] =
 {
     3, 112, 1000
 };
@@ -445,9 +445,9 @@ static const unsigned char sha512_test_sum[6][64] =
 /*
  * Checkup routine
  */
-int mbedtls_sha512_self_test( int verbose )
+int32_t mbedtls_sha512_self_test( int32_t verbose )
 {
-    int i, j, k, buflen, ret = 0;
+    int32_t i, j, k, buflen, ret = 0;
     unsigned char *buf;
     unsigned char sha512sum[64];
     mbedtls_sha512_context ctx;

@@ -65,12 +65,12 @@ void mbedtls_ccm_init( mbedtls_ccm_context *ctx )
     memset( ctx, 0, sizeof( mbedtls_ccm_context ) );
 }
 
-int mbedtls_ccm_setkey( mbedtls_ccm_context *ctx,
+int32_t mbedtls_ccm_setkey( mbedtls_ccm_context *ctx,
                         mbedtls_cipher_id_t cipher,
                         const unsigned char *key,
-                        unsigned int keybits )
+                        uint32_t keybits )
 {
-    int ret;
+    int32_t ret;
     const mbedtls_cipher_info_t *cipher_info;
 
     cipher_info = mbedtls_cipher_info_from_values( cipher, keybits, MBEDTLS_MODE_ECB );
@@ -134,13 +134,13 @@ void mbedtls_ccm_free( mbedtls_ccm_context *ctx )
 /*
  * Authenticated encryption or decryption
  */
-static int ccm_auth_crypt( mbedtls_ccm_context *ctx, int mode, size_t length,
+static int32_t ccm_auth_crypt( mbedtls_ccm_context *ctx, int32_t mode, size_t length,
                            const unsigned char *iv, size_t iv_len,
                            const unsigned char *add, size_t add_len,
                            const unsigned char *input, unsigned char *output,
                            unsigned char *tag, size_t tag_len )
 {
-    int ret;
+    int32_t ret;
     unsigned char i;
     unsigned char q;
     size_t len_left, olen;
@@ -304,7 +304,7 @@ static int ccm_auth_crypt( mbedtls_ccm_context *ctx, int mode, size_t length,
 /*
  * Authenticated encryption
  */
-int mbedtls_ccm_encrypt_and_tag( mbedtls_ccm_context *ctx, size_t length,
+int32_t mbedtls_ccm_encrypt_and_tag( mbedtls_ccm_context *ctx, size_t length,
                          const unsigned char *iv, size_t iv_len,
                          const unsigned char *add, size_t add_len,
                          const unsigned char *input, unsigned char *output,
@@ -317,16 +317,16 @@ int mbedtls_ccm_encrypt_and_tag( mbedtls_ccm_context *ctx, size_t length,
 /*
  * Authenticated decryption
  */
-int mbedtls_ccm_auth_decrypt( mbedtls_ccm_context *ctx, size_t length,
+int32_t mbedtls_ccm_auth_decrypt( mbedtls_ccm_context *ctx, size_t length,
                       const unsigned char *iv, size_t iv_len,
                       const unsigned char *add, size_t add_len,
                       const unsigned char *input, unsigned char *output,
                       const unsigned char *tag, size_t tag_len )
 {
-    int ret;
+    int32_t ret;
     unsigned char check_tag[16];
     unsigned char i;
-    int diff;
+    int32_t diff;
 
     if( ( ret = ccm_auth_crypt( ctx, CCM_DECRYPT, length,
                                 iv, iv_len, add, add_len,
@@ -397,12 +397,12 @@ static const unsigned char res[NB_TESTS][32] = {
         0x48, 0x43, 0x92, 0xfb, 0xc1, 0xb0, 0x99, 0x51 }
 };
 
-int mbedtls_ccm_self_test( int verbose )
+int32_t mbedtls_ccm_self_test( int32_t verbose )
 {
     mbedtls_ccm_context ctx;
     unsigned char out[32];
     size_t i;
-    int ret;
+    int32_t ret;
 
     mbedtls_ccm_init( &ctx );
 
@@ -417,7 +417,7 @@ int mbedtls_ccm_self_test( int verbose )
     for( i = 0; i < NB_TESTS; i++ )
     {
         if( verbose != 0 )
-            mbedtls_printf( "  CCM-AES #%u: ", (unsigned int) i + 1 );
+            mbedtls_printf( "  CCM-AES #%u: ", (uint32_t) i + 1 );
 
         ret = mbedtls_ccm_encrypt_and_tag( &ctx, msg_len[i],
                                    iv, iv_len[i], ad, add_len[i],

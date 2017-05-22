@@ -129,7 +129,7 @@ void mbedtls_ripemd160( const unsigned char *input, size_t ilen,
  *
  * \return         0 if successful, or 1 if the test failed
  */
-int mbedtls_ripemd160_self_test( int verbose );
+int32_t mbedtls_ripemd160_self_test( int32_t verbose );
 
 #ifdef __cplusplus
 }

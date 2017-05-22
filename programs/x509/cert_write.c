@@ -37,7 +37,7 @@
     !defined(MBEDTLS_ENTROPY_C) || !defined(MBEDTLS_CTR_DRBG_C) || \
     !defined(MBEDTLS_ERROR_C) || !defined(MBEDTLS_SHA256_C) || \
     !defined(MBEDTLS_PEM_WRITE_C)
-int main( void )
+int32_t main( void )
 {
     mbedtls_printf( "MBEDTLS_X509_CRT_WRITE_C and/or MBEDTLS_X509_CRT_PARSE_C and/or "
             "MBEDTLS_FS_IO and/or MBEDTLS_SHA256_C and/or "
@@ -146,18 +146,18 @@ struct options
     const char *not_before;     /* validity period not before           */
     const char *not_after;      /* validity period not after            */
     const char *serial;         /* serial number string                 */
-    int selfsign;               /* selfsign the certificate             */
-    int is_ca;                  /* is a CA certificate                  */
-    int max_pathlen;            /* maximum CA path length               */
+    int32_t selfsign;               /* selfsign the certificate             */
+    int32_t is_ca;                  /* is a CA certificate                  */
+    int32_t max_pathlen;            /* maximum CA path length               */
     unsigned char key_usage;    /* key usage flags                      */
     unsigned char ns_cert_type; /* NS cert type                         */
 } opt;
 
-int write_certificate( mbedtls_x509write_cert *crt, const char *output_file,
-                       int (*f_rng)(void *, unsigned char *, size_t),
+int32_t write_certificate( mbedtls_x509write_cert *crt, const char *output_file,
+                       int32_t (*f_rng)(void *, unsigned char *, size_t),
                        void *p_rng )
 {
-    int ret;
+    int32_t ret;
     FILE *f;
     unsigned char output_buf[4096];
     size_t len = 0;
@@ -182,16 +182,16 @@ int write_certificate( mbedtls_x509write_cert *crt, const char *output_file,
     return( 0 );
 }
 
-int main( int argc, char *argv[] )
+int32_t main( int32_t argc, char *argv[] )
 {
-    int ret = 0;
+    int32_t ret = 0;
     mbedtls_x509_crt issuer_crt;
     mbedtls_pk_context loaded_issuer_key, loaded_subject_key;
     mbedtls_pk_context *issuer_key = &loaded_issuer_key,
                 *subject_key = &loaded_subject_key;
     char buf[1024];
     char issuer_name[256];
-    int i;
+    int32_t i;
     char *p, *q, *r;
 #if defined(MBEDTLS_X509_CSR_PARSE_C)
     char subject_name[256];

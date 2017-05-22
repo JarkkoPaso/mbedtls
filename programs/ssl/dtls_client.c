@@ -37,8 +37,8 @@
     !defined(MBEDTLS_NET_C)  || !defined(MBEDTLS_TIMING_C) ||             \
     !defined(MBEDTLS_ENTROPY_C) || !defined(MBEDTLS_CTR_DRBG_C) ||        \
     !defined(MBEDTLS_X509_CRT_PARSE_C) || !defined(MBEDTLS_RSA_C) ||      \
-    !defined(MBEDTLS_CERTS_C) || !defined(MBEDTLS_PEM_PARSE_C)
-int main( void )
+    !defined(MBEDTLS_CERTS_C)
+int32_t main( void )
 {
     mbedtls_printf( "MBEDTLS_SSL_CLI_C and/or MBEDTLS_SSL_PROTO_DTLS and/or "
             "MBEDTLS_NET_C and/or MBEDTLS_TIMING_C and/or "
@@ -70,8 +70,8 @@ int main( void )
 
 #define DEBUG_LEVEL 0
 
-static void my_debug( void *ctx, int level,
-                      const char *file, int line,
+static void my_debug( void *ctx, int32_t level,
+                      const char *file, int32_t line,
                       const char *str )
 {
     ((void) level);
@@ -80,14 +80,14 @@ static void my_debug( void *ctx, int level,
     fflush(  (FILE *) ctx  );
 }
 
-int main( int argc, char *argv[] )
+int32_t main( int32_t argc, char *argv[] )
 {
-    int ret, len;
+    int32_t ret, len;
     mbedtls_net_context server_fd;
     uint32_t flags;
     unsigned char buf[1024];
     const char *pers = "dtls_client";
-    int retry_left = MAX_RETRY;
+    int32_t retry_left = MAX_RETRY;
 
     mbedtls_entropy_context entropy;
     mbedtls_ctr_drbg_context ctr_drbg;

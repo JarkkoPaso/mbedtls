@@ -58,7 +58,7 @@
     !defined(MBEDTLS_RSA_C) || !defined(MBEDTLS_SHA256_C) ||    \
     !defined(MBEDTLS_FS_IO) || !defined(MBEDTLS_CTR_DRBG_C) || \
     !defined(MBEDTLS_SHA1_C)
-int main( void )
+int32_t main( void )
 {
     mbedtls_printf("MBEDTLS_AES_C and/or MBEDTLS_DHM_C and/or MBEDTLS_ENTROPY_C "
            "and/or MBEDTLS_NET_C and/or MBEDTLS_RSA_C and/or "
@@ -67,11 +67,11 @@ int main( void )
     return( 0 );
 }
 #else
-int main( void )
+int32_t main( void )
 {
     FILE *f;
 
-    int ret;
+    int32_t ret;
     size_t n, buflen;
     mbedtls_net_context server_fd;
 
@@ -175,7 +175,7 @@ int main( void )
      */
     memset( buf, 0, sizeof( buf ) );
 
-    if( ( ret = mbedtls_net_recv( &server_fd, buf, n ) ) != (int) n )
+    if( ( ret = mbedtls_net_recv( &server_fd, buf, n ) ) != (int32_t) n )
     {
         mbedtls_printf( " failed\n  ! mbedtls_net_recv returned %d\n\n", ret );
         goto exit;
@@ -212,7 +212,7 @@ int main( void )
         goto exit;
     }
 
-    mbedtls_sha1( buf, (int)( p - 2 - buf ), hash );
+    mbedtls_sha1( buf, (int32_t)( p - 2 - buf ), hash );
 
     if( ( ret = mbedtls_rsa_pkcs1_verify( &rsa, NULL, NULL, MBEDTLS_RSA_PUBLIC,
                                   MBEDTLS_MD_SHA256, 0, hash, p ) ) != 0 )
@@ -228,14 +228,14 @@ int main( void )
     fflush( stdout );
 
     n = dhm.len;
-    if( ( ret = mbedtls_dhm_make_public( &dhm, (int) dhm.len, buf, n,
+    if( ( ret = mbedtls_dhm_make_public( &dhm, (int32_t) dhm.len, buf, n,
                                  mbedtls_ctr_drbg_random, &ctr_drbg ) ) != 0 )
     {
         mbedtls_printf( " failed\n  ! mbedtls_dhm_make_public returned %d\n\n", ret );
         goto exit;
     }
 
-    if( ( ret = mbedtls_net_send( &server_fd, buf, n ) ) != (int) n )
+    if( ( ret = mbedtls_net_send( &server_fd, buf, n ) ) != (int32_t) n )
     {
         mbedtls_printf( " failed\n  ! mbedtls_net_send returned %d\n\n", ret );
         goto exit;

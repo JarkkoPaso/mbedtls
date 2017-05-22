@@ -65,16 +65,16 @@
 
 #if !defined(MBEDTLS_CIPHER_C) || !defined(MBEDTLS_MD_C) || \
     !defined(MBEDTLS_FS_IO)
-int main( void )
+int32_t main( void )
 {
     mbedtls_printf("MBEDTLS_CIPHER_C and/or MBEDTLS_MD_C and/or MBEDTLS_FS_IO not defined.\n");
     return( 0 );
 }
 #else
-int main( int argc, char *argv[] )
+int32_t main( int32_t argc, char *argv[] )
 {
-    int ret = 1, i, n;
-    int mode;
+    int32_t ret = 1, i, n;
+    int32_t mode;
     size_t keylen, ilen, olen;
     FILE *fkey, *fin = NULL, *fout = NULL;
 
@@ -107,7 +107,7 @@ int main( int argc, char *argv[] )
      */
     if( argc != 7 )
     {
-        const int *list;
+        const int32_t *list;
 
         mbedtls_printf( USAGE );
 
@@ -207,7 +207,7 @@ int main( int argc, char *argv[] )
             keylen = 0;
 
             while( sscanf( p, "%02X", &n ) > 0 &&
-                   keylen < (int) sizeof( key ) )
+                   keylen < (int32_t) sizeof( key ) )
             {
                 key[keylen++] = (unsigned char) n;
                 p += 2;
@@ -217,8 +217,8 @@ int main( int argc, char *argv[] )
         {
             keylen = strlen( argv[6] );
 
-            if( keylen > (int) sizeof( key ) )
-                keylen = (int) sizeof( key );
+            if( keylen > (int32_t) sizeof( key ) )
+                keylen = (int32_t) sizeof( key );
 
             memcpy( key, argv[6], keylen );
         }
@@ -329,8 +329,8 @@ int main( int argc, char *argv[] )
          */
         for( offset = 0; offset < filesize; offset += mbedtls_cipher_get_block_size( &cipher_ctx ) )
         {
-            ilen = ( (unsigned int) filesize - offset > mbedtls_cipher_get_block_size( &cipher_ctx ) ) ?
-                mbedtls_cipher_get_block_size( &cipher_ctx ) : (unsigned int) ( filesize - offset );
+            ilen = ( (uint32_t) filesize - offset > mbedtls_cipher_get_block_size( &cipher_ctx ) ) ?
+                mbedtls_cipher_get_block_size( &cipher_ctx ) : (uint32_t) ( filesize - offset );
 
             if( fread( buffer, 1, ilen, fin ) != ilen )
             {
@@ -472,8 +472,8 @@ int main( int argc, char *argv[] )
          */
         for( offset = 0; offset < filesize; offset += mbedtls_cipher_get_block_size( &cipher_ctx ) )
         {
-            ilen = ( (unsigned int) filesize - offset > mbedtls_cipher_get_block_size( &cipher_ctx ) ) ?
-                mbedtls_cipher_get_block_size( &cipher_ctx ) : (unsigned int) ( filesize - offset );
+            ilen = ( (uint32_t) filesize - offset > mbedtls_cipher_get_block_size( &cipher_ctx ) ) ?
+                mbedtls_cipher_get_block_size( &cipher_ctx ) : (uint32_t) ( filesize - offset );
 
             if( fread( buffer, 1, ilen, fin ) != ilen )
             {

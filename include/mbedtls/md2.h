@@ -124,7 +124,7 @@ void mbedtls_md2( const unsigned char *input, size_t ilen, unsigned char output[
  *
  * \return         0 if successful, or 1 if the test failed
  */
-int mbedtls_md2_self_test( int verbose );
+int32_t mbedtls_md2_self_test( int32_t verbose );
 
 /* Internal use */
 void mbedtls_md2_process( mbedtls_md2_context *ctx );

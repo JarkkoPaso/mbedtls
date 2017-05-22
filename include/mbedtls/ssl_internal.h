@@ -165,8 +165,8 @@ struct mbedtls_ssl_handshake_params
     /*
      * Handshake specific crypto variables
      */
-    int sig_alg;                        /*!<  Hash algorithm for signature   */
-    int verify_sig_alg;                 /*!<  Signature algorithm for verify */
+    int32_t sig_alg;                        /*!<  Hash algorithm for signature   */
+    int32_t verify_sig_alg;                 /*!<  Signature algorithm for verify */
 #if defined(MBEDTLS_DHM_C)
     mbedtls_dhm_context dhm_ctx;                /*!<  DHM key exchange        */
 #endif
@@ -191,15 +191,15 @@ struct mbedtls_ssl_handshake_params
 #if defined(MBEDTLS_X509_CRT_PARSE_C)
     mbedtls_ssl_key_cert *key_cert;     /*!< chosen key/cert pair (server)  */
 #if defined(MBEDTLS_SSL_SERVER_NAME_INDICATION)
-    int sni_authmode;                   /*!< authmode from SNI callback     */
+    int32_t sni_authmode;                   /*!< authmode from SNI callback     */
     mbedtls_ssl_key_cert *sni_key_cert; /*!< key/cert list from SNI         */
     mbedtls_x509_crt *sni_ca_chain;     /*!< trusted CAs from SNI callback  */
     mbedtls_x509_crl *sni_ca_crl;       /*!< trusted CAs CRLs from SNI      */
 #endif
 #endif /* MBEDTLS_X509_CRT_PARSE_C */
 #if defined(MBEDTLS_SSL_PROTO_DTLS)
-    unsigned int out_msg_seq;           /*!<  Outgoing handshake sequence number */
-    unsigned int in_msg_seq;            /*!<  Incoming handshake sequence number */
+    uint32_t out_msg_seq;           /*!<  Outgoing handshake sequence number */
+    uint32_t in_msg_seq;            /*!<  Incoming handshake sequence number */
 
     unsigned char *verify_cookie;       /*!<  Cli: HelloVerifyRequest cookie
                                               Srv: unused                    */
@@ -212,7 +212,7 @@ struct mbedtls_ssl_handshake_params
     unsigned char retransmit_state;     /*!<  Retransmission state           */
     mbedtls_ssl_flight_item *flight;            /*!<  Current outgoing flight        */
     mbedtls_ssl_flight_item *cur_msg;           /*!<  Current message in flight      */
-    unsigned int in_flight_start_seq;   /*!<  Minimum message sequence in the
+    uint32_t in_flight_start_seq;   /*!<  Minimum message sequence in the
                                               flight being received          */
     mbedtls_ssl_transform *alt_transform_out;   /*!<  Alternative transform for
                                               resending messages             */
@@ -239,8 +239,8 @@ struct mbedtls_ssl_handshake_params
 
     void (*update_checksum)(mbedtls_ssl_context *, const unsigned char *, size_t);
     void (*calc_verify)(mbedtls_ssl_context *, unsigned char *);
-    void (*calc_finished)(mbedtls_ssl_context *, unsigned char *, int);
-    int  (*tls_prf)(const unsigned char *, size_t, const char *,
+    void (*calc_finished)(mbedtls_ssl_context *, unsigned char *, int32_t);
+    int32_t  (*tls_prf)(const unsigned char *, size_t, const char *,
                     const unsigned char *, size_t,
                     unsigned char *, size_t);
 
@@ -250,16 +250,16 @@ struct mbedtls_ssl_handshake_params
     unsigned char premaster[MBEDTLS_PREMASTER_SIZE];
                                         /*!<  premaster secret        */
 
-    int resume;                         /*!<  session resume indicator*/
-    int max_major_ver;                  /*!< max. major version client*/
-    int max_minor_ver;                  /*!< max. minor version client*/
-    int cli_exts;                       /*!< client extension presence*/
+    int32_t resume;                         /*!<  session resume indicator*/
+    int32_t max_major_ver;                  /*!< max. major version client*/
+    int32_t max_minor_ver;                  /*!< max. minor version client*/
+    int32_t cli_exts;                       /*!< client extension presence*/
 
 #if defined(MBEDTLS_SSL_SESSION_TICKETS)
-    int new_session_ticket;             /*!< use NewSessionTicket?    */
+    int32_t new_session_ticket;             /*!< use NewSessionTicket?    */
 #endif /* MBEDTLS_SSL_SESSION_TICKETS */
 #if defined(MBEDTLS_SSL_EXTENDED_MASTER_SECRET)
-    int extended_ms;                    /*!< use Extended Master Secret? */
+    int32_t extended_ms;                    /*!< use Extended Master Secret? */
 #endif
 };
 
@@ -274,7 +274,7 @@ struct mbedtls_ssl_transform
      */
     const mbedtls_ssl_ciphersuite_t *ciphersuite_info;
                                         /*!<  Chosen cipersuite_info  */
-    unsigned int keylen;                /*!<  symmetric key length (bytes)  */
+    uint32_t keylen;                /*!<  symmetric key length (bytes)  */
     size_t minlen;                      /*!<  min. ciphertext length  */
     size_t ivlen;                       /*!<  IV length               */
     size_t fixed_ivlen;                 /*!<  Fixed part of IV (AEAD) */
@@ -346,40 +346,40 @@ void mbedtls_ssl_transform_free( mbedtls_ssl_transform *transform );
  */
 void mbedtls_ssl_handshake_free( mbedtls_ssl_handshake_params *handshake );
 
-int mbedtls_ssl_handshake_client_step( mbedtls_ssl_context *ssl );
-int mbedtls_ssl_handshake_server_step( mbedtls_ssl_context *ssl );
+int32_t mbedtls_ssl_handshake_client_step( mbedtls_ssl_context *ssl );
+int32_t mbedtls_ssl_handshake_server_step( mbedtls_ssl_context *ssl );
 void mbedtls_ssl_handshake_wrapup( mbedtls_ssl_context *ssl );
 
-int mbedtls_ssl_send_fatal_handshake_failure( mbedtls_ssl_context *ssl );
+int32_t mbedtls_ssl_send_fatal_handshake_failure( mbedtls_ssl_context *ssl );
 
 void mbedtls_ssl_reset_checksum( mbedtls_ssl_context *ssl );
-int mbedtls_ssl_derive_keys( mbedtls_ssl_context *ssl );
+int32_t mbedtls_ssl_derive_keys( mbedtls_ssl_context *ssl );
 
-int mbedtls_ssl_read_record_layer( mbedtls_ssl_context *ssl );
-int mbedtls_ssl_handle_message_type( mbedtls_ssl_context *ssl );
-int mbedtls_ssl_prepare_handshake_record( mbedtls_ssl_context *ssl );
+int32_t mbedtls_ssl_read_record_layer( mbedtls_ssl_context *ssl );
+int32_t mbedtls_ssl_handle_message_type( mbedtls_ssl_context *ssl );
+int32_t mbedtls_ssl_prepare_handshake_record( mbedtls_ssl_context *ssl );
 void mbedtls_ssl_update_handshake_status( mbedtls_ssl_context *ssl );
 
-int mbedtls_ssl_read_record( mbedtls_ssl_context *ssl );
-int mbedtls_ssl_fetch_input( mbedtls_ssl_context *ssl, size_t nb_want );
+int32_t mbedtls_ssl_read_record( mbedtls_ssl_context *ssl );
+int32_t mbedtls_ssl_fetch_input( mbedtls_ssl_context *ssl, size_t nb_want );
 
-int mbedtls_ssl_write_record( mbedtls_ssl_context *ssl );
-int mbedtls_ssl_flush_output( mbedtls_ssl_context *ssl );
+int32_t mbedtls_ssl_write_record( mbedtls_ssl_context *ssl );
+int32_t mbedtls_ssl_flush_output( mbedtls_ssl_context *ssl );
 
-int mbedtls_ssl_parse_certificate( mbedtls_ssl_context *ssl );
-int mbedtls_ssl_write_certificate( mbedtls_ssl_context *ssl );
+int32_t mbedtls_ssl_parse_certificate( mbedtls_ssl_context *ssl );
+int32_t mbedtls_ssl_write_certificate( mbedtls_ssl_context *ssl );
 
-int mbedtls_ssl_parse_change_cipher_spec( mbedtls_ssl_context *ssl );
-int mbedtls_ssl_write_change_cipher_spec( mbedtls_ssl_context *ssl );
+int32_t mbedtls_ssl_parse_change_cipher_spec( mbedtls_ssl_context *ssl );
+int32_t mbedtls_ssl_write_change_cipher_spec( mbedtls_ssl_context *ssl );
 
-int mbedtls_ssl_parse_finished( mbedtls_ssl_context *ssl );
-int mbedtls_ssl_write_finished( mbedtls_ssl_context *ssl );
+int32_t mbedtls_ssl_parse_finished( mbedtls_ssl_context *ssl );
+int32_t mbedtls_ssl_write_finished( mbedtls_ssl_context *ssl );
 
 void mbedtls_ssl_optimize_checksum( mbedtls_ssl_context *ssl,
                             const mbedtls_ssl_ciphersuite_t *ciphersuite_info );
 
 #if defined(MBEDTLS_KEY_EXCHANGE__SOME__PSK_ENABLED)
-int mbedtls_ssl_psk_derive_premaster( mbedtls_ssl_context *ssl, mbedtls_key_exchange_type_t key_ex );
+int32_t mbedtls_ssl_psk_derive_premaster( mbedtls_ssl_context *ssl, mbedtls_key_exchange_type_t key_ex );
 #endif
 
 #if defined(MBEDTLS_PK_C)
@@ -388,15 +388,15 @@ mbedtls_pk_type_t mbedtls_ssl_pk_alg_from_sig( unsigned char sig );
 #endif
 
 mbedtls_md_type_t mbedtls_ssl_md_alg_from_hash( unsigned char hash );
-unsigned char mbedtls_ssl_hash_from_md_alg( int md );
-int mbedtls_ssl_set_calc_verify_md( mbedtls_ssl_context *ssl, int md );
+unsigned char mbedtls_ssl_hash_from_md_alg( int32_t md );
+int32_t mbedtls_ssl_set_calc_verify_md( mbedtls_ssl_context *ssl, int32_t md );
 
 #if defined(MBEDTLS_ECP_C)
-int mbedtls_ssl_check_curve( const mbedtls_ssl_context *ssl, mbedtls_ecp_group_id grp_id );
+int32_t mbedtls_ssl_check_curve( const mbedtls_ssl_context *ssl, mbedtls_ecp_group_id grp_id );
 #endif
 
 #if defined(MBEDTLS_KEY_EXCHANGE__WITH_CERT__ENABLED)
-int mbedtls_ssl_check_sig_hash( const mbedtls_ssl_context *ssl,
+int32_t mbedtls_ssl_check_sig_hash( const mbedtls_ssl_context *ssl,
                                 mbedtls_md_type_t md );
 #endif
 
@@ -434,15 +434,15 @@ static inline mbedtls_x509_crt *mbedtls_ssl_own_cert( mbedtls_ssl_context *ssl )
  *
  * Return 0 if everything is OK, -1 if not.
  */
-int mbedtls_ssl_check_cert_usage( const mbedtls_x509_crt *cert,
+int32_t mbedtls_ssl_check_cert_usage( const mbedtls_x509_crt *cert,
                           const mbedtls_ssl_ciphersuite_t *ciphersuite,
-                          int cert_endpoint,
+                          int32_t cert_endpoint,
                           uint32_t *flags );
 #endif /* MBEDTLS_X509_CRT_PARSE_C */
 
-void mbedtls_ssl_write_version( int major, int minor, int transport,
+void mbedtls_ssl_write_version( int32_t major, int32_t minor, int32_t transport,
                         unsigned char ver[2] );
-void mbedtls_ssl_read_version( int *major, int *minor, int transport,
+void mbedtls_ssl_read_version( int32_t *major, int32_t *minor, int32_t transport,
                        const unsigned char ver[2] );
 
 static inline size_t mbedtls_ssl_hdr_len( const mbedtls_ssl_context *ssl )
@@ -470,17 +470,17 @@ static inline size_t mbedtls_ssl_hs_hdr_len( const mbedtls_ssl_context *ssl )
 #if defined(MBEDTLS_SSL_PROTO_DTLS)
 void mbedtls_ssl_send_flight_completed( mbedtls_ssl_context *ssl );
 void mbedtls_ssl_recv_flight_completed( mbedtls_ssl_context *ssl );
-int mbedtls_ssl_resend( mbedtls_ssl_context *ssl );
+int32_t mbedtls_ssl_resend( mbedtls_ssl_context *ssl );
 #endif
 
 /* Visible for testing purposes only */
 #if defined(MBEDTLS_SSL_DTLS_ANTI_REPLAY)
-int mbedtls_ssl_dtls_replay_check( mbedtls_ssl_context *ssl );
+int32_t mbedtls_ssl_dtls_replay_check( mbedtls_ssl_context *ssl );
 void mbedtls_ssl_dtls_replay_update( mbedtls_ssl_context *ssl );
 #endif
 
 /* constant-time buffer comparison */
-static inline int mbedtls_ssl_safer_memcmp( const void *a, const void *b, size_t n )
+static inline int32_t mbedtls_ssl_safer_memcmp( const void *a, const void *b, size_t n )
 {
     size_t i;
     const unsigned char *A = (const unsigned char *) a;

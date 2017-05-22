@@ -58,20 +58,16 @@ struct mbedtls_cmac_context_t
 /**
  * \brief               Set the CMAC key and prepare to authenticate the input
  *                      data.
- *                      Should be called with an initialized cipher context.
+ *                      Should be called with an initialised cipher context.
  *
- * \param ctx           Cipher context. This should be a cipher context,
- *                      initialized to be one of the following types:
- *                      MBEDTLS_CIPHER_AES_128_ECB, MBEDTLS_CIPHER_AES_192_ECB,
- *                      MBEDTLS_CIPHER_AES_256_ECB or
- *                      MBEDTLS_CIPHER_DES_EDE3_ECB.
+ * \param ctx           Cipher context
  * \param key           CMAC key
  * \param keybits       length of the CMAC key in bits
  *                      (must be acceptable by the cipher)
  *
  * \return              0 if successful, or a cipher specific error code
  */
-int mbedtls_cipher_cmac_starts( mbedtls_cipher_context_t *ctx,
+int32_t mbedtls_cipher_cmac_starts( mbedtls_cipher_context_t *ctx,
                                 const unsigned char *key, size_t keybits );
 
 /**
@@ -88,7 +84,7 @@ int mbedtls_cipher_cmac_starts( mbedtls_cipher_context_t *ctx,
  * \returns             0 on success, MBEDTLS_ERR_MD_BAD_INPUT_DATA if parameter
  *                      verification fails.
  */
-int mbedtls_cipher_cmac_update( mbedtls_cipher_context_t *ctx,
+int32_t mbedtls_cipher_cmac_update( mbedtls_cipher_context_t *ctx,
                                 const unsigned char *input, size_t ilen );
 
 /**
@@ -103,7 +99,7 @@ int mbedtls_cipher_cmac_update( mbedtls_cipher_context_t *ctx,
  * \returns             0 on success, MBEDTLS_ERR_MD_BAD_INPUT_DATA if parameter
  *                      verification fails.
  */
-int mbedtls_cipher_cmac_finish( mbedtls_cipher_context_t *ctx,
+int32_t mbedtls_cipher_cmac_finish( mbedtls_cipher_context_t *ctx,
                                 unsigned char *output );
 
 /**
@@ -116,10 +112,10 @@ int mbedtls_cipher_cmac_finish( mbedtls_cipher_context_t *ctx,
  * \returns             0 on success, MBEDTLS_ERR_MD_BAD_INPUT_DATA if parameter
  *                      verification fails.
  */
-int mbedtls_cipher_cmac_reset( mbedtls_cipher_context_t *ctx );
+int32_t mbedtls_cipher_cmac_reset( mbedtls_cipher_context_t *ctx );
 
 /**
- * \brief               Output = Generic_CMAC( cmac key, input buffer )
+ * \brief               Output = Generic_CMAC( hmac key, input buffer )
  *
  * \param cipher_info   message digest info
  * \param key           CMAC key
@@ -131,7 +127,7 @@ int mbedtls_cipher_cmac_reset( mbedtls_cipher_context_t *ctx );
  * \returns             0 on success, MBEDTLS_ERR_MD_BAD_INPUT_DATA if parameter
  *                      verification fails.
  */
-int mbedtls_cipher_cmac( const mbedtls_cipher_info_t *cipher_info,
+int32_t mbedtls_cipher_cmac( const mbedtls_cipher_info_t *cipher_info,
                          const unsigned char *key, size_t keylen,
                          const unsigned char *input, size_t ilen,
                          unsigned char *output );
@@ -149,7 +145,7 @@ int mbedtls_cipher_cmac( const mbedtls_cipher_info_t *cipher_info,
  *
  * \return          0 if successful
  */
-int mbedtls_aes_cmac_prf_128( const unsigned char *key, size_t key_len,
+int32_t mbedtls_aes_cmac_prf_128( const unsigned char *key, size_t key_len,
                               const unsigned char *input, size_t in_len,
                               unsigned char output[16] );
 #endif /* MBEDTLS_AES_C */
@@ -160,7 +156,7 @@ int mbedtls_aes_cmac_prf_128( const unsigned char *key, size_t key_len,
  *
  * \return         0 if successful, or 1 if the test failed
  */
-int mbedtls_cmac_self_test( int verbose );
+int32_t mbedtls_cmac_self_test( int32_t verbose );
 #endif /* MBEDTLS_SELF_TEST && ( MBEDTLS_AES_C || MBEDTLS_DES_C ) */
 
 #ifdef __cplusplus

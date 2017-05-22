@@ -46,9 +46,9 @@ void mbedtls_pkcs11_init( mbedtls_pkcs11_context *ctx )
     memset( ctx, 0, sizeof( mbedtls_pkcs11_context ) );
 }
 
-int mbedtls_pkcs11_x509_cert_bind( mbedtls_x509_crt *cert, pkcs11h_certificate_t pkcs11_cert )
+int32_t mbedtls_pkcs11_x509_cert_bind( mbedtls_x509_crt *cert, pkcs11h_certificate_t pkcs11_cert )
 {
-    int ret = 1;
+    int32_t ret = 1;
     unsigned char *cert_blob = NULL;
     size_t cert_blob_size = 0;
 
@@ -95,10 +95,10 @@ cleanup:
 }
 
 
-int mbedtls_pkcs11_priv_key_bind( mbedtls_pkcs11_context *priv_key,
+int32_t mbedtls_pkcs11_priv_key_bind( mbedtls_pkcs11_context *priv_key,
         pkcs11h_certificate_t pkcs11_cert )
 {
-    int ret = 1;
+    int32_t ret = 1;
     mbedtls_x509_crt cert;
 
     mbedtls_x509_crt_init( &cert );
@@ -126,8 +126,8 @@ void mbedtls_pkcs11_priv_key_free( mbedtls_pkcs11_context *priv_key )
         pkcs11h_certificate_freeCertificate( priv_key->pkcs11h_cert );
 }
 
-int mbedtls_pkcs11_decrypt( mbedtls_pkcs11_context *ctx,
-                       int mode, size_t *olen,
+int32_t mbedtls_pkcs11_decrypt( mbedtls_pkcs11_context *ctx,
+                       int32_t mode, size_t *olen,
                        const unsigned char *input,
                        unsigned char *output,
                        size_t output_max_len )
@@ -164,10 +164,10 @@ int mbedtls_pkcs11_decrypt( mbedtls_pkcs11_context *ctx,
     return( 0 );
 }
 
-int mbedtls_pkcs11_sign( mbedtls_pkcs11_context *ctx,
-                    int mode,
+int32_t mbedtls_pkcs11_sign( mbedtls_pkcs11_context *ctx,
+                    int32_t mode,
                     mbedtls_md_type_t md_alg,
-                    unsigned int hashlen,
+                    uint32_t hashlen,
                     const unsigned char *hash,
                     unsigned char *sig )
 {

@@ -57,7 +57,7 @@
 
 #if !defined(MBEDTLS_ECDSA_C) || !defined(MBEDTLS_SHA256_C) || \
     !defined(MBEDTLS_ENTROPY_C) || !defined(MBEDTLS_CTR_DRBG_C)
-int main( void )
+int32_t main( void )
 {
     mbedtls_printf("MBEDTLS_ECDSA_C and/or MBEDTLS_SHA256_C and/or "
            "MBEDTLS_ENTROPY_C and/or MBEDTLS_CTR_DRBG_C not defined\n");
@@ -95,9 +95,9 @@ static void dump_pubkey( const char *title, mbedtls_ecdsa_context *key )
 #define dump_pubkey( a, b )
 #endif
 
-int main( int argc, char *argv[] )
+int32_t main( int32_t argc, char *argv[] )
 {
-    int ret;
+    int32_t ret;
     mbedtls_ecdsa_context ctx_sign, ctx_verify;
     mbedtls_entropy_context entropy;
     mbedtls_ctr_drbg_context ctr_drbg;
@@ -150,7 +150,7 @@ int main( int argc, char *argv[] )
         goto exit;
     }
 
-    mbedtls_printf( " ok (key size: %d bits)\n", (int) ctx_sign.grp.pbits );
+    mbedtls_printf( " ok (key size: %d bits)\n", (int32_t) ctx_sign.grp.pbits );
 
     dump_pubkey( "  + Public key: ", &ctx_sign );
 
@@ -168,7 +168,7 @@ int main( int argc, char *argv[] )
         mbedtls_printf( " failed\n  ! mbedtls_ecdsa_genkey returned %d\n", ret );
         goto exit;
     }
-    mbedtls_printf( " ok (signature length = %u)\n", (unsigned int) sig_len );
+    mbedtls_printf( " ok (signature length = %u)\n", (uint32_t) sig_len );
 
     dump_buf( "  + Hash: ", hash, sizeof hash );
     dump_buf( "  + Signature: ", sig, sig_len );

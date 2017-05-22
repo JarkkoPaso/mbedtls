@@ -71,7 +71,7 @@ typedef struct
     const mbedtls_md_info_t *md_info;   /**< Hash to use                    */
     mbedtls_ecp_group grp;              /**< Elliptic curve                 */
     mbedtls_ecjpake_role role;          /**< Are we client or server?       */
-    int point_format;                   /**< Format for point export        */
+    int32_t point_format;               /**< Format for point export        */
 
     mbedtls_ecp_point Xm1;              /**< My public key 1   C: X1, S: X3 */
     mbedtls_ecp_point Xm2;              /**< My public key 2   C: X2, S: X4 */
@@ -109,7 +109,7 @@ void mbedtls_ecjpake_init( mbedtls_ecjpake_context *ctx );
  * \return          0 if successfull,
  *                  a negative error code otherwise
  */
-int mbedtls_ecjpake_setup( mbedtls_ecjpake_context *ctx,
+int32_t mbedtls_ecjpake_setup( mbedtls_ecjpake_context *ctx,
                            mbedtls_ecjpake_role role,
                            mbedtls_md_type_t hash,
                            mbedtls_ecp_group_id curve,
@@ -124,7 +124,7 @@ int mbedtls_ecjpake_setup( mbedtls_ecjpake_context *ctx,
  * \return          0 if the context is ready for use,
  *                  MBEDTLS_ERR_ECP_BAD_INPUT_DATA otherwise
  */
-int mbedtls_ecjpake_check( const mbedtls_ecjpake_context *ctx );
+int32_t mbedtls_ecjpake_check( const mbedtls_ecjpake_context *ctx );
 
 /**
  * \brief           Generate and write the first round message
@@ -141,9 +141,9 @@ int mbedtls_ecjpake_check( const mbedtls_ecjpake_context *ctx );
  * \return          0 if successfull,
  *                  a negative error code otherwise
  */
-int mbedtls_ecjpake_write_round_one( mbedtls_ecjpake_context *ctx,
+int32_t mbedtls_ecjpake_write_round_one( mbedtls_ecjpake_context *ctx,
                             unsigned char *buf, size_t len, size_t *olen,
-                            int (*f_rng)(void *, unsigned char *, size_t),
+                            int32_t (*f_rng)(void *, unsigned char *, size_t),
                             void *p_rng );
 
 /**
@@ -158,7 +158,7 @@ int mbedtls_ecjpake_write_round_one( mbedtls_ecjpake_context *ctx,
  * \return          0 if successfull,
  *                  a negative error code otherwise
  */
-int mbedtls_ecjpake_read_round_one( mbedtls_ecjpake_context *ctx,
+int32_t mbedtls_ecjpake_read_round_one( mbedtls_ecjpake_context *ctx,
                                     const unsigned char *buf,
                                     size_t len );
 
@@ -176,9 +176,9 @@ int mbedtls_ecjpake_read_round_one( mbedtls_ecjpake_context *ctx,
  * \return          0 if successfull,
  *                  a negative error code otherwise
  */
-int mbedtls_ecjpake_write_round_two( mbedtls_ecjpake_context *ctx,
+int32_t mbedtls_ecjpake_write_round_two( mbedtls_ecjpake_context *ctx,
                             unsigned char *buf, size_t len, size_t *olen,
-                            int (*f_rng)(void *, unsigned char *, size_t),
+                            int32_t (*f_rng)(void *, unsigned char *, size_t),
                             void *p_rng );
 
 /**
@@ -192,7 +192,7 @@ int mbedtls_ecjpake_write_round_two( mbedtls_ecjpake_context *ctx,
  * \return          0 if successfull,
  *                  a negative error code otherwise
  */
-int mbedtls_ecjpake_read_round_two( mbedtls_ecjpake_context *ctx,
+int32_t mbedtls_ecjpake_read_round_two( mbedtls_ecjpake_context *ctx,
                                     const unsigned char *buf,
                                     size_t len );
 
@@ -210,9 +210,9 @@ int mbedtls_ecjpake_read_round_two( mbedtls_ecjpake_context *ctx,
  * \return          0 if successfull,
  *                  a negative error code otherwise
  */
-int mbedtls_ecjpake_derive_secret( mbedtls_ecjpake_context *ctx,
+int32_t mbedtls_ecjpake_derive_secret( mbedtls_ecjpake_context *ctx,
                             unsigned char *buf, size_t len, size_t *olen,
-                            int (*f_rng)(void *, unsigned char *, size_t),
+                            int32_t (*f_rng)(void *, unsigned char *, size_t),
                             void *p_rng );
 
 /**
@@ -228,7 +228,7 @@ void mbedtls_ecjpake_free( mbedtls_ecjpake_context *ctx );
  *
  * \return         0 if successful, or 1 if a test failed
  */
-int mbedtls_ecjpake_self_test( int verbose );
+int32_t mbedtls_ecjpake_self_test( int32_t verbose );
 #endif
 
 #ifdef __cplusplus

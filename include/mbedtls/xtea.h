@@ -86,8 +86,8 @@ void mbedtls_xtea_setup( mbedtls_xtea_context *ctx, const unsigned char key[16] 
  *
  * \return         0 if successful
  */
-int mbedtls_xtea_crypt_ecb( mbedtls_xtea_context *ctx,
-                    int mode,
+int32_t mbedtls_xtea_crypt_ecb( mbedtls_xtea_context *ctx,
+                    int32_t mode,
                     const unsigned char input[8],
                     unsigned char output[8] );
 
@@ -105,8 +105,8 @@ int mbedtls_xtea_crypt_ecb( mbedtls_xtea_context *ctx,
  * \return         0 if successful,
  *                 MBEDTLS_ERR_XTEA_INVALID_INPUT_LENGTH if the length % 8 != 0
  */
-int mbedtls_xtea_crypt_cbc( mbedtls_xtea_context *ctx,
-                    int mode,
+int32_t mbedtls_xtea_crypt_cbc( mbedtls_xtea_context *ctx,
+                    int32_t mode,
                     size_t length,
                     unsigned char iv[8],
                     const unsigned char *input,
@@ -130,7 +130,7 @@ extern "C" {
  *
  * \return         0 if successful, or 1 if the test failed
  */
-int mbedtls_xtea_self_test( int verbose );
+int32_t mbedtls_xtea_self_test( int32_t verbose );
 
 #ifdef __cplusplus
 }

@@ -48,7 +48,7 @@
 #if !defined(MBEDTLS_BIGNUM_C) || !defined(MBEDTLS_PK_PARSE_C) ||  \
     !defined(MBEDTLS_FS_IO) || !defined(MBEDTLS_ENTROPY_C) || \
     !defined(MBEDTLS_CTR_DRBG_C)
-int main( void )
+int32_t main( void )
 {
     mbedtls_printf("MBEDTLS_BIGNUM_C and/or MBEDTLS_PK_PARSE_C and/or "
            "MBEDTLS_FS_IO and/or MBEDTLS_ENTROPY_C and/or "
@@ -56,10 +56,10 @@ int main( void )
     return( 0 );
 }
 #else
-int main( int argc, char *argv[] )
+int32_t main( int32_t argc, char *argv[] )
 {
     FILE *f;
-    int ret, c;
+    int32_t ret, c;
     size_t i, olen = 0;
     mbedtls_pk_context pk;
     mbedtls_entropy_context entropy;
@@ -121,7 +121,7 @@ int main( int argc, char *argv[] )
     i = 0;
 
     while( fscanf( f, "%02X", &c ) > 0 &&
-           i < (int) sizeof( buf ) )
+           i < (int32_t) sizeof( buf ) )
         buf[i++] = (unsigned char) c;
 
     fclose( f );

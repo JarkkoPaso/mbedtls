@@ -41,7 +41,7 @@
     !defined(MBEDTLS_NET_C) || !defined(MBEDTLS_RSA_C) ||         \
     !defined(MBEDTLS_X509_CRT_PARSE_C) || !defined(MBEDTLS_FS_IO) ||  \
     !defined(MBEDTLS_CTR_DRBG_C)
-int main( void )
+int32_t main( void )
 {
     mbedtls_printf("MBEDTLS_BIGNUM_C and/or MBEDTLS_ENTROPY_C and/or "
            "MBEDTLS_SSL_TLS_C and/or MBEDTLS_SSL_CLI_C and/or "
@@ -102,19 +102,19 @@ int main( void )
  */
 struct options
 {
-    int mode;                   /* the mode to run the application in   */
+    int32_t mode;                   /* the mode to run the application in   */
     const char *filename;       /* filename of the certificate file     */
     const char *ca_file;        /* the file with the CA certificate(s)  */
     const char *crl_file;       /* the file with the CRL to use         */
     const char *ca_path;        /* the path with the CA certificate(s) reside */
     const char *server_name;    /* hostname of the server (client only) */
     const char *server_port;    /* port on which the ssl service runs   */
-    int debug_level;            /* level of debugging                   */
-    int permissive;             /* permissive parsing                   */
+    int32_t debug_level;            /* level of debugging                   */
+    int32_t permissive;             /* permissive parsing                   */
 } opt;
 
-static void my_debug( void *ctx, int level,
-                      const char *file, int line,
+static void my_debug( void *ctx, int32_t level,
+                      const char *file, int32_t line,
                       const char *str )
 {
     ((void) level);
@@ -123,7 +123,7 @@ static void my_debug( void *ctx, int level,
     fflush(  (FILE *) ctx  );
 }
 
-static int my_verify( void *data, mbedtls_x509_crt *crt, int depth, uint32_t *flags )
+static int32_t my_verify( void *data, mbedtls_x509_crt *crt, int32_t depth, uint32_t *flags )
 {
     char buf[1024];
     ((void) data);
@@ -143,9 +143,9 @@ static int my_verify( void *data, mbedtls_x509_crt *crt, int depth, uint32_t *fl
     return( 0 );
 }
 
-int main( int argc, char *argv[] )
+int32_t main( int32_t argc, char *argv[] )
 {
-    int ret = 0;
+    int32_t ret = 0;
     mbedtls_net_context server_fd;
     unsigned char buf[1024];
     mbedtls_entropy_context entropy;
@@ -154,9 +154,9 @@ int main( int argc, char *argv[] )
     mbedtls_ssl_config conf;
     mbedtls_x509_crt cacert;
     mbedtls_x509_crl cacrl;
-    int i, j;
+    int32_t i, j;
     uint32_t flags;
-    int verify = 0;
+    int32_t verify = 0;
     char *p, *q;
     const char *pers = "cert_app";
 

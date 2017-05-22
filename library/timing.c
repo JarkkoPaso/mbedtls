@@ -219,7 +219,7 @@ unsigned long mbedtls_timing_hardclock( void )
 
 #define HAVE_HARDCLOCK
 
-static int hardclock_init = 0;
+static int32_t hardclock_init = 0;
 static struct timeval tv_init;
 
 unsigned long mbedtls_timing_hardclock( void )
@@ -238,11 +238,11 @@ unsigned long mbedtls_timing_hardclock( void )
 }
 #endif /* !HAVE_HARDCLOCK */
 
-volatile int mbedtls_timing_alarmed = 0;
+volatile int32_t mbedtls_timing_alarmed = 0;
 
 #if defined(_WIN32) && !defined(EFIX64) && !defined(EFI32)
 
-unsigned long mbedtls_timing_get_timer( struct mbedtls_timing_hr_time *val, int reset )
+unsigned long mbedtls_timing_get_timer( struct mbedtls_timing_hr_time *val, int32_t reset )
 {
     unsigned long delta;
     LARGE_INTEGER offset, hfreq;
@@ -272,7 +272,7 @@ static DWORD WINAPI TimerProc( LPVOID TimerContext )
     return( TRUE );
 }
 
-void mbedtls_set_alarm( int seconds )
+void mbedtls_set_alarm( int32_t seconds )
 {
     DWORD ThreadId;
 
@@ -283,7 +283,7 @@ void mbedtls_set_alarm( int seconds )
 
 #else /* _WIN32 && !EFIX64 && !EFI32 */
 
-unsigned long mbedtls_timing_get_timer( struct mbedtls_timing_hr_time *val, int reset )
+unsigned long mbedtls_timing_get_timer( struct mbedtls_timing_hr_time *val, int32_t reset )
 {
     unsigned long delta;
     struct timeval offset;
@@ -304,13 +304,13 @@ unsigned long mbedtls_timing_get_timer( struct mbedtls_timing_hr_time *val, int 
     return( delta );
 }
 
-static void sighandler( int signum )
+static void sighandler( int32_t signum )
 {
     mbedtls_timing_alarmed = 1;
     signal( signum, sighandler );
 }
 
-void mbedtls_set_alarm( int seconds )
+void mbedtls_set_alarm( int32_t seconds )
 {
     mbedtls_timing_alarmed = 0;
     signal( SIGALRM, sighandler );
@@ -336,7 +336,7 @@ void mbedtls_timing_set_delay( void *data, uint32_t int_ms, uint32_t fin_ms )
 /*
  * Get number of delays expired
  */
-int mbedtls_timing_get_delay( void *data )
+int32_t mbedtls_timing_get_delay( void *data )
 {
     mbedtls_timing_delay_context *ctx = (mbedtls_timing_delay_context *) data;
     unsigned long elapsed_ms;
@@ -392,11 +392,11 @@ static void busy_msleep( unsigned long msec )
  * Warning: this is work in progress, some tests may not be reliable enough
  * yet! False positives may happen.
  */
-int mbedtls_timing_self_test( int verbose )
+int32_t mbedtls_timing_self_test( int32_t verbose )
 {
     unsigned long cycles, ratio;
     unsigned long millisecs, secs;
-    int hardfail;
+    int32_t hardfail;
     struct mbedtls_timing_hr_time hires;
     uint32_t a, b;
     mbedtls_timing_delay_context ctx;
@@ -412,7 +412,7 @@ int mbedtls_timing_self_test( int verbose )
     {
         (void) mbedtls_timing_get_timer( &hires, 1 );
 
-        mbedtls_set_alarm( (int) secs );
+        mbedtls_set_alarm( (int32_t) secs );
         while( !mbedtls_timing_alarmed )
             ;
 

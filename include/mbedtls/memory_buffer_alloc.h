@@ -84,7 +84,7 @@ void mbedtls_memory_buffer_alloc_free( void );
  * \param verify    One of MBEDTLS_MEMORY_VERIFY_NONE, MBEDTLS_MEMORY_VERIFY_ALLOC,
  *                  MBEDTLS_MEMORY_VERIFY_FREE or MBEDTLS_MEMORY_VERIFY_ALWAYS
  */
-void mbedtls_memory_buffer_set_verify( int verify );
+void mbedtls_memory_buffer_set_verify( int32_t verify );
 
 #if defined(MBEDTLS_MEMORY_DEBUG)
 /**
@@ -132,7 +132,7 @@ void mbedtls_memory_buffer_alloc_cur_get( size_t *cur_used, size_t *cur_blocks )
  *
  * \return             0 if verified, 1 otherwise
  */
-int mbedtls_memory_buffer_alloc_verify( void );
+int32_t mbedtls_memory_buffer_alloc_verify( void );
 
 #if defined(MBEDTLS_SELF_TEST)
 /**
@@ -140,7 +140,7 @@ int mbedtls_memory_buffer_alloc_verify( void );
  *
  * \return         0 if successful, or 1 if a test failed
  */
-int mbedtls_memory_buffer_alloc_self_test( int verbose );
+int32_t mbedtls_memory_buffer_alloc_self_test( int32_t verbose );
 #endif
 
 #ifdef __cplusplus

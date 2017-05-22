@@ -343,7 +343,7 @@ static const unsigned char md5_test_buf[7][81] =
       "345678901234567890" }
 };
 
-static const int md5_test_buflen[7] =
+static const int32_t md5_test_buflen[7] =
 {
     0, 1, 3, 14, 26, 62, 80
 };
@@ -369,9 +369,9 @@ static const unsigned char md5_test_sum[7][16] =
 /*
  * Checkup routine
  */
-int mbedtls_md5_self_test( int verbose )
+int32_t mbedtls_md5_self_test( int32_t verbose )
 {
-    int i;
+    int32_t i;
     unsigned char md5sum[16];
 
     for( i = 0; i < 7; i++ )

@@ -122,7 +122,7 @@ extern void (*mbedtls_free)( void *ptr );
  *
  * \return              0 if successful
  */
-int mbedtls_platform_set_calloc_free( void * (*calloc_func)( size_t, size_t ),
+int32_t mbedtls_platform_set_calloc_free( void * (*calloc_func)( size_t, size_t ),
                               void (*free_func)( void * ) );
 #endif /* MBEDTLS_PLATFORM_FREE_MACRO && MBEDTLS_PLATFORM_CALLOC_MACRO */
 #else /* !MBEDTLS_PLATFORM_MEMORY */
@@ -136,7 +136,7 @@ int mbedtls_platform_set_calloc_free( void * (*calloc_func)( size_t, size_t ),
 #if defined(MBEDTLS_PLATFORM_FPRINTF_ALT)
 /* We need FILE * */
 #include <stdio.h>
-extern int (*mbedtls_fprintf)( FILE *stream, const char *format, ... );
+extern int32_t (*mbedtls_fprintf)( FILE *stream, const char *format, ... );
 
 /**
  * \brief   Set your own fprintf function pointer
@@ -145,7 +145,7 @@ extern int (*mbedtls_fprintf)( FILE *stream, const char *format, ... );
  *
  * \return              0
  */
-int mbedtls_platform_set_fprintf( int (*fprintf_func)( FILE *stream, const char *,
+int32_t mbedtls_platform_set_fprintf( int32_t (*fprintf_func)( FILE *stream, const char *,
                                                ... ) );
 #else
 #if defined(MBEDTLS_PLATFORM_FPRINTF_MACRO)
@@ -159,7 +159,7 @@ int mbedtls_platform_set_fprintf( int (*fprintf_func)( FILE *stream, const char 
  * The function pointers for printf
  */
 #if defined(MBEDTLS_PLATFORM_PRINTF_ALT)
-extern int (*mbedtls_printf)( const char *format, ... );
+extern int32_t (*mbedtls_printf)( const char *format, ... );
 
 /**
  * \brief   Set your own printf function pointer
@@ -168,7 +168,7 @@ extern int (*mbedtls_printf)( const char *format, ... );
  *
  * \return              0
  */
-int mbedtls_platform_set_printf( int (*printf_func)( const char *, ... ) );
+int32_t mbedtls_platform_set_printf( int32_t (*printf_func)( const char *, ... ) );
 #else /* !MBEDTLS_PLATFORM_PRINTF_ALT */
 #if defined(MBEDTLS_PLATFORM_PRINTF_MACRO)
 #define mbedtls_printf     MBEDTLS_PLATFORM_PRINTF_MACRO
@@ -188,11 +188,11 @@ int mbedtls_platform_set_printf( int (*printf_func)( const char *, ... ) );
  */
 #if defined(_WIN32)
 /* For Windows (inc. MSYS2), we provide our own fixed implementation */
-int mbedtls_platform_win32_snprintf( char *s, size_t n, const char *fmt, ... );
+int32_t mbedtls_platform_win32_snprintf( char *s, size_t n, const char *fmt, ... );
 #endif
 
 #if defined(MBEDTLS_PLATFORM_SNPRINTF_ALT)
-extern int (*mbedtls_snprintf)( char * s, size_t n, const char * format, ... );
+extern int32_t (*mbedtls_snprintf)( char * s, size_t n, const char * format, ... );
 
 /**
  * \brief   Set your own snprintf function pointer
@@ -201,7 +201,7 @@ extern int (*mbedtls_snprintf)( char * s, size_t n, const char * format, ... );
  *
  * \return              0
  */
-int mbedtls_platform_set_snprintf( int (*snprintf_func)( char * s, size_t n,
+int32_t mbedtls_platform_set_snprintf( int32_t (*snprintf_func)( char * s, size_t n,
                                                  const char * format, ... ) );
 #else /* MBEDTLS_PLATFORM_SNPRINTF_ALT */
 #if defined(MBEDTLS_PLATFORM_SNPRINTF_MACRO)
@@ -215,7 +215,7 @@ int mbedtls_platform_set_snprintf( int (*snprintf_func)( char * s, size_t n,
  * The function pointers for exit
  */
 #if defined(MBEDTLS_PLATFORM_EXIT_ALT)
-extern void (*mbedtls_exit)( int status );
+extern void (*mbedtls_exit)( int32_t status );
 
 /**
  * \brief   Set your own exit function pointer
@@ -224,7 +224,7 @@ extern void (*mbedtls_exit)( int status );
  *
  * \return              0
  */
-int mbedtls_platform_set_exit( void (*exit_func)( int status ) );
+int32_t mbedtls_platform_set_exit( void (*exit_func)( int32_t status ) );
 #else
 #if defined(MBEDTLS_PLATFORM_EXIT_MACRO)
 #define mbedtls_exit   MBEDTLS_PLATFORM_EXIT_MACRO
@@ -256,13 +256,13 @@ int mbedtls_platform_set_exit( void (*exit_func)( int status ) );
 #if defined(MBEDTLS_ENTROPY_NV_SEED)
 #if !defined(MBEDTLS_PLATFORM_NO_STD_FUNCTIONS) && defined(MBEDTLS_FS_IO)
 /* Internal standard platform definitions */
-int mbedtls_platform_std_nv_seed_read( unsigned char *buf, size_t buf_len );
-int mbedtls_platform_std_nv_seed_write( unsigned char *buf, size_t buf_len );
+int32_t mbedtls_platform_std_nv_seed_read( unsigned char *buf, size_t buf_len );
+int32_t mbedtls_platform_std_nv_seed_write( unsigned char *buf, size_t buf_len );
 #endif
 
 #if defined(MBEDTLS_PLATFORM_NV_SEED_ALT)
-extern int (*mbedtls_nv_seed_read)( unsigned char *buf, size_t buf_len );
-extern int (*mbedtls_nv_seed_write)( unsigned char *buf, size_t buf_len );
+extern int32_t (*mbedtls_nv_seed_read)( unsigned char *buf, size_t buf_len );
+extern int32_t (*mbedtls_nv_seed_write)( unsigned char *buf, size_t buf_len );
 
 /**
  * \brief   Set your own seed file writing/reading functions
@@ -272,9 +272,9 @@ extern int (*mbedtls_nv_seed_write)( unsigned char *buf, size_t buf_len );
  *
  * \return              0
  */
-int mbedtls_platform_set_nv_seed(
-            int (*nv_seed_read_func)( unsigned char *buf, size_t buf_len ),
-            int (*nv_seed_write_func)( unsigned char *buf, size_t buf_len )
+int32_t mbedtls_platform_set_nv_seed(
+            int32_t (*nv_seed_read_func)( unsigned char *buf, size_t buf_len ),
+            int32_t (*nv_seed_write_func)( unsigned char *buf, size_t buf_len )
             );
 #else
 #if defined(MBEDTLS_PLATFORM_NV_SEED_READ_MACRO) && \

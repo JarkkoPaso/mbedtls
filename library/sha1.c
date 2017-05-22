@@ -371,7 +371,7 @@ static const unsigned char sha1_test_buf[3][57] =
     { "" }
 };
 
-static const int sha1_test_buflen[3] =
+static const int32_t sha1_test_buflen[3] =
 {
     3, 56, 1000
 };
@@ -389,9 +389,9 @@ static const unsigned char sha1_test_sum[3][20] =
 /*
  * Checkup routine
  */
-int mbedtls_sha1_self_test( int verbose )
+int32_t mbedtls_sha1_self_test( int32_t verbose )
 {
-    int i, j, buflen, ret = 0;
+    int32_t i, j, buflen, ret = 0;
     unsigned char buf[1024];
     unsigned char sha1sum[20];
     mbedtls_sha1_context ctx;

@@ -100,7 +100,7 @@ void mbedtls_sha256_clone( mbedtls_sha256_context *dst,
 /*
  * SHA-256 context setup
  */
-void mbedtls_sha256_starts( mbedtls_sha256_context *ctx, int is224 )
+void mbedtls_sha256_starts( mbedtls_sha256_context *ctx, int32_t is224 )
 {
     ctx->total[0] = 0;
     ctx->total[1] = 0;
@@ -183,7 +183,7 @@ void mbedtls_sha256_process( mbedtls_sha256_context *ctx, const unsigned char da
 {
     uint32_t temp1, temp2, W[64];
     uint32_t A[8];
-    unsigned int i;
+    uint32_t i;
 
     for( i = 0; i < 8; i++ )
         A[i] = ctx->state[i];
@@ -324,7 +324,7 @@ void mbedtls_sha256_finish( mbedtls_sha256_context *ctx, unsigned char output[32
  * output = SHA-256( input buffer )
  */
 void mbedtls_sha256( const unsigned char *input, size_t ilen,
-             unsigned char output[32], int is224 )
+             unsigned char output[32], int32_t is224 )
 {
     mbedtls_sha256_context ctx;
 
@@ -346,7 +346,7 @@ static const unsigned char sha256_test_buf[3][57] =
     { "" }
 };
 
-static const int sha256_test_buflen[3] =
+static const int32_t sha256_test_buflen[3] =
 {
     3, 56, 1000
 };
@@ -389,9 +389,9 @@ static const unsigned char sha256_test_sum[6][32] =
 /*
  * Checkup routine
  */
-int mbedtls_sha256_self_test( int verbose )
+int32_t mbedtls_sha256_self_test( int32_t verbose )
 {
-    int i, j, k, buflen, ret = 0;
+    int32_t i, j, k, buflen, ret = 0;
     unsigned char *buf;
     unsigned char sha256sum[32];
     mbedtls_sha256_context ctx;

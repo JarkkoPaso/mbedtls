@@ -61,7 +61,7 @@
 
 #if !defined(MBEDTLS_AES_C) || !defined(MBEDTLS_SHA256_C) || \
     !defined(MBEDTLS_FS_IO) || !defined(MBEDTLS_MD_C)
-int main( void )
+int32_t main( void )
 {
     mbedtls_printf("MBEDTLS_AES_C and/or MBEDTLS_SHA256_C "
                     "and/or MBEDTLS_FS_IO and/or MBEDTLS_MD_C "
@@ -69,12 +69,12 @@ int main( void )
     return( 0 );
 }
 #else
-int main( int argc, char *argv[] )
+int32_t main( int32_t argc, char *argv[] )
 {
-    int ret = 1;
+    int32_t ret = 1;
 
-    unsigned int i, n;
-    int mode, lastn;
+    uint32_t i, n;
+    int32_t mode, lastn;
     size_t keylen;
     FILE *fkey, *fin = NULL, *fout = NULL;
 
@@ -168,7 +168,7 @@ int main( int argc, char *argv[] )
             keylen = 0;
 
             while( sscanf( p, "%02X", &n ) > 0 &&
-                   keylen < (int) sizeof( key ) )
+                   keylen < (int32_t) sizeof( key ) )
             {
                 key[keylen++] = (unsigned char) n;
                 p += 2;
@@ -178,8 +178,8 @@ int main( int argc, char *argv[] )
         {
             keylen = strlen( argv[4] );
 
-            if( keylen > (int) sizeof( key ) )
-                keylen = (int) sizeof( key );
+            if( keylen > (int32_t) sizeof( key ) )
+                keylen = (int32_t) sizeof( key );
 
             memcpy( key, argv[4], keylen );
         }
@@ -243,7 +243,7 @@ int main( int argc, char *argv[] )
          * The last four bits in the IV are actually used
          * to store the file size modulo the AES block size.
          */
-        lastn = (int)( filesize & 0x0F );
+        lastn = (int32_t)( filesize & 0x0F );
 
         IV[15] = (unsigned char)
             ( ( IV[15] & 0xF0 ) | lastn );
@@ -281,7 +281,7 @@ int main( int argc, char *argv[] )
          */
         for( offset = 0; offset < filesize; offset += 16 )
         {
-            n = ( filesize - offset > 16 ) ? 16 : (int)
+            n = ( filesize - offset > 16 ) ? 16 : (int32_t)
                 ( filesize - offset );
 
             if( fread( buffer, 1, n, fin ) != (size_t) n )

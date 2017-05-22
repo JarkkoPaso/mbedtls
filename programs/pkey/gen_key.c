@@ -51,7 +51,7 @@
 
 #define DEV_RANDOM_THRESHOLD        32
 
-int dev_random_entropy_poll( void *data, unsigned char *output,
+int32_t dev_random_entropy_poll( void *data, unsigned char *output,
                              size_t len, size_t *olen )
 {
     FILE *file;
@@ -123,7 +123,7 @@ int dev_random_entropy_poll( void *data, unsigned char *output,
 #if !defined(MBEDTLS_PK_WRITE_C) || !defined(MBEDTLS_PEM_WRITE_C) || \
     !defined(MBEDTLS_FS_IO) || !defined(MBEDTLS_ENTROPY_C) || \
     !defined(MBEDTLS_CTR_DRBG_C)
-int main( void )
+int32_t main( void )
 {
     mbedtls_printf( "MBEDTLS_PK_WRITE_C and/or MBEDTLS_FS_IO and/or "
             "MBEDTLS_ENTROPY_C and/or MBEDTLS_CTR_DRBG_C and/or "
@@ -137,17 +137,17 @@ int main( void )
  */
 struct options
 {
-    int type;                   /* the type of key to generate          */
-    int rsa_keysize;            /* length of key in bits                */
-    int ec_curve;               /* curve identifier for EC keys         */
+    int32_t type;                   /* the type of key to generate          */
+    int32_t rsa_keysize;            /* length of key in bits                */
+    int32_t ec_curve;               /* curve identifier for EC keys         */
     const char *filename;       /* filename of the key file             */
-    int format;                 /* the output format to use             */
-    int use_dev_random;         /* use /dev/random as entropy source    */
+    int32_t format;                 /* the output format to use             */
+    int32_t use_dev_random;         /* use /dev/random as entropy source    */
 } opt;
 
-static int write_private_key( mbedtls_pk_context *key, const char *output_file )
+static int32_t write_private_key( mbedtls_pk_context *key, const char *output_file )
 {
-    int ret;
+    int32_t ret;
     FILE *f;
     unsigned char output_buf[16000];
     unsigned char *c = output_buf;
@@ -184,12 +184,12 @@ static int write_private_key( mbedtls_pk_context *key, const char *output_file )
     return( 0 );
 }
 
-int main( int argc, char *argv[] )
+int32_t main( int32_t argc, char *argv[] )
 {
-    int ret = 0;
+    int32_t ret = 0;
     mbedtls_pk_context key;
     char buf[1024];
-    int i;
+    int32_t i;
     char *p, *q;
     mbedtls_entropy_context entropy;
     mbedtls_ctr_drbg_context ctr_drbg;

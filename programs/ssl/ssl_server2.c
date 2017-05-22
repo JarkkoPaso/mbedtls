@@ -41,7 +41,7 @@
 #if !defined(MBEDTLS_ENTROPY_C) || \
     !defined(MBEDTLS_SSL_TLS_C) || !defined(MBEDTLS_SSL_SRV_C) || \
     !defined(MBEDTLS_NET_C) || !defined(MBEDTLS_CTR_DRBG_C)
-int main( void )
+int32_t main( void )
 {
     mbedtls_printf("MBEDTLS_ENTROPY_C and/or "
            "MBEDTLS_SSL_TLS_C and/or MBEDTLS_SSL_SRV_C and/or "
@@ -63,11 +63,6 @@ int main( void )
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdint.h>
-
-#if !defined(_MSC_VER)
-#include <inttypes.h>
-#endif
 
 #if !defined(_WIN32)
 #include <signal.h>
@@ -118,7 +113,7 @@ int main( void )
 #define DFL_ALLOW_LEGACY        -2
 #define DFL_RENEGOTIATE         0
 #define DFL_RENEGO_DELAY        -2
-#define DFL_RENEGO_PERIOD       ( (uint64_t)-1 )
+#define DFL_RENEGO_PERIOD       -1
 #define DFL_EXCHANGES           1
 #define DFL_MIN_VERSION         -1
 #define DFL_MAX_VERSION         -1
@@ -297,7 +292,7 @@ int main( void )
     "    renegotiation=%%d    default: 0 (disabled)\n"      \
     "    renegotiate=%%d      default: 0 (disabled)\n"      \
     "    renego_delay=%%d     default: -2 (library default)\n" \
-    "    renego_period=%%d    default: (2^64 - 1 for TLS, 2^48 - 1 for DTLS)\n"
+    "    renego_period=%%d    default: (library default)\n"
 #else
 #define USAGE_RENEGO ""
 #endif
@@ -356,19 +351,6 @@ int main( void )
     "    force_ciphersuite=<name>    default: all enabled\n"            \
     " acceptable ciphersuite names:\n"
 
-
-#define PUT_UINT64_BE(out_be,in_le,i)                                   \
-{                                                                       \
-    (out_be)[(i) + 0] = (unsigned char)( ( (in_le) >> 56 ) & 0xFF );    \
-    (out_be)[(i) + 1] = (unsigned char)( ( (in_le) >> 48 ) & 0xFF );    \
-    (out_be)[(i) + 2] = (unsigned char)( ( (in_le) >> 40 ) & 0xFF );    \
-    (out_be)[(i) + 3] = (unsigned char)( ( (in_le) >> 32 ) & 0xFF );    \
-    (out_be)[(i) + 4] = (unsigned char)( ( (in_le) >> 24 ) & 0xFF );    \
-    (out_be)[(i) + 5] = (unsigned char)( ( (in_le) >> 16 ) & 0xFF );    \
-    (out_be)[(i) + 6] = (unsigned char)( ( (in_le) >> 8  ) & 0xFF );    \
-    (out_be)[(i) + 7] = (unsigned char)( ( (in_le) >> 0  ) & 0xFF );    \
-}
-
 /*
  * global options
  */
@@ -376,8 +358,8 @@ struct options
 {
     const char *server_addr;    /* address on which the ssl service runs    */
     const char *server_port;    /* port on which the ssl service runs       */
-    int debug_level;            /* level of debugging                       */
-    int nbio;                   /* should I/O be blocking?                  */
+    int32_t debug_level;            /* level of debugging                       */
+    int32_t nbio;                   /* should I/O be blocking?                  */
     uint32_t read_timeout;      /* timeout on mbedtls_ssl_read() in milliseconds    */
     const char *ca_file;        /* the file with the CA certificate(s)      */
     const char *ca_path;        /* the path with the CA certificate(s) reside */
@@ -389,39 +371,39 @@ struct options
     const char *psk_identity;   /* the pre-shared key identity              */
     char *psk_list;             /* list of PSK id/key pairs for callback    */
     const char *ecjpake_pw;     /* the EC J-PAKE password                   */
-    int force_ciphersuite[2];   /* protocol/ciphersuite to use, or all      */
+    int32_t force_ciphersuite[2];   /* protocol/ciphersuite to use, or all      */
     const char *version_suites; /* per-version ciphersuites                 */
-    int renegotiation;          /* enable / disable renegotiation           */
-    int allow_legacy;           /* allow legacy renegotiation               */
-    int renegotiate;            /* attempt renegotiation?                   */
-    int renego_delay;           /* delay before enforcing renegotiation     */
-    uint64_t renego_period;     /* period for automatic renegotiation       */
-    int exchanges;              /* number of data exchanges                 */
-    int min_version;            /* minimum protocol version accepted        */
-    int max_version;            /* maximum protocol version accepted        */
-    int arc4;                   /* flag for arc4 suites support             */
-    int auth_mode;              /* verify mode for connection               */
+    int32_t renegotiation;          /* enable / disable renegotiation           */
+    int32_t allow_legacy;           /* allow legacy renegotiation               */
+    int32_t renegotiate;            /* attempt renegotiation?                   */
+    int32_t renego_delay;           /* delay before enforcing renegotiation     */
+    int32_t renego_period;          /* period for automatic renegotiation       */
+    int32_t exchanges;              /* number of data exchanges                 */
+    int32_t min_version;            /* minimum protocol version accepted        */
+    int32_t max_version;            /* maximum protocol version accepted        */
+    int32_t arc4;                   /* flag for arc4 suites support             */
+    int32_t auth_mode;              /* verify mode for connection               */
     unsigned char mfl_code;     /* code for maximum fragment length         */
-    int trunc_hmac;             /* accept truncated hmac?                   */
-    int tickets;                /* enable / disable session tickets         */
-    int ticket_timeout;         /* session ticket lifetime                  */
-    int cache_max;              /* max number of session cache entries      */
-    int cache_timeout;          /* expiration delay of session cache entries */
+    int32_t trunc_hmac;             /* accept truncated hmac?                   */
+    int32_t tickets;                /* enable / disable session tickets         */
+    int32_t ticket_timeout;         /* session ticket lifetime                  */
+    int32_t cache_max;              /* max number of session cache entries      */
+    int32_t cache_timeout;          /* expiration delay of session cache entries */
     char *sni;                  /* string describing sni information        */
     const char *alpn_string;    /* ALPN supported protocols                 */
     const char *dhm_file;       /* the file with the DH parameters          */
-    int extended_ms;            /* allow negotiation of extended MS?        */
-    int etm;                    /* allow negotiation of encrypt-then-MAC?   */
-    int transport;              /* TLS or DTLS?                             */
-    int cookies;                /* Use cookies for DTLS? -1 to break them   */
-    int anti_replay;            /* Use anti-replay for DTLS? -1 for default */
+    int32_t extended_ms;            /* allow negotiation of extended MS?        */
+    int32_t etm;                    /* allow negotiation of encrypt-then-MAC?   */
+    int32_t transport;              /* TLS or DTLS?                             */
+    int32_t cookies;                /* Use cookies for DTLS? -1 to break them   */
+    int32_t anti_replay;            /* Use anti-replay for DTLS? -1 for default */
     uint32_t hs_to_min;         /* Initial value of DTLS handshake timer    */
     uint32_t hs_to_max;         /* Max value of DTLS handshake timer        */
-    int badmac_limit;           /* Limit of records with bad MAC            */
+    int32_t badmac_limit;           /* Limit of records with bad MAC            */
 } opt;
 
-static void my_debug( void *ctx, int level,
-                      const char *file, int line,
+static void my_debug( void *ctx, int32_t level,
+                      const char *file, int32_t line,
                       const char *str )
 {
     const char *p, *basename;
@@ -439,10 +421,10 @@ static void my_debug( void *ctx, int level,
  * Test recv/send functions that make sure each try returns
  * WANT_READ/WANT_WRITE at least once before sucesseding
  */
-static int my_recv( void *ctx, unsigned char *buf, size_t len )
+static int32_t my_recv( void *ctx, unsigned char *buf, size_t len )
 {
-    static int first_try = 1;
-    int ret;
+    static int32_t first_try = 1;
+    int32_t ret;
 
     if( first_try )
     {
@@ -456,10 +438,10 @@ static int my_recv( void *ctx, unsigned char *buf, size_t len )
     return( ret );
 }
 
-static int my_send( void *ctx, const unsigned char *buf, size_t len )
+static int32_t my_send( void *ctx, const unsigned char *buf, size_t len )
 {
-    static int first_try = 1;
-    int ret;
+    static int32_t first_try = 1;
+    int32_t ret;
 
     if( first_try )
     {
@@ -476,7 +458,7 @@ static int my_send( void *ctx, const unsigned char *buf, size_t len )
 /*
  * Return authmode from string, or -1 on error
  */
-static int get_auth_mode( const char *s )
+static int32_t get_auth_mode( const char *s )
 {
     if( strcmp( s, "none" ) == 0 )
         return( MBEDTLS_SSL_VERIFY_NONE );
@@ -507,7 +489,7 @@ struct _sni_entry {
     mbedtls_pk_context *key;
     mbedtls_x509_crt* ca;
     mbedtls_x509_crl* crl;
-    int authmode;
+    int32_t authmode;
     sni_entry *next;
 };
 
@@ -624,7 +606,7 @@ error:
 /*
  * SNI callback.
  */
-int sni_callback( void *p_info, mbedtls_ssl_context *ssl,
+int32_t sni_callback( void *p_info, mbedtls_ssl_context *ssl,
                   const unsigned char *name, size_t name_len )
 {
     const sni_entry *cur = (const sni_entry *) p_info;
@@ -667,7 +649,7 @@ int sni_callback( void *p_info, mbedtls_ssl_context *ssl,
  * Convert a hex string to bytes.
  * Return 0 on success, -1 on error.
  */
-int unhexify( unsigned char *output, const char *input, size_t *olen )
+int32_t unhexify( unsigned char *output, const char *input, size_t *olen )
 {
     unsigned char c;
     size_t j;
@@ -761,7 +743,7 @@ error:
 /*
  * PSK callback
  */
-int psk_callback( void *p_info, mbedtls_ssl_context *ssl,
+int32_t psk_callback( void *p_info, mbedtls_ssl_context *ssl,
                   const unsigned char *name, size_t name_len )
 {
     psk_entry *cur = (psk_entry *) p_info;
@@ -785,8 +767,8 @@ static mbedtls_net_context listen_fd, client_fd;
 
 /* Interruption handler to ensure clean exit (for valgrind testing) */
 #if !defined(_WIN32)
-static int received_sigterm = 0;
-void term_handler( int sig )
+static int32_t received_sigterm = 0;
+void term_handler( int32_t sig )
 {
     ((void) sig);
     received_sigterm = 1;
@@ -795,10 +777,10 @@ void term_handler( int sig )
 }
 #endif
 
-int main( int argc, char *argv[] )
+int32_t main( int32_t argc, char *argv[] )
 {
-    int ret = 0, len, written, frags, exchanges_left;
-    int version_suites[4][2];
+    int32_t ret = 0, len, written, frags, exchanges_left;
+    int32_t version_suites[4][2];
     unsigned char buf[IO_BUF_LEN];
 #if defined(MBEDTLS_KEY_EXCHANGE__SOME__PSK_ENABLED)
     unsigned char psk[MBEDTLS_PSK_MAX_LEN];
@@ -829,7 +811,7 @@ int main( int argc, char *argv[] )
     mbedtls_pk_context pkey;
     mbedtls_x509_crt srvcert2;
     mbedtls_pk_context pkey2;
-    int key_cert_init = 0, key_cert_init2 = 0;
+    int32_t key_cert_init = 0, key_cert_init2 = 0;
 #endif
 #if defined(MBEDTLS_DHM_C) && defined(MBEDTLS_FS_IO)
     mbedtls_dhm_context dhm;
@@ -850,9 +832,9 @@ int main( int argc, char *argv[] )
     unsigned char alloc_buf[100000];
 #endif
 
-    int i;
+    int32_t i;
     char *p, *q;
-    const int *list;
+    const int32_t *list;
 
 #if defined(MBEDTLS_MEMORY_BUFFER_ALLOC_C)
     mbedtls_memory_buffer_alloc_init( alloc_buf, sizeof(alloc_buf) );
@@ -975,7 +957,7 @@ int main( int argc, char *argv[] )
             opt.server_addr = q;
         else if( strcmp( p, "dtls" ) == 0 )
         {
-            int t = atoi( q );
+            int32_t t = atoi( q );
             if( t == 0 )
                 opt.transport = MBEDTLS_SSL_TRANSPORT_STREAM;
             else if( t == 1 )
@@ -1059,13 +1041,8 @@ int main( int argc, char *argv[] )
         }
         else if( strcmp( p, "renego_period" ) == 0 )
         {
-#if defined(_MSC_VER)
-            opt.renego_period = _strtoui64( q, NULL, 10 );
-#else
-            if( sscanf( q, "%" SCNu64, &opt.renego_period ) != 1 )
-                goto usage;
-#endif /* _MSC_VER */
-            if( opt.renego_period < 2 )
+            opt.renego_period = atoi( q );
+            if( opt.renego_period < 2 || opt.renego_period > 255 )
                 goto usage;
         }
         else if( strcmp( p, "exchanges" ) == 0 )
@@ -1381,7 +1358,7 @@ int main( int argc, char *argv[] )
         i = 0;
 
         /* Leave room for a final NULL in alpn_list */
-        while( i < (int) sizeof alpn_list - 1 && *p != '\0' )
+        while( i < (int32_t) sizeof alpn_list - 1 && *p != '\0' )
         {
             alpn_list[i++] = p;
 
@@ -1780,7 +1757,7 @@ int main( int argc, char *argv[] )
 
     if( opt.renego_period != DFL_RENEGO_PERIOD )
     {
-        PUT_UINT64_BE( renego_period, opt.renego_period, 0 );
+        renego_period[7] = opt.renego_period;
         mbedtls_ssl_conf_renegotiation_period( &conf, renego_period );
     }
 #endif
@@ -2006,7 +1983,7 @@ handshake:
 
 #if defined(MBEDTLS_SSL_MAX_FRAGMENT_LENGTH)
     mbedtls_printf( "    [ Maximum fragment length is %u ]\n",
-                    (unsigned int) mbedtls_ssl_get_max_frag_len( &ssl ) );
+                    (uint32_t) mbedtls_ssl_get_max_frag_len( &ssl ) );
 #endif
 
 #if defined(MBEDTLS_SSL_ALPN)
@@ -2066,7 +2043,7 @@ data_exchange:
     {
         do
         {
-            int terminated = 0;
+            int32_t terminated = 0;
             len = sizeof( buf ) - 1;
             memset( buf, 0, sizeof( buf ) );
             ret = mbedtls_ssl_read( &ssl, buf, len );
@@ -2108,11 +2085,11 @@ data_exchange:
             }
             else
             {
-                int extra_len, ori_len;
+                int32_t extra_len, ori_len;
                 unsigned char *larger_buf;
 
                 ori_len = ret;
-                extra_len = (int) mbedtls_ssl_get_bytes_avail( &ssl );
+                extra_len = (int32_t) mbedtls_ssl_get_bytes_avail( &ssl );
 
                 larger_buf = mbedtls_calloc( 1, ori_len + extra_len + 1 );
                 if( larger_buf == NULL )

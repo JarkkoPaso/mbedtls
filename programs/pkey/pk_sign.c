@@ -37,7 +37,7 @@
     !defined(MBEDTLS_SHA256_C) || !defined(MBEDTLS_MD_C) || \
     !defined(MBEDTLS_PK_PARSE_C) || !defined(MBEDTLS_FS_IO) ||    \
     !defined(MBEDTLS_CTR_DRBG_C)
-int main( void )
+int32_t main( void )
 {
     mbedtls_printf("MBEDTLS_BIGNUM_C and/or MBEDTLS_ENTROPY_C and/or "
            "MBEDTLS_SHA256_C and/or MBEDTLS_MD_C and/or "
@@ -56,10 +56,10 @@ int main( void )
 #include <stdio.h>
 #include <string.h>
 
-int main( int argc, char *argv[] )
+int32_t main( int32_t argc, char *argv[] )
 {
     FILE *f;
-    int ret = 1;
+    int32_t ret = 1;
     mbedtls_pk_context pk;
     mbedtls_entropy_context entropy;
     mbedtls_ctr_drbg_context ctr_drbg;
