@@ -85,7 +85,7 @@
     "\n"
 
 #if !defined(MBEDTLS_PK_WRITE_C) || !defined(MBEDTLS_FS_IO)
-int32_t main( void )
+int main( void )
 {
     mbedtls_printf( "MBEDTLS_PK_WRITE_C and/or MBEDTLS_FS_IO not defined.\n" );
     return( 0 );
@@ -187,7 +187,7 @@ static int32_t write_private_key( mbedtls_pk_context *key, const char *output_fi
     return( 0 );
 }
 
-int32_t main( int32_t argc, char *argv[] )
+int main( int32_t argc, char *argv[] )
 {
     int32_t ret = 0;
     mbedtls_pk_context key;

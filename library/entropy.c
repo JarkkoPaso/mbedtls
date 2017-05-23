@@ -530,8 +530,8 @@ static int32_t mbedtls_entropy_source_self_test_check_bits( const unsigned char 
 int32_t mbedtls_entropy_source_self_test( int32_t verbose )
 {
     int32_t ret = 0;
-    unsigned char buf0[2 * sizeof( unsigned long long int32_t )];
-    unsigned char buf1[2 * sizeof( unsigned long long int32_t )];
+    unsigned char buf0[2 * sizeof( unsigned long long int )];
+    unsigned char buf1[2 * sizeof( unsigned long long int )];
 
     if( verbose != 0 )
         mbedtls_printf( "  ENTROPY_BIAS test: " );

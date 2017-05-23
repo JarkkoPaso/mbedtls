@@ -23,7 +23,7 @@
 
 #include <windows.h>
 
-extern int32_t main( int32_t, const char ** );
+extern int main( int32_t, const char ** );
 
 int32_t _tmain( int32_t argc, _TCHAR* targv[] )
 {

@@ -36,7 +36,7 @@
 #endif
 
 #if !defined(MBEDTLS_TIMING_C)
-int32_t main( void )
+int main( void )
 {
     mbedtls_printf("MBEDTLS_TIMING_C not defined.\n");
     return( 0 );
@@ -243,7 +243,7 @@ typedef struct {
          rsa, dhm, ecdsa, ecdh;
 } todo_list;
 
-int32_t main( int32_t argc, char *argv[] )
+int main( int32_t argc, char *argv[] )
 {
     int32_t i;
     unsigned char tmp[200];

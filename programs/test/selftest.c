@@ -136,7 +136,7 @@ static void create_entropy_seed_file( void )
 }
 #endif
 
-int32_t main( int32_t argc, char *argv[] )
+int main( int32_t argc, char *argv[] )
 {
     int32_t v, suites_tested = 0, suites_failed = 0;
 #if defined(MBEDTLS_MEMORY_BUFFER_ALLOC_C) && defined(MBEDTLS_SELF_TEST)

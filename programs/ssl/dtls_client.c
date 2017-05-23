@@ -38,7 +38,7 @@
     !defined(MBEDTLS_ENTROPY_C) || !defined(MBEDTLS_CTR_DRBG_C) ||        \
     !defined(MBEDTLS_X509_CRT_PARSE_C) || !defined(MBEDTLS_RSA_C) ||      \
     !defined(MBEDTLS_CERTS_C)
-int32_t main( void )
+int main( void )
 {
     mbedtls_printf( "MBEDTLS_SSL_CLI_C and/or MBEDTLS_SSL_PROTO_DTLS and/or "
             "MBEDTLS_NET_C and/or MBEDTLS_TIMING_C and/or "
@@ -80,7 +80,7 @@ static void my_debug( void *ctx, int32_t level,
     fflush(  (FILE *) ctx  );
 }
 
-int32_t main( int32_t argc, char *argv[] )
+int main( int32_t argc, char *argv[] )
 {
     int32_t ret, len;
     mbedtls_net_context server_fd;

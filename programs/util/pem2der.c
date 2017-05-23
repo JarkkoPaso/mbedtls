@@ -54,7 +54,7 @@
     "\n"
 
 #if !defined(MBEDTLS_BASE64_C) || !defined(MBEDTLS_FS_IO)
-int32_t main( void )
+int main( void )
 {
     mbedtls_printf("MBEDTLS_BASE64_C and/or MBEDTLS_FS_IO not defined.\n");
     return( 0 );
@@ -176,7 +176,7 @@ static int32_t write_file( const char *path, unsigned char *buf, size_t n )
     return( 0 );
 }
 
-int32_t main( int32_t argc, char *argv[] )
+int main( int32_t argc, char *argv[] )
 {
     int32_t ret = 0;
     unsigned char *pem_buffer = NULL;

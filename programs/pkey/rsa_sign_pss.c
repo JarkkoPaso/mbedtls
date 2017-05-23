@@ -37,7 +37,7 @@
     !defined(MBEDTLS_RSA_C) || !defined(MBEDTLS_SHA256_C) ||        \
     !defined(MBEDTLS_PK_PARSE_C) || !defined(MBEDTLS_FS_IO) ||    \
     !defined(MBEDTLS_CTR_DRBG_C)
-int32_t main( void )
+int main( void )
 {
     mbedtls_printf("MBEDTLS_MD_C and/or MBEDTLS_ENTROPY_C and/or "
            "MBEDTLS_RSA_C and/or MBEDTLS_SHA256_C and/or "
@@ -57,7 +57,7 @@ int32_t main( void )
 #include <stdio.h>
 #include <string.h>
 
-int32_t main( int32_t argc, char *argv[] )
+int main( int32_t argc, char *argv[] )
 {
     FILE *f;
     int32_t ret = 1;

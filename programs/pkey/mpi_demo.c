@@ -39,13 +39,13 @@
 #endif
 
 #if !defined(MBEDTLS_BIGNUM_C) || !defined(MBEDTLS_FS_IO)
-int32_t main( void )
+int main( void )
 {
     mbedtls_printf("MBEDTLS_BIGNUM_C and/or MBEDTLS_FS_IO not defined.\n");
     return( 0 );
 }
 #else
-int32_t main( void )
+int main( void )
 {
     int32_t ret;
     mbedtls_mpi E, P, Q, N, H, D, X, Y, Z;

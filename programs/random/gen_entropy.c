@@ -40,13 +40,13 @@
 #endif
 
 #if !defined(MBEDTLS_ENTROPY_C) || !defined(MBEDTLS_FS_IO)
-int32_t main( void )
+int main( void )
 {
     mbedtls_printf("MBEDTLS_ENTROPY_C and/or MBEDTLS_FS_IO not defined.\n");
     return( 0 );
 }
 #else
-int32_t main( int32_t argc, char *argv[] )
+int main( int32_t argc, char *argv[] )
 {
     FILE *f;
     int32_t i, k, ret;

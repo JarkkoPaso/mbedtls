@@ -41,7 +41,7 @@
     !defined(MBEDTLS_CERTS_C) || !defined(MBEDTLS_PEM_PARSE_C) ||         \
     !defined(MBEDTLS_TIMING_C)
 
-int32_t main( void )
+int main( void )
 {
     printf( "MBEDTLS_SSL_SRV_C and/or MBEDTLS_SSL_PROTO_DTLS and/or "
             "MBEDTLS_SSL_COOKIE_C and/or MBEDTLS_NET_C and/or "
@@ -89,7 +89,7 @@ static void my_debug( void *ctx, int32_t level,
     fflush(  (FILE *) ctx  );
 }
 
-int32_t main( void )
+int main( void )
 {
     int32_t ret, len;
     mbedtls_net_context listen_fd, client_fd;

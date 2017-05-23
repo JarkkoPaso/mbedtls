@@ -65,13 +65,13 @@
 
 #if !defined(MBEDTLS_CIPHER_C) || !defined(MBEDTLS_MD_C) || \
     !defined(MBEDTLS_FS_IO)
-int32_t main( void )
+int main( void )
 {
     mbedtls_printf("MBEDTLS_CIPHER_C and/or MBEDTLS_MD_C and/or MBEDTLS_FS_IO not defined.\n");
     return( 0 );
 }
 #else
-int32_t main( int32_t argc, char *argv[] )
+int main( int32_t argc, char *argv[] )
 {
     int32_t ret = 1, i, n;
     int32_t mode;

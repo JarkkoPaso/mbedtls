@@ -61,7 +61,7 @@
 
 #if !defined(MBEDTLS_AES_C) || !defined(MBEDTLS_SHA256_C) || \
     !defined(MBEDTLS_FS_IO) || !defined(MBEDTLS_MD_C)
-int32_t main( void )
+int main( void )
 {
     mbedtls_printf("MBEDTLS_AES_C and/or MBEDTLS_SHA256_C "
                     "and/or MBEDTLS_FS_IO and/or MBEDTLS_MD_C "
@@ -69,7 +69,7 @@ int32_t main( void )
     return( 0 );
 }
 #else
-int32_t main( int32_t argc, char *argv[] )
+int main( int32_t argc, char *argv[] )
 {
     int32_t ret = 1;
 

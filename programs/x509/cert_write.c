@@ -37,7 +37,7 @@
     !defined(MBEDTLS_ENTROPY_C) || !defined(MBEDTLS_CTR_DRBG_C) || \
     !defined(MBEDTLS_ERROR_C) || !defined(MBEDTLS_SHA256_C) || \
     !defined(MBEDTLS_PEM_WRITE_C)
-int32_t main( void )
+int main( void )
 {
     mbedtls_printf( "MBEDTLS_X509_CRT_WRITE_C and/or MBEDTLS_X509_CRT_PARSE_C and/or "
             "MBEDTLS_FS_IO and/or MBEDTLS_SHA256_C and/or "
@@ -182,7 +182,7 @@ int32_t write_certificate( mbedtls_x509write_cert *crt, const char *output_file,
     return( 0 );
 }
 
-int32_t main( int32_t argc, char *argv[] )
+int main( int32_t argc, char *argv[] )
 {
     int32_t ret = 0;
     mbedtls_x509_crt issuer_crt;

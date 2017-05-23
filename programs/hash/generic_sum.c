@@ -41,7 +41,7 @@
 #endif
 
 #if !defined(MBEDTLS_MD_C) || !defined(MBEDTLS_FS_IO)
-int32_t main( void )
+int main( void )
 {
     mbedtls_printf("MBEDTLS_MD_C and/or MBEDTLS_FS_IO not defined.\n");
     return( 0 );
@@ -167,7 +167,7 @@ static int32_t generic_check( const mbedtls_md_info_t *md_info, char *filename )
     return( nb_err1 != 0 || nb_err2 != 0 );
 }
 
-int32_t main( int32_t argc, char *argv[] )
+int main( int32_t argc, char *argv[] )
 {
     int32_t ret, i;
     const mbedtls_md_info_t *md_info;

@@ -41,13 +41,13 @@
 #endif
 
 #if !defined(MBEDTLS_HAVEGE_C) || !defined(MBEDTLS_FS_IO)
-int32_t main( void )
+int main( void )
 {
     mbedtls_printf("MBEDTLS_HAVEGE_C not defined.\n");
     return( 0 );
 }
 #else
-int32_t main( int32_t argc, char *argv[] )
+int main( int32_t argc, char *argv[] )
 {
     FILE *f;
     time_t t;
