@@ -208,7 +208,7 @@ int32_t mbedtls_pk_verify_restartable( mbedtls_pk_context *ctx,
 /*
  * Verify a signature
  */
-int mbedtls_pk_verify( mbedtls_pk_context *ctx, mbedtls_md_type_t md_alg,
+int32_t mbedtls_pk_verify( mbedtls_pk_context *ctx, mbedtls_md_type_t md_alg,
                const unsigned char *hash, size_t hash_len,
                const unsigned char *sig, size_t sig_len )
 {
@@ -308,10 +308,10 @@ int32_t mbedtls_pk_sign_restartable( mbedtls_pk_context *ctx,
 /*
  * Make a signature
  */
-int mbedtls_pk_sign( mbedtls_pk_context *ctx, mbedtls_md_type_t md_alg,
+int32_t mbedtls_pk_sign( mbedtls_pk_context *ctx, mbedtls_md_type_t md_alg,
              const unsigned char *hash, size_t hash_len,
              unsigned char *sig, size_t *sig_len,
-             int (*f_rng)(void *, unsigned char *, size_t), void *p_rng )
+             int32_t (*f_rng)(void *, unsigned char *, size_t), void *p_rng )
 {
     return( mbedtls_pk_sign_restartable( ctx, md_alg, hash, hash_len,
                                          sig, sig_len, f_rng, p_rng, NULL ) );

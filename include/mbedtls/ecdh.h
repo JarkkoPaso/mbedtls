@@ -53,7 +53,7 @@ typedef struct
     mbedtls_ecp_point Vf;       /*!<  un-blinding value (for later)         */
     mbedtls_mpi _d;             /*!<  previous d (for later)                */
 #if defined(MBEDTLS_ECP_RESTARTABLE)
-    int restart_enabled;        /*!<  enable restartalbe EC computations?   */
+    int32_t restart_enabled;    /*!<  enable restartalbe EC computations?   */
     mbedtls_ecp_restart_ctx rs; /*!<  restart context for EC computations   */
 #endif
 }

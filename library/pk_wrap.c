@@ -258,23 +258,23 @@ static int32_t eckey_sign_wrap( void *ctx, mbedtls_md_type_t md_alg,
 
 #if defined(MBEDTLS_ECP_RESTARTABLE)
 /* Forward declarations */
-static int ecdsa_verify_rs_wrap( void *ctx, mbedtls_md_type_t md_alg,
+static int32_t ecdsa_verify_rs_wrap( void *ctx, mbedtls_md_type_t md_alg,
                        const unsigned char *hash, size_t hash_len,
                        const unsigned char *sig, size_t sig_len,
                        void *rs_ctx );
 
-static int ecdsa_sign_rs_wrap( void *ctx, mbedtls_md_type_t md_alg,
+static int32_t ecdsa_sign_rs_wrap( void *ctx, mbedtls_md_type_t md_alg,
                    const unsigned char *hash, size_t hash_len,
                    unsigned char *sig, size_t *sig_len,
-                   int (*f_rng)(void *, unsigned char *, size_t), void *p_rng,
+                   int32_t (*f_rng)(void *, unsigned char *, size_t), void *p_rng,
                    void *rs_ctx );
 
-static int eckey_verify_rs_wrap( void *ctx, mbedtls_md_type_t md_alg,
+static int32_t eckey_verify_rs_wrap( void *ctx, mbedtls_md_type_t md_alg,
                        const unsigned char *hash, size_t hash_len,
                        const unsigned char *sig, size_t sig_len,
                        void *p_rs_ctx )
 {
-    int ret;
+    int32_t ret;
     mbedtls_ecdsa_context ecdsa, *p_ecdsa = &ecdsa;
     mbedtls_ecdsa_restart_ctx *rs_ctx = p_rs_ctx;
 
@@ -319,13 +319,13 @@ cleanup:
     return( ret );
 }
 
-static int eckey_sign_rs_wrap( void *ctx, mbedtls_md_type_t md_alg,
+static int32_t eckey_sign_rs_wrap( void *ctx, mbedtls_md_type_t md_alg,
                    const unsigned char *hash, size_t hash_len,
                    unsigned char *sig, size_t *sig_len,
-                   int (*f_rng)(void *, unsigned char *, size_t), void *p_rng,
+                   int32_t (*f_rng)(void *, unsigned char *, size_t), void *p_rng,
                    void *p_rs_ctx )
 {
-    int ret;
+    int32_t ret;
     mbedtls_ecdsa_context ecdsa, *p_ecdsa = &ecdsa;
     mbedtls_ecdsa_restart_ctx *rs_ctx = p_rs_ctx;
 
@@ -490,12 +490,12 @@ static int32_t ecdsa_sign_wrap( void *ctx, mbedtls_md_type_t md_alg,
 }
 
 #if defined(MBEDTLS_ECP_RESTARTABLE)
-static int ecdsa_verify_rs_wrap( void *ctx, mbedtls_md_type_t md_alg,
+static int32_t ecdsa_verify_rs_wrap( void *ctx, mbedtls_md_type_t md_alg,
                        const unsigned char *hash, size_t hash_len,
                        const unsigned char *sig, size_t sig_len,
                        void *rs_ctx )
 {
-    int ret;
+    int32_t ret;
     ((void) md_alg);
 
     ret = mbedtls_ecdsa_read_signature_restartable(
@@ -509,10 +509,10 @@ static int ecdsa_verify_rs_wrap( void *ctx, mbedtls_md_type_t md_alg,
     return( ret );
 }
 
-static int ecdsa_sign_rs_wrap( void *ctx, mbedtls_md_type_t md_alg,
+static int32_t ecdsa_sign_rs_wrap( void *ctx, mbedtls_md_type_t md_alg,
                    const unsigned char *hash, size_t hash_len,
                    unsigned char *sig, size_t *sig_len,
-                   int (*f_rng)(void *, unsigned char *, size_t), void *p_rng,
+                   int32_t (*f_rng)(void *, unsigned char *, size_t), void *p_rng,
                    void *rs_ctx )
 {
     return( mbedtls_ecdsa_write_signature_restartable(

@@ -215,11 +215,11 @@ int32_t mbedtls_ecdsa_write_signature( mbedtls_ecdsa_context *ctx, mbedtls_md_ty
  *                  MBEDTLS_ERR_ECP_IN_PROGRESS if maximum number of
  *                  operations was reached: see \c mbedtls_ecp_set_max_ops().
  */
-int mbedtls_ecdsa_write_signature_restartable( mbedtls_ecdsa_context *ctx,
+int32_t mbedtls_ecdsa_write_signature_restartable( mbedtls_ecdsa_context *ctx,
                            mbedtls_md_type_t md_alg,
                            const unsigned char *hash, size_t hlen,
                            unsigned char *sig, size_t *slen,
-                           int (*f_rng)(void *, unsigned char *, size_t),
+                           int32_t (*f_rng)(void *, unsigned char *, size_t),
                            void *p_rng,
                            mbedtls_ecdsa_restart_ctx *rs_ctx );
 
@@ -298,7 +298,7 @@ int32_t mbedtls_ecdsa_read_signature( mbedtls_ecdsa_context *ctx,
  *                  MBEDTLS_ERR_ECP_IN_PROGRESS if maximum number of
  *                  operations was reached: see \c mbedtls_ecp_set_max_ops().
  */
-int mbedtls_ecdsa_read_signature_restartable( mbedtls_ecdsa_context *ctx,
+int32_t mbedtls_ecdsa_read_signature_restartable( mbedtls_ecdsa_context *ctx,
                           const unsigned char *hash, size_t hlen,
                           const unsigned char *sig, size_t slen,
                           mbedtls_ecdsa_restart_ctx *rs_ctx );

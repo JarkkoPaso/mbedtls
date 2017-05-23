@@ -206,7 +206,7 @@ struct mbedtls_ssl_handshake_params
 #endif
 #endif /* MBEDTLS_X509_CRT_PARSE_C */
 #if defined(MBEDTLS_SSL__ECP_RESTARTABLE)
-    int ec_restart_enabled;             /*!< Handshake supports EC restart? */
+    int32_t ec_restart_enabled;             /*!< Handshake supports EC restart? */
     mbedtls_ecdsa_restart_ctx rs_ctx;   /*!< ECDSA restart context          */
     enum {
         ssl_ecrs_init = 0,              /*!< just getting started           */

@@ -711,7 +711,7 @@ static int32_t x509_crt_parse_der_core( mbedtls_x509_crt *crt, const unsigned ch
 
     memcpy( p, buf, crt->raw.len );
 
-    // Direct pointers to the new buffer 
+    // Direct pointers to the new buffer
     p += crt->raw.len - len;
     end = crt_end = p + len;
 
@@ -1373,7 +1373,7 @@ int32_t mbedtls_x509_crt_info( char *buf, size_t size, const char *prefix,
     }
 
     ret = mbedtls_snprintf( p, n, "%scert. version     : %d\n",
-                               prefix, (int)crt->version );
+                               prefix, (int32_t)crt->version );
     MBEDTLS_X509_SAFE_SNPRINTF;
     ret = mbedtls_snprintf( p, n, "%sserial number     : ",
                                prefix );
@@ -1394,16 +1394,16 @@ int32_t mbedtls_x509_crt_info( char *buf, size_t size, const char *prefix,
 
     ret = mbedtls_snprintf( p, n, "\n%sissued  on        : " \
                    "%04d-%02d-%02d %02d:%02d:%02d", prefix,
-                   (int)crt->valid_from.year, (int)crt->valid_from.mon,
-                   (int)crt->valid_from.day,  (int)crt->valid_from.hour,
-                   (int)crt->valid_from.min,  (int)crt->valid_from.sec );
+                   (int32_t)crt->valid_from.year, (int32_t)crt->valid_from.mon,
+                   (int32_t)crt->valid_from.day,  (int32_t)crt->valid_from.hour,
+                   (int32_t)crt->valid_from.min,  (int32_t)crt->valid_from.sec );
     MBEDTLS_X509_SAFE_SNPRINTF;
 
     ret = mbedtls_snprintf( p, n, "\n%sexpires on        : " \
                    "%04d-%02d-%02d %02d:%02d:%02d", prefix,
-                   (int)crt->valid_to.year, (int)crt->valid_to.mon,
-                   (int)crt->valid_to.day,  (int)crt->valid_to.hour,
-                   (int)crt->valid_to.min,  (int)crt->valid_to.sec );
+                   (int32_t)crt->valid_to.year, (int32_t)crt->valid_to.mon,
+                   (int32_t)crt->valid_to.day,  (int32_t)crt->valid_to.hour,
+                   (int32_t)crt->valid_to.min,  (int32_t)crt->valid_to.sec );
     MBEDTLS_X509_SAFE_SNPRINTF;
 
     ret = mbedtls_snprintf( p, n, "\n%ssigned using      : ", prefix );
@@ -1421,7 +1421,7 @@ int32_t mbedtls_x509_crt_info( char *buf, size_t size, const char *prefix,
     }
 
     ret = mbedtls_snprintf( p, n, "\n%s%-" BC "s: %d bits", prefix, key_size_str,
-                          (int) mbedtls_pk_get_bitlen( &crt->pk ) );
+                          (int32_t) mbedtls_pk_get_bitlen( &crt->pk ) );
     MBEDTLS_X509_SAFE_SNPRINTF;
 
     /*
@@ -1436,7 +1436,7 @@ int32_t mbedtls_x509_crt_info( char *buf, size_t size, const char *prefix,
 
         if( crt->max_pathlen > 0 )
         {
-            ret = mbedtls_snprintf( p, n, ", max_pathlen=%d", (int)crt->max_pathlen - 1 );
+            ret = mbedtls_snprintf( p, n, ", max_pathlen=%d", (int32_t)crt->max_pathlen - 1 );
             MBEDTLS_X509_SAFE_SNPRINTF;
         }
     }

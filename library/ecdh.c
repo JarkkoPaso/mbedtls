@@ -41,13 +41,13 @@
 /*
  * Generate public key (restartable version)
  */
-static int ecdh_gen_public_restartable( mbedtls_ecp_group *grp,
+static int32_t ecdh_gen_public_restartable( mbedtls_ecp_group *grp,
                     mbedtls_mpi *d, mbedtls_ecp_point *Q,
-                    int (*f_rng)(void *, unsigned char *, size_t),
+                    int32_t (*f_rng)(void *, unsigned char *, size_t),
                     void *p_rng,
                     mbedtls_ecp_restart_ctx *rs_ctx )
 {
-    int ret;
+    int32_t ret;
 
     /* If multiplication is in progress, we already generated a privkey */
 #if defined(MBEDTLS_ECP_RESTARTABLE)
@@ -112,9 +112,9 @@ cleanup:
 /*
  * Compute shared secret (SEC1 3.3.1)
  */
-int mbedtls_ecdh_compute_shared( mbedtls_ecp_group *grp, mbedtls_mpi *z,
+int32_t mbedtls_ecdh_compute_shared( mbedtls_ecp_group *grp, mbedtls_mpi *z,
                          const mbedtls_ecp_point *Q, const mbedtls_mpi *d,
-                         int (*f_rng)(void *, unsigned char *, size_t),
+                         int32_t (*f_rng)(void *, unsigned char *, size_t),
                          void *p_rng )
 {
     return( ecdh_compute_shared_restartable( grp, z, Q, d,

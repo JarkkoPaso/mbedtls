@@ -217,7 +217,7 @@ typedef struct
  * \return          0 is doing 'ops' basic ops is still allowed,
  *                  MBEDTLS_ERR_ECP_IN_PROGRESS otherwise.
  */
-int mbedtls_ecp_check_budget( const mbedtls_ecp_group *grp,
+int32_t mbedtls_ecp_check_budget( const mbedtls_ecp_group *grp,
                               mbedtls_ecp_restart_ctx *rs_ctx,
                               unsigned ops );
 
@@ -349,7 +349,7 @@ void mbedtls_ecp_set_max_ops( unsigned max_ops );
  * \return          0 if max_ops == 0 (restart disabled)
  *                  1 otherwise (restart enabled)
  */
-int mbedtls_ecp_restart_enabled( void );
+int32_t mbedtls_ecp_restart_enabled( void );
 #endif /* MBEDTLS_ECP_RESTARTABLE */
 
 /**
@@ -777,9 +777,9 @@ int32_t mbedtls_ecp_check_privkey( const mbedtls_ecp_group *grp, const mbedtls_m
  * \return          0 if successful,
  *                  or a MBEDTLS_ERR_ECP_XXX or MBEDTLS_MPI_XXX error code
  */
-int mbedtls_ecp_gen_privkey( const mbedtls_ecp_group *grp,
+int32_t mbedtls_ecp_gen_privkey( const mbedtls_ecp_group *grp,
                      mbedtls_mpi *d,
-                     int (*f_rng)(void *, unsigned char *, size_t),
+                     int32_t (*f_rng)(void *, unsigned char *, size_t),
                      void *p_rng );
 
 /**

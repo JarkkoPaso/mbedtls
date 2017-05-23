@@ -103,7 +103,7 @@ void mbedtls_ecp_set_max_ops( unsigned max_ops )
 /*
  * Check if restart is enabled
  */
-int mbedtls_ecp_restart_enabled( void )
+int32_t mbedtls_ecp_restart_enabled( void )
 {
     return( ecp_max_ops != 0 );
 }
@@ -225,7 +225,7 @@ void mbedtls_ecp_restart_free( mbedtls_ecp_restart_ctx *ctx )
 /*
  * Check if we can do the next step
  */
-int mbedtls_ecp_check_budget( const mbedtls_ecp_group *grp,
+int32_t mbedtls_ecp_check_budget( const mbedtls_ecp_group *grp,
                               mbedtls_ecp_restart_ctx *rs_ctx,
                               unsigned ops )
 {
@@ -1638,14 +1638,14 @@ cleanup:
  * this wrapper ensures that by replacing m by N - m if necessary, and
  * informs the caller that the result of multiplication will be negated.
  */
-static int ecp_comb_recode_scalar( const mbedtls_ecp_group *grp,
+static int32_t ecp_comb_recode_scalar( const mbedtls_ecp_group *grp,
                                    const mbedtls_mpi *m,
                                    unsigned char k[COMB_MAX_D + 1],
                                    size_t d,
                                    unsigned char w,
                                    unsigned char *parity_trick )
 {
-    int ret;
+    int32_t ret;
     mbedtls_mpi M, mm;
 
     mbedtls_mpi_init( &M );
@@ -1680,18 +1680,18 @@ cleanup:
  * Scalar recoding may use a parity trick that makes us compute -m * P,
  * if that is the case we'll need to recover m * P at the end.
  */
-static int ecp_mul_comb_after_precomp( const mbedtls_ecp_group *grp,
+static int32_t ecp_mul_comb_after_precomp( const mbedtls_ecp_group *grp,
                                 mbedtls_ecp_point *R,
                                 const mbedtls_mpi *m,
                                 const mbedtls_ecp_point *T,
                                 unsigned char pre_len,
                                 unsigned char w,
                                 size_t d,
-                                int (*f_rng)(void *, unsigned char *, size_t),
+                                int32_t (*f_rng)(void *, unsigned char *, size_t),
                                 void *p_rng,
                                 mbedtls_ecp_restart_ctx *rs_ctx )
 {
-    int ret;
+    int32_t ret;
     unsigned char parity_trick;
     unsigned char k[COMB_MAX_D + 1];
     mbedtls_ecp_point *RR = R;
@@ -2590,13 +2590,13 @@ cleanup:
 /*
  * Generate a keypair with configurable base point
  */
-int mbedtls_ecp_gen_keypair_base( mbedtls_ecp_group *grp,
+int32_t mbedtls_ecp_gen_keypair_base( mbedtls_ecp_group *grp,
                      const mbedtls_ecp_point *G,
                      mbedtls_mpi *d, mbedtls_ecp_point *Q,
-                     int (*f_rng)(void *, unsigned char *, size_t),
+                     int32_t (*f_rng)(void *, unsigned char *, size_t),
                      void *p_rng )
 {
-    int ret;
+    int32_t ret;
 
     MBEDTLS_MPI_CHK( mbedtls_ecp_gen_privkey( grp, d, f_rng, p_rng ) );
     MBEDTLS_MPI_CHK( mbedtls_ecp_mul( grp, Q, d, G, f_rng, p_rng ) );

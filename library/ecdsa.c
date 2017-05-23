@@ -91,8 +91,8 @@ static void ecdsa_restart_ver_free( mbedtls_ecdsa_restart_ver_ctx *ctx )
  */
 struct mbedtls_ecdsa_restart_sig
 {
-    int sign_tries;
-    int key_tries;
+    int32_t sign_tries;
+    int32_t key_tries;
     mbedtls_mpi k;          /* per-signature random */
     mbedtls_mpi r;          /* r value              */
     enum {                  /* what to do next?     */
@@ -368,9 +368,9 @@ cleanup:
 /*
  * Compute ECDSA signature of a hashed message
  */
-int mbedtls_ecdsa_sign( mbedtls_ecp_group *grp, mbedtls_mpi *r, mbedtls_mpi *s,
+int32_t mbedtls_ecdsa_sign( mbedtls_ecp_group *grp, mbedtls_mpi *r, mbedtls_mpi *s,
                 const mbedtls_mpi *d, const unsigned char *buf, size_t blen,
-                int (*f_rng)(void *, unsigned char *, size_t), void *p_rng )
+                int32_t (*f_rng)(void *, unsigned char *, size_t), void *p_rng )
 {
     return( ecdsa_sign_restartable( grp, r, s, d, buf, blen,
                                     f_rng, p_rng, NULL ) );
@@ -441,7 +441,7 @@ cleanup:
 /*
  * Deterministic signature wrapper
  */
-int mbedtls_ecdsa_sign_det( mbedtls_ecp_group *grp, mbedtls_mpi *r, mbedtls_mpi *s,
+int32_t mbedtls_ecdsa_sign_det( mbedtls_ecp_group *grp, mbedtls_mpi *r, mbedtls_mpi *s,
                     const mbedtls_mpi *d, const unsigned char *buf, size_t blen,
                     mbedtls_md_type_t md_alg )
 {
@@ -566,7 +566,7 @@ cleanup:
 /*
  * Verify ECDSA signature of hashed message
  */
-int mbedtls_ecdsa_verify( mbedtls_ecp_group *grp,
+int32_t mbedtls_ecdsa_verify( mbedtls_ecp_group *grp,
                   const unsigned char *buf, size_t blen,
                   const mbedtls_ecp_point *Q, const mbedtls_mpi *r, const mbedtls_mpi *s)
 {
@@ -639,10 +639,10 @@ cleanup:
 /*
  * Compute and write signature
  */
-int mbedtls_ecdsa_write_signature( mbedtls_ecdsa_context *ctx, mbedtls_md_type_t md_alg,
+int32_t mbedtls_ecdsa_write_signature( mbedtls_ecdsa_context *ctx, mbedtls_md_type_t md_alg,
                            const unsigned char *hash, size_t hlen,
                            unsigned char *sig, size_t *slen,
-                           int (*f_rng)(void *, unsigned char *, size_t),
+                           int32_t (*f_rng)(void *, unsigned char *, size_t),
                            void *p_rng )
 {
     return( mbedtls_ecdsa_write_signature_restartable(
@@ -675,7 +675,7 @@ int32_t mbedtls_ecdsa_read_signature( mbedtls_ecdsa_context *ctx,
 /*
  * Restartable read and check signature
  */
-int mbedtls_ecdsa_read_signature_restartable( mbedtls_ecdsa_context *ctx,
+int32_t mbedtls_ecdsa_read_signature_restartable( mbedtls_ecdsa_context *ctx,
                           const unsigned char *hash, size_t hlen,
                           const unsigned char *sig, size_t slen,
                           mbedtls_ecdsa_restart_ctx *rs_ctx )
