@@ -123,7 +123,7 @@ int32_t dev_random_entropy_poll( void *data, unsigned char *output,
 #if !defined(MBEDTLS_PK_WRITE_C) || !defined(MBEDTLS_PEM_WRITE_C) || \
     !defined(MBEDTLS_FS_IO) || !defined(MBEDTLS_ENTROPY_C) || \
     !defined(MBEDTLS_CTR_DRBG_C)
-int32_t main( void )
+int main( void )
 {
     mbedtls_printf( "MBEDTLS_PK_WRITE_C and/or MBEDTLS_FS_IO and/or "
             "MBEDTLS_ENTROPY_C and/or MBEDTLS_CTR_DRBG_C and/or "
@@ -184,7 +184,7 @@ static int32_t write_private_key( mbedtls_pk_context *key, const char *output_fi
     return( 0 );
 }
 
-int32_t main( int32_t argc, char *argv[] )
+int main( int32_t argc, char *argv[] )
 {
     int32_t ret = 0;
     mbedtls_pk_context key;

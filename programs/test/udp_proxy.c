@@ -43,7 +43,7 @@
 #endif
 
 #if !defined(MBEDTLS_NET_C)
-int32_t main( void )
+int main( void )
 {
     mbedtls_printf( "MBEDTLS_NET_C not defined.\n" );
     return( 0 );
@@ -466,7 +466,7 @@ int32_t handle_message( const char *way,
     return( 0 );
 }
 
-int32_t main( int32_t argc, char *argv[] )
+int main( int32_t argc, char *argv[] )
 {
     int32_t ret;
 

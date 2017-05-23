@@ -45,15 +45,15 @@
     "\n where <errorcode> can be a decimal or hexadecimal (starts with 0x or -0x)\n"
 
 #if !defined(MBEDTLS_ERROR_C) && !defined(MBEDTLS_ERROR_STRERROR_DUMMY)
-int32_t main( void )
+int main( void )
 {
     mbedtls_printf("MBEDTLS_ERROR_C and/or MBEDTLS_ERROR_STRERROR_DUMMY not defined.\n");
     return( 0 );
 }
 #else
-int32_t main( int32_t argc, char *argv[] )
+int main( int32_t argc, char *argv[] )
 {
-    long int32_t val;
+    long int val;
     char *end = argv[1];
 
     if( argc != 2 )

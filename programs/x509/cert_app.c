@@ -41,7 +41,7 @@
     !defined(MBEDTLS_NET_C) || !defined(MBEDTLS_RSA_C) ||         \
     !defined(MBEDTLS_X509_CRT_PARSE_C) || !defined(MBEDTLS_FS_IO) ||  \
     !defined(MBEDTLS_CTR_DRBG_C)
-int32_t main( void )
+int main( void )
 {
     mbedtls_printf("MBEDTLS_BIGNUM_C and/or MBEDTLS_ENTROPY_C and/or "
            "MBEDTLS_SSL_TLS_C and/or MBEDTLS_SSL_CLI_C and/or "
@@ -143,7 +143,7 @@ static int32_t my_verify( void *data, mbedtls_x509_crt *crt, int32_t depth, uint
     return( 0 );
 }
 
-int32_t main( int32_t argc, char *argv[] )
+int main( int32_t argc, char *argv[] )
 {
     int32_t ret = 0;
     mbedtls_net_context server_fd;

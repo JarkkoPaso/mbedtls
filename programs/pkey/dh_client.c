@@ -58,7 +58,7 @@
     !defined(MBEDTLS_RSA_C) || !defined(MBEDTLS_SHA256_C) ||    \
     !defined(MBEDTLS_FS_IO) || !defined(MBEDTLS_CTR_DRBG_C) || \
     !defined(MBEDTLS_SHA1_C)
-int32_t main( void )
+int main( void )
 {
     mbedtls_printf("MBEDTLS_AES_C and/or MBEDTLS_DHM_C and/or MBEDTLS_ENTROPY_C "
            "and/or MBEDTLS_NET_C and/or MBEDTLS_RSA_C and/or "
@@ -67,7 +67,7 @@ int32_t main( void )
     return( 0 );
 }
 #else
-int32_t main( void )
+int main( void )
 {
     FILE *f;
 

@@ -51,7 +51,7 @@
 #define mbedtls_printf printf
 #endif
 
-int32_t main( void )
+int main( void )
 {
     mbedtls_printf( "MBEDTLS_CTR_DRBG_C and/or MBEDTLS_ENTROPY_C and/or "
             "MBEDTLS_NET_C and/or MBEDTLS_SSL_CLI_C and/or UNIX "
@@ -168,7 +168,7 @@ enum exit_codes
     ssl_write_failed,
 };
 
-int32_t main( void )
+int main( void )
 {
     int32_t ret = exit_ok;
     mbedtls_net_context server_fd;

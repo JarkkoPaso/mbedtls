@@ -40,7 +40,7 @@
     !defined(MBEDTLS_RSA_C) || !defined(MBEDTLS_CTR_DRBG_C) ||    \
     !defined(MBEDTLS_X509_CRT_PARSE_C) || !defined(MBEDTLS_TIMING_C) || \
     !defined(MBEDTLS_FS_IO) || !defined(MBEDTLS_PEM_PARSE_C)
-int32_t main( int32_t argc, char *argv[] )
+int main( int32_t argc, char *argv[] )
 {
     ((void) argc);
     ((void) argv);
@@ -53,7 +53,7 @@ int32_t main( int32_t argc, char *argv[] )
     return( 0 );
 }
 #elif defined(_WIN32)
-int32_t main( void )
+int main( void )
 {
     mbedtls_printf("_WIN32 defined. This application requires fork() and signals "
            "to work correctly.\n");
@@ -93,7 +93,7 @@ static void my_debug( void *ctx, int32_t level,
     fflush(  (FILE *) ctx  );
 }
 
-int32_t main( void )
+int main( void )
 {
     int32_t ret, len, cnt = 0, pid;
     mbedtls_net_context listen_fd, client_fd;

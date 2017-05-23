@@ -36,7 +36,7 @@
     !defined(MBEDTLS_PK_PARSE_C) || !defined(MBEDTLS_SHA256_C) || \
     !defined(MBEDTLS_ENTROPY_C) || !defined(MBEDTLS_CTR_DRBG_C) || \
     !defined(MBEDTLS_PEM_WRITE_C)
-int32_t main( void )
+int main( void )
 {
     mbedtls_printf( "MBEDTLS_X509_CSR_WRITE_C and/or MBEDTLS_FS_IO and/or "
             "MBEDTLS_PK_PARSE_C and/or MBEDTLS_SHA256_C and/or "
@@ -131,7 +131,7 @@ int32_t write_certificate_request( mbedtls_x509write_csr *req, const char *outpu
     return( 0 );
 }
 
-int32_t main( int32_t argc, char *argv[] )
+int main( int32_t argc, char *argv[] )
 {
     int32_t ret = 0;
     mbedtls_pk_context key;

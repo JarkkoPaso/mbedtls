@@ -42,7 +42,7 @@
     !defined(MBEDTLS_X509_CRT_PARSE_C) || !defined(MBEDTLS_FS_IO) ||      \
     !defined(MBEDTLS_THREADING_C) || !defined(MBEDTLS_THREADING_PTHREAD) || \
     !defined(MBEDTLS_PEM_PARSE_C)
-int32_t main( void )
+int main( void )
 {
     mbedtls_printf("MBEDTLS_BIGNUM_C and/or MBEDTLS_CERTS_C and/or MBEDTLS_ENTROPY_C "
            "and/or MBEDTLS_SSL_TLS_C and/or MBEDTLS_SSL_SRV_C and/or "
@@ -92,7 +92,7 @@ static void my_mutexed_debug( void *ctx, int32_t level,
                       const char *file, int32_t line,
                       const char *str )
 {
-    long int32_t thread_id = (long int32_t) pthread_self();
+    long int thread_id = (long int) pthread_self();
 
     mbedtls_mutex_lock( &debug_mutex );
 
@@ -124,7 +124,7 @@ static void *handle_ssl_connection( void *data )
     int32_t ret, len;
     thread_info_t *thread_info = (thread_info_t *) data;
     mbedtls_net_context *client_fd = &thread_info->client_fd;
-    long int32_t thread_id = (long int32_t) pthread_self();
+    long int thread_id = (long int) pthread_self();
     unsigned char buf[1024];
     mbedtls_ssl_context ssl;
 
@@ -312,7 +312,7 @@ static int32_t thread_create( mbedtls_net_context *client_fd )
     return( 0 );
 }
 
-int32_t main( void )
+int main( void )
 {
     int32_t ret;
     mbedtls_net_context listen_fd, client_fd;

@@ -37,7 +37,7 @@
 #if !defined(MBEDTLS_BIGNUM_C) || !defined(MBEDTLS_RSA_C) ||  \
     !defined(MBEDTLS_SHA256_C) || !defined(MBEDTLS_MD_C) || \
     !defined(MBEDTLS_FS_IO)
-int32_t main( void )
+int main( void )
 {
     mbedtls_printf("MBEDTLS_BIGNUM_C and/or MBEDTLS_RSA_C and/or "
             "MBEDTLS_MD_C and/or "
@@ -52,7 +52,7 @@ int32_t main( void )
 #include <stdio.h>
 #include <string.h>
 
-int32_t main( int32_t argc, char *argv[] )
+int main( int32_t argc, char *argv[] )
 {
     FILE *f;
     int32_t ret;

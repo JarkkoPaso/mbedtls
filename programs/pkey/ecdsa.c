@@ -57,7 +57,7 @@
 
 #if !defined(MBEDTLS_ECDSA_C) || !defined(MBEDTLS_SHA256_C) || \
     !defined(MBEDTLS_ENTROPY_C) || !defined(MBEDTLS_CTR_DRBG_C)
-int32_t main( void )
+int main( void )
 {
     mbedtls_printf("MBEDTLS_ECDSA_C and/or MBEDTLS_SHA256_C and/or "
            "MBEDTLS_ENTROPY_C and/or MBEDTLS_CTR_DRBG_C not defined\n");
@@ -95,7 +95,7 @@ static void dump_pubkey( const char *title, mbedtls_ecdsa_context *key )
 #define dump_pubkey( a, b )
 #endif
 
-int32_t main( int32_t argc, char *argv[] )
+int main( int32_t argc, char *argv[] )
 {
     int32_t ret;
     mbedtls_ecdsa_context ctx_sign, ctx_verify;

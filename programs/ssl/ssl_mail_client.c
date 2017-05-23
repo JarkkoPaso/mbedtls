@@ -31,7 +31,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #define mbedtls_time       time
-#define mbedtls_time_t     time_t 
+#define mbedtls_time_t     time_t
 #define mbedtls_fprintf    fprintf
 #define mbedtls_printf     printf
 #endif
@@ -41,7 +41,7 @@
     !defined(MBEDTLS_NET_C) || !defined(MBEDTLS_RSA_C) ||         \
     !defined(MBEDTLS_CTR_DRBG_C) || !defined(MBEDTLS_X509_CRT_PARSE_C) || \
     !defined(MBEDTLS_FS_IO)
-int32_t main( void )
+int main( void )
 {
     mbedtls_printf("MBEDTLS_BIGNUM_C and/or MBEDTLS_ENTROPY_C and/or "
            "MBEDTLS_SSL_TLS_C and/or MBEDTLS_SSL_CLI_C and/or "
@@ -344,7 +344,7 @@ static int32_t write_and_get_response( mbedtls_net_context *sock_fd, unsigned ch
     while( 1 );
 }
 
-int32_t main( int32_t argc, char *argv[] )
+int main( int32_t argc, char *argv[] )
 {
     int32_t ret = 0, len;
     mbedtls_net_context server_fd;
