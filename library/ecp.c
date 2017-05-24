@@ -2127,9 +2127,6 @@ cleanup:
 /*
  * Restartable multiplication R = m * P
  */
-#if !defined(MBEDTLS_ECP_RESTARTABLE)
-static
-#endif
 int32_t mbedtls_ecp_mul_restartable( mbedtls_ecp_group *grp, mbedtls_ecp_point *R,
              const mbedtls_mpi *m, const mbedtls_ecp_point *P,
              int32_t (*f_rng)(void *, unsigned char *, size_t), void *p_rng,
@@ -2302,9 +2299,6 @@ cleanup:
  * Restartable linear combination
  * NOT constant-time
  */
-#if !defined(MBEDTLS_ECP_RESTARTABLE)
-static
-#endif
 int32_t mbedtls_ecp_muladd_restartable(
              mbedtls_ecp_group *grp, mbedtls_ecp_point *R,
              const mbedtls_mpi *m, const mbedtls_ecp_point *P,
