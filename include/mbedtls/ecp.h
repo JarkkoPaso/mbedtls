@@ -36,6 +36,16 @@
 #define MBEDTLS_ERR_ECP_RANDOM_FAILED                     -0x4D00  /**< Generation of random value, such as (ephemeral) key, failed. */
 #define MBEDTLS_ERR_ECP_INVALID_KEY                       -0x4C80  /**< Invalid private or public key. */
 #define MBEDTLS_ERR_ECP_SIG_LEN_MISMATCH                  -0x4C00  /**< Signature is valid but shorter than the user-supplied length. */
+#define MBEDTLS_ERR_ECP_IN_PROGRESS                       -0x4B80  /**< Operation in progress, try again with the same parameters. */
+
+#if !defined(MBEDTLS_ECP_ALT)
+/*
+ * default mbed TLS elliptic curve arithmetic implementation
+ *
+ * (in case MBEDTLS_ECP_ALT is defined then the developer has to provide an
+ * alternative implementation for the whole module and it will replace this
+ * one.)
+ */
 
 #ifdef __cplusplus
 extern "C" {
@@ -161,6 +171,68 @@ typedef struct
 }
 mbedtls_ecp_keypair;
 
+#if defined(MBEDTLS_ECP_RESTARTABLE)
+
+/**
+ * \brief           Internal restart context for multiplication
+ *
+ * \note            Opaque struct
+ */
+typedef struct mbedtls_ecp_restart_mul mbedtls_ecp_restart_mul_ctx;
+
+/**
+ * \brief           Internal restart context for ecp_muladd()
+ *
+ * \note            Opaque struct
+ */
+typedef struct mbedtls_ecp_restart_muladd mbedtls_ecp_restart_muladd_ctx;
+
+/**
+ * \brief           General context for resuming ECC operations
+ */
+typedef struct
+{
+    unsigned ops_done;                  /*!<  current ops count             */
+    unsigned depth;                     /*!<  call depth (0 = top-level)    */
+    mbedtls_ecp_restart_mul_ctx *rsm;   /*!<  ecp_mul_comb() sub-context    */
+    mbedtls_ecp_restart_muladd_ctx *ma; /*!<  ecp_muladd() sub-context      */
+} mbedtls_ecp_restart_ctx;
+
+/*
+ * Operation counts for restartable functions
+ */
+#define MBEDTLS_ECP_OPS_CHK   3 /*!< basic ops count for ecp_check_pubkey()  */
+#define MBEDTLS_ECP_OPS_DBL   8 /*!< basic ops count for ecp_double_jac()    */
+#define MBEDTLS_ECP_OPS_ADD  11 /*!< basic ops count for see ecp_add_mixed() */
+#define MBEDTLS_ECP_OPS_INV 120 /*!< empirical equivalent for mpi_mod_inv()  */
+
+/**
+ * \brief           Internal; for restartable functions in other modules.
+ *                  Check and update basic ops budget.
+ *
+ * \param grp       Group structure
+ * \param rs_ctx    Restart context
+ * \param ops       Number of basic ops to do
+ *
+ * \return          0 is doing 'ops' basic ops is still allowed,
+ *                  MBEDTLS_ERR_ECP_IN_PROGRESS otherwise.
+ */
+int32_t mbedtls_ecp_check_budget( const mbedtls_ecp_group *grp,
+                              mbedtls_ecp_restart_ctx *rs_ctx,
+                              unsigned ops );
+
+/* Utility macro for checking and updating ops budget */
+#define MBEDTLS_ECP_BUDGET( ops )   MBEDTLS_MPI_CHK( mbedtls_ecp_check_budget( grp, rs_ctx, ops ) );
+
+#else /* MBEDTLS_ECP_RESTARTABLE */
+
+#define MBEDTLS_ECP_BUDGET( ops )   /* no-op; for compatibility */
+
+/* We want to declare restartable versions of existing functions anyway */
+typedef void mbedtls_ecp_restart_ctx;
+
+#endif /* MBEDTLS_ECP_RESTARTABLE */
+
 /**
  * \name SECTION: Module settings
  *
@@ -196,7 +268,6 @@ mbedtls_ecp_keypair;
  *      521       145     141     135     120      97
  *      384       214     209     198     177     146
  *      256       320     320     303     262     226
-
  *      224       475     475     453     398     342
  *      192       640     640     633     587     476
  */
@@ -230,6 +301,56 @@ mbedtls_ecp_keypair;
  * Some other constants from RFC 4492
  */
 #define MBEDTLS_ECP_TLS_NAMED_CURVE    3   /**< ECCurveType's named_curve */
+
+#if defined(MBEDTLS_ECP_RESTARTABLE)
+/**
+ * \brief           Set the maximum number of basic operations done in a row.
+ *
+ *                  If more operations are needed to complete a computation,
+ *                  MBEDTLS_ERR_ECP_IN_PROGRESS will be returned by the
+ *                  function performing the computation. It is then the
+ *                  caller's responsibility to either call again with the same
+ *                  arguments until it returns 0 or an error code; or to free
+ *                  the restart context if the operation is to be aborted.
+ *
+ *                  This only affects functions that accept a pointer to a
+ *                  \c mbedtls_ecp_restart_ctx as an argument, and only works
+ *                  if that pointer valid (in particular, not NULL).
+ *
+ * \param max_ops   Maximum number of basic operations done in a row.
+ *                  Default: 0 (unlimited).
+ *                  Lower (non-zero) values mean ECC functions will block for
+ *                  a lesser maximum amount of time.
+ *
+ * \note            A "basic operation" is defined as a rough equivalent of a
+ *                  multiplication in GF(p) for the NIST P-256 curve.
+ *                  As an indication, with default settings, a scalar
+ *                  multiplication (full run of \c mbedtls_ecp_mul()) is:
+ *                  - about 3300 basic operations for P-256
+ *                  - about 9400 basic operations for P-384
+ *
+ * \note            Very low values are not always respected: sometimes
+ *                  functions need to block for a minimum number of
+ *                  operations, and will do so even if max_ops is set to a
+ *                  lower value.  That minimum depends on the curve size, and
+ *                  can be made lower by decreasing the value of
+ *                  \c MBEDTLS_ECP_WINDOW_SIZE.  As an indication, with that
+ *                  parameter set to 4, the minimum amount of blocking is:
+ *                  - around 165 basic operations for P-256
+ *                  - around 330 basic operations for P-384
+ *
+ * \note            This setting is currently ignored by Curve25519
+ */
+void mbedtls_ecp_set_max_ops( unsigned max_ops );
+
+/**
+ * \brief           Check if restart is enabled (max_ops != 0)
+ *
+ * \return          0 if max_ops == 0 (restart disabled)
+ *                  1 otherwise (restart enabled)
+ */
+int32_t mbedtls_ecp_restart_enabled( void );
+#endif /* MBEDTLS_ECP_RESTARTABLE */
 
 /**
  * \brief           Get the list of supported curves in order of preferrence
@@ -304,6 +425,18 @@ void mbedtls_ecp_group_free( mbedtls_ecp_group *grp );
  * \brief           Free the components of a key pair
  */
 void mbedtls_ecp_keypair_free( mbedtls_ecp_keypair *key );
+
+#if defined(MBEDTLS_ECP_RESTARTABLE)
+/**
+ * \brief           Initialize a restart context
+ */
+void mbedtls_ecp_restart_init( mbedtls_ecp_restart_ctx *ctx );
+
+/**
+ * \brief           Free the components of a restart context
+ */
+void mbedtls_ecp_restart_free( mbedtls_ecp_restart_ctx *ctx );
+#endif /* MBEDTLS_ECP_RESTARTABLE */
 
 /**
  * \brief           Copy the contents of point Q into P
@@ -516,11 +649,35 @@ int32_t mbedtls_ecp_tls_write_group( const mbedtls_ecp_group *grp, size_t *olen,
  * \return          0 if successful,
  *                  MBEDTLS_ERR_ECP_INVALID_KEY if m is not a valid privkey
  *                  or P is not a valid pubkey,
- *                  MBEDTLS_ERR_MPI_ALLOC_FAILED if memory allocation failed
+ *                  MBEDTLS_ERR_MPI_ALLOC_FAILED if memory allocation failed.
  */
 int32_t mbedtls_ecp_mul( mbedtls_ecp_group *grp, mbedtls_ecp_point *R,
              const mbedtls_mpi *m, const mbedtls_ecp_point *P,
              int32_t (*f_rng)(void *, unsigned char *, size_t), void *p_rng );
+
+/**
+ * \brief           Restartable version of \c mbedtls_ecp_mul()
+ *
+ * \note            Performs the same job as \c mbedtls_ecp_mul(), but can
+ *                  return early and restart according to the limit set with
+ *                  \c mbedtls_ecp_set_max_ops() to reduce blocking.
+ *
+ * \param grp       ECP group
+ * \param R         Destination point
+ * \param m         Integer by which to multiply
+ * \param P         Point to multiply
+ * \param f_rng     RNG function (see notes)
+ * \param p_rng     RNG parameter
+ * \param rs_ctx    Restart context
+ *
+ * \return          See \c mbedtls_ecp_mul(), or
+ *                  MBEDTLS_ERR_ECP_IN_PROGRESS if maximum number of
+ *                  operations was reached: see \c mbedtls_ecp_set_max_ops().
+ */
+int32_t mbedtls_ecp_mul_restartable( mbedtls_ecp_group *grp, mbedtls_ecp_point *R,
+             const mbedtls_mpi *m, const mbedtls_ecp_point *P,
+             int32_t (*f_rng)(void *, unsigned char *, size_t), void *p_rng,
+             mbedtls_ecp_restart_ctx *rs_ctx );
 
 /**
  * \brief           Multiplication and addition of two points by integers:
@@ -545,6 +702,31 @@ int32_t mbedtls_ecp_mul( mbedtls_ecp_group *grp, mbedtls_ecp_point *R,
 int32_t mbedtls_ecp_muladd( mbedtls_ecp_group *grp, mbedtls_ecp_point *R,
              const mbedtls_mpi *m, const mbedtls_ecp_point *P,
              const mbedtls_mpi *n, const mbedtls_ecp_point *Q );
+
+/**
+ * \brief           Restartable version of \c mbedtls_ecp_muladd()
+ *
+ * \note            Performs the same job as \c mbedtls_ecp_muladd(), but can
+ *                  return early and restart according to the limit set with
+ *                  \c mbedtls_ecp_set_max_ops() to reduce blocking.
+ *
+ * \param grp       ECP group
+ * \param R         Destination point
+ * \param m         Integer by which to multiply P
+ * \param P         Point to multiply by m
+ * \param n         Integer by which to multiply Q
+ * \param Q         Point to be multiplied by n
+ * \param rs_ctx    Restart context
+ *
+ * \return          See \c mbedtls_ecp_muladd(), or
+ *                  MBEDTLS_ERR_ECP_IN_PROGRESS if maximum number of
+ *                  operations was reached: see \c mbedtls_ecp_set_max_ops().
+ */
+int32_t mbedtls_ecp_muladd_restartable(
+             mbedtls_ecp_group *grp, mbedtls_ecp_point *R,
+             const mbedtls_mpi *m, const mbedtls_ecp_point *P,
+             const mbedtls_mpi *n, const mbedtls_ecp_point *Q,
+             mbedtls_ecp_restart_ctx *rs_ctx );
 
 /**
  * \brief           Check that a point is a valid public key on this curve
@@ -583,6 +765,22 @@ int32_t mbedtls_ecp_check_pubkey( const mbedtls_ecp_group *grp, const mbedtls_ec
  *                  mbedtls_ecdh_context of mbedtls_ecdsa_context.
  */
 int32_t mbedtls_ecp_check_privkey( const mbedtls_ecp_group *grp, const mbedtls_mpi *d );
+
+/**
+ * \brief           Generate a private key
+ *
+ * \param grp       ECP group
+ * \param d         Destination MPI (secret part)
+ * \param f_rng     RNG function
+ * \param p_rng     RNG parameter
+ *
+ * \return          0 if successful,
+ *                  or a MBEDTLS_ERR_ECP_XXX or MBEDTLS_MPI_XXX error code
+ */
+int32_t mbedtls_ecp_gen_privkey( const mbedtls_ecp_group *grp,
+                     mbedtls_mpi *d,
+                     int32_t (*f_rng)(void *, unsigned char *, size_t),
+                     void *p_rng );
 
 /**
  * \brief           Generate a keypair with configurable base point
@@ -654,16 +852,22 @@ int32_t mbedtls_ecp_gen_key( mbedtls_ecp_group_id grp_id, mbedtls_ecp_keypair *k
 int32_t mbedtls_ecp_check_pub_priv( const mbedtls_ecp_keypair *pub, const mbedtls_ecp_keypair *prv );
 
 #if defined(MBEDTLS_SELF_TEST)
+
 /**
  * \brief          Checkup routine
  *
  * \return         0 if successful, or 1 if a test failed
  */
 int32_t mbedtls_ecp_self_test( int32_t verbose );
-#endif
+
+#endif /* MBEDTLS_SELF_TEST */
 
 #ifdef __cplusplus
 }
 #endif
+
+#else  /* MBEDTLS_ECP_ALT */
+#include "ecp_alt.h"
+#endif /* MBEDTLS_ECP_ALT */
 
 #endif /* ecp.h */

@@ -698,7 +698,7 @@ int32_t mbedtls_oid_get_numeric_string( char *buf, size_t size,
         if( !( oid->p[i] & 0x80 ) )
         {
             /* Last byte */
-            ret = mbedtls_snprintf( p, n, ".%d", (int)value );
+            ret = mbedtls_snprintf( p, n, ".%d", (int32_t)value );
             OID_SAFE_SNPRINTF;
             value = 0;
         }

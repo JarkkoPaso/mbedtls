@@ -46,14 +46,62 @@
 /** Maximum size of an ECDSA signature in bytes */
 #define MBEDTLS_ECDSA_MAX_LEN  ( 3 + 2 * ( 3 + MBEDTLS_ECP_MAX_BYTES ) )
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /**
  * \brief           ECDSA context structure
  */
 typedef mbedtls_ecp_keypair mbedtls_ecdsa_context;
 
-#ifdef __cplusplus
-extern "C" {
+#if defined(MBEDTLS_ECP_RESTARTABLE)
+
+/**
+ * \brief           Internal restart context for ecdsa_verify()
+ *
+ * \note            Opaque struct
+ */
+typedef struct mbedtls_ecdsa_restart_ver mbedtls_ecdsa_restart_ver_ctx;
+
+/**
+ * \brief           Internal restart context for ecdsa_sign()
+ *
+ * \note            Opaque struct, defined in ecdsa.c
+ */
+typedef struct mbedtls_ecdsa_restart_sig mbedtls_ecdsa_restart_sig_ctx;
+
+#if defined(MBEDTLS_ECDSA_DETERMINISTIC)
+/**
+ * \brief           Internal restart context for ecdsa_sign_det()
+ *
+ * \note            Opaque struct, defined in ecdsa.c
+ */
+typedef struct mbedtls_ecdsa_restart_det mbedtls_ecdsa_restart_det_ctx;
 #endif
+
+/**
+ * \brief           General context for resuming ECDSA operations
+ */
+typedef struct
+{
+    mbedtls_ecp_restart_ctx ecp;        /*!<  base context (admin+ecp info) */
+    mbedtls_ecdsa_restart_ver_ctx *ver; /*!<  ecdsa_verify() sub-context    */
+    mbedtls_ecdsa_restart_sig_ctx *sig; /*!<  ecdsa_sign() sub-context      */
+#if defined(MBEDTLS_ECDSA_DETERMINISTIC)
+    mbedtls_ecdsa_restart_det_ctx *det; /*!<  ecdsa_sign_det() sub-context  */
+#endif
+#if defined(MBEDTLS_PK_C)
+    mbedtls_ecdsa_context *ecdsa;       /*!<  used by the PK layer          */
+#endif
+} mbedtls_ecdsa_restart_ctx;
+
+#else /* MBEDTLS_ECP_RESTARTABLE */
+
+/* Now we can declare functions that take a pointer to that */
+typedef void mbedtls_ecdsa_restart_ctx;
+
+#endif /* MBEDTLS_ECP_RESTARTABLE */
 
 /**
  * \brief           Compute ECDSA signature of a previously hashed message
@@ -108,7 +156,7 @@ int32_t mbedtls_ecdsa_sign_det( mbedtls_ecp_group *grp, mbedtls_mpi *r, mbedtls_
  * \param s         Second integer of the signature
  *
  * \return          0 if successful,
- *                  MBEDTLS_ERR_ECP_BAD_INPUT_DATA if signature is invalid
+ *                  MBEDTLS_ERR_ECP_VERIFY_FAILED if signature is invalid
  *                  or a MBEDTLS_ERR_ECP_XXX or MBEDTLS_MPI_XXX error code
  */
 int32_t mbedtls_ecdsa_verify( mbedtls_ecp_group *grp,
@@ -145,6 +193,35 @@ int32_t mbedtls_ecdsa_write_signature( mbedtls_ecdsa_context *ctx, mbedtls_md_ty
                            unsigned char *sig, size_t *slen,
                            int32_t (*f_rng)(void *, unsigned char *, size_t),
                            void *p_rng );
+
+/**
+ * \brief           Restartable version of \c mbedtls_ecdsa_write_signature()
+ *
+ * \note            Performs the same job as \c mbedtls_ecdsa_write_signature()
+ *                  but can return early and restart according to the limit
+ *                  set with \c mbedtls_ecp_set_max_ops() to reduce blocking.
+ *
+ * \param ctx       ECDSA context
+ * \param md_alg    Algorithm that was used to hash the message
+ * \param hash      Message hash
+ * \param hlen      Length of hash
+ * \param sig       Buffer that will hold the signature
+ * \param slen      Length of the signature written
+ * \param f_rng     RNG function
+ * \param p_rng     RNG parameter
+ * \param rs_ctx    Restart context
+ *
+ * \return          See \c mbedtls_ecdsa_write_signature(), or
+ *                  MBEDTLS_ERR_ECP_IN_PROGRESS if maximum number of
+ *                  operations was reached: see \c mbedtls_ecp_set_max_ops().
+ */
+int32_t mbedtls_ecdsa_write_signature_restartable( mbedtls_ecdsa_context *ctx,
+                           mbedtls_md_type_t md_alg,
+                           const unsigned char *hash, size_t hlen,
+                           unsigned char *sig, size_t *slen,
+                           int32_t (*f_rng)(void *, unsigned char *, size_t),
+                           void *p_rng,
+                           mbedtls_ecdsa_restart_ctx *rs_ctx );
 
 #if defined(MBEDTLS_ECDSA_DETERMINISTIC)
 #if ! defined(MBEDTLS_DEPRECATED_REMOVED)
@@ -204,6 +281,29 @@ int32_t mbedtls_ecdsa_read_signature( mbedtls_ecdsa_context *ctx,
                           const unsigned char *sig, size_t slen );
 
 /**
+ * \brief           Restartable version of \c mbedtls_ecdsa_read_signature()
+ *
+ * \note            Performs the same job as \c mbedtls_ecdsa_read_signature()
+ *                  but can return early and restart according to the limit
+ *                  set with \c mbedtls_ecp_set_max_ops() to reduce blocking.
+ *
+ * \param ctx       ECDSA context
+ * \param hash      Message hash
+ * \param hlen      Size of hash
+ * \param sig       Signature to read and verify
+ * \param slen      Size of sig
+ * \param rs_ctx    Restart context
+ *
+ * \return          See \c mbedtls_ecdsa_read_signature(), or
+ *                  MBEDTLS_ERR_ECP_IN_PROGRESS if maximum number of
+ *                  operations was reached: see \c mbedtls_ecp_set_max_ops().
+ */
+int32_t mbedtls_ecdsa_read_signature_restartable( mbedtls_ecdsa_context *ctx,
+                          const unsigned char *hash, size_t hlen,
+                          const unsigned char *sig, size_t slen,
+                          mbedtls_ecdsa_restart_ctx *rs_ctx );
+
+/**
  * \brief           Generate an ECDSA keypair on the given curve
  *
  * \param ctx       ECDSA context in which the keypair should be stored
@@ -240,6 +340,18 @@ void mbedtls_ecdsa_init( mbedtls_ecdsa_context *ctx );
  * \param ctx       Context to free
  */
 void mbedtls_ecdsa_free( mbedtls_ecdsa_context *ctx );
+
+#if defined(MBEDTLS_ECP_RESTARTABLE)
+/**
+ * \brief           Initialize a restart context
+ */
+void mbedtls_ecdsa_restart_init( mbedtls_ecdsa_restart_ctx *ctx );
+
+/**
+ * \brief           Free the components of a restart context
+ */
+void mbedtls_ecdsa_restart_free( mbedtls_ecdsa_restart_ctx *ctx );
+#endif /* MBEDTLS_ECP_RESTARTABLE */
 
 #ifdef __cplusplus
 }

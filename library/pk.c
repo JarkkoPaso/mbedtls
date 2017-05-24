@@ -29,6 +29,8 @@
 #include "mbedtls/pk.h"
 #include "mbedtls/pk_internal.h"
 
+#include "mbedtls/bignum.h"
+
 #if defined(MBEDTLS_RSA_C)
 #include "mbedtls/rsa.h"
 #endif
@@ -38,6 +40,8 @@
 #if defined(MBEDTLS_ECDSA_C)
 #include "mbedtls/ecdsa.h"
 #endif
+
+#include <limits.h>
 
 /* Implementation that should never be optimized out by the compiler */
 static void mbedtls_zeroize( void *v, size_t n ) {
@@ -172,21 +176,44 @@ static inline int32_t pk_hashlen_helper( mbedtls_md_type_t md_alg, size_t *hash_
 }
 
 /*
- * Verify a signature
+ * Verify a signature (restartable)
  */
-int32_t mbedtls_pk_verify( mbedtls_pk_context *ctx, mbedtls_md_type_t md_alg,
+int32_t mbedtls_pk_verify_restartable( mbedtls_pk_context *ctx,
+               mbedtls_md_type_t md_alg,
                const unsigned char *hash, size_t hash_len,
-               const unsigned char *sig, size_t sig_len )
+               const unsigned char *sig, size_t sig_len,
+               void *rs_ctx )
 {
     if( ctx == NULL || ctx->pk_info == NULL ||
         pk_hashlen_helper( md_alg, &hash_len ) != 0 )
         return( MBEDTLS_ERR_PK_BAD_INPUT_DATA );
+
+#if defined(MBEDTLS_ECP_RESTARTABLE)
+    if( ctx->pk_info->verify_rs_func != NULL )
+    {
+        return( ctx->pk_info->verify_rs_func( ctx->pk_ctx,
+                    md_alg, hash, hash_len, sig, sig_len, rs_ctx ) );
+    }
+#else
+    (void) rs_ctx;
+#endif /* MBEDTLS_ECP_RESTARTABLE */
 
     if( ctx->pk_info->verify_func == NULL )
         return( MBEDTLS_ERR_PK_TYPE_MISMATCH );
 
     return( ctx->pk_info->verify_func( ctx->pk_ctx, md_alg, hash, hash_len,
                                        sig, sig_len ) );
+}
+
+/*
+ * Verify a signature
+ */
+int32_t mbedtls_pk_verify( mbedtls_pk_context *ctx, mbedtls_md_type_t md_alg,
+               const unsigned char *hash, size_t hash_len,
+               const unsigned char *sig, size_t sig_len )
+{
+    return( mbedtls_pk_verify_restartable( ctx, md_alg, hash, hash_len,
+                                           sig, sig_len, NULL ) );
 }
 
 /*
@@ -208,6 +235,11 @@ int32_t mbedtls_pk_verify_ext( mbedtls_pk_type_t type, const void *options,
 #if defined(MBEDTLS_RSA_C) && defined(MBEDTLS_PKCS1_V21)
         int32_t ret;
         const mbedtls_pk_rsassa_pss_options *pss_opts;
+
+#if defined(MBEDTLS_HAVE_INT64)
+        if( md_alg == MBEDTLS_MD_NONE && UINT_MAX < hash_len )
+            return( MBEDTLS_ERR_PK_BAD_INPUT_DATA );
+#endif /* MBEDTLS_HAVE_INT64 */
 
         if( options == NULL )
             return( MBEDTLS_ERR_PK_BAD_INPUT_DATA );
@@ -232,7 +264,7 @@ int32_t mbedtls_pk_verify_ext( mbedtls_pk_type_t type, const void *options,
         return( 0 );
 #else
         return( MBEDTLS_ERR_PK_FEATURE_UNAVAILABLE );
-#endif
+#endif /* MBEDTLS_RSA_C && MBEDTLS_PKCS1_V21 */
     }
 
     /* General case: no options */
@@ -243,6 +275,37 @@ int32_t mbedtls_pk_verify_ext( mbedtls_pk_type_t type, const void *options,
 }
 
 /*
+ * Make a signature (restartable)
+ */
+int32_t mbedtls_pk_sign_restartable( mbedtls_pk_context *ctx,
+             mbedtls_md_type_t md_alg,
+             const unsigned char *hash, size_t hash_len,
+             unsigned char *sig, size_t *sig_len,
+             int32_t (*f_rng)(void *, unsigned char *, size_t), void *p_rng,
+             void *rs_ctx )
+{
+    if( ctx == NULL || ctx->pk_info == NULL ||
+        pk_hashlen_helper( md_alg, &hash_len ) != 0 )
+        return( MBEDTLS_ERR_PK_BAD_INPUT_DATA );
+
+#if defined(MBEDTLS_ECP_RESTARTABLE)
+    if( ctx->pk_info->sign_rs_func != NULL )
+    {
+        return( ctx->pk_info->sign_rs_func( ctx->pk_ctx, md_alg,
+                    hash, hash_len, sig, sig_len, f_rng, p_rng, rs_ctx ) );
+    }
+#else
+    (void) rs_ctx;
+#endif /* MBEDTLS_ECP_RESTARTABLE */
+
+    if( ctx->pk_info->sign_func == NULL )
+        return( MBEDTLS_ERR_PK_TYPE_MISMATCH );
+
+    return( ctx->pk_info->sign_func( ctx->pk_ctx, md_alg, hash, hash_len,
+                                     sig, sig_len, f_rng, p_rng ) );
+}
+
+/*
  * Make a signature
  */
 int32_t mbedtls_pk_sign( mbedtls_pk_context *ctx, mbedtls_md_type_t md_alg,
@@ -250,15 +313,8 @@ int32_t mbedtls_pk_sign( mbedtls_pk_context *ctx, mbedtls_md_type_t md_alg,
              unsigned char *sig, size_t *sig_len,
              int32_t (*f_rng)(void *, unsigned char *, size_t), void *p_rng )
 {
-    if( ctx == NULL || ctx->pk_info == NULL ||
-        pk_hashlen_helper( md_alg, &hash_len ) != 0 )
-        return( MBEDTLS_ERR_PK_BAD_INPUT_DATA );
-
-    if( ctx->pk_info->sign_func == NULL )
-        return( MBEDTLS_ERR_PK_TYPE_MISMATCH );
-
-    return( ctx->pk_info->sign_func( ctx->pk_ctx, md_alg, hash, hash_len,
-                                     sig, sig_len, f_rng, p_rng ) );
+    return( mbedtls_pk_sign_restartable( ctx, md_alg, hash, hash_len,
+                                         sig, sig_len, f_rng, p_rng, NULL ) );
 }
 
 /*

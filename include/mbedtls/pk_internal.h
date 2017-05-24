@@ -58,6 +58,21 @@ struct mbedtls_pk_info_t
                       int32_t (*f_rng)(void *, unsigned char *, size_t),
                       void *p_rng );
 
+#if defined(MBEDTLS_ECP_RESTARTABLE)
+    /** Verify signature (restartable) */
+    int32_t (*verify_rs_func)( void *ctx, mbedtls_md_type_t md_alg,
+                           const unsigned char *hash, size_t hash_len,
+                           const unsigned char *sig, size_t sig_len,
+                           void *rs_ctx );
+
+    /** Make signature (restartable) */
+    int32_t (*sign_rs_func)( void *ctx, mbedtls_md_type_t md_alg,
+                         const unsigned char *hash, size_t hash_len,
+                         unsigned char *sig, size_t *sig_len,
+                         int32_t (*f_rng)(void *, unsigned char *, size_t),
+                         void *p_rng, void *rs_ctx );
+#endif /* MBEDTLS_ECP_RESTARTABLE */
+
     /** Decrypt message */
     int32_t (*decrypt_func)( void *ctx, const unsigned char *input, size_t ilen,
                          unsigned char *output, size_t *olen, size_t osize,

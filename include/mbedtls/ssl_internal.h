@@ -88,6 +88,14 @@
 #endif /* MBEDTLS_SSL_PROTO_TLS1_1 */
 #endif /* MBEDTLS_SSL_PROTO_TLS1_2 */
 
+/* Shorthand for restartable ECC */
+#if defined(MBEDTLS_ECP_RESTARTABLE) && \
+    defined(MBEDTLS_SSL_CLI_C) && \
+    defined(MBEDTLS_SSL_PROTO_TLS1_2) && \
+    defined(MBEDTLS_KEY_EXCHANGE_ECDHE_ECDSA_ENABLED)
+#define MBEDTLS_SSL__ECP_RESTARTABLE
+#endif
+
 #define MBEDTLS_SSL_INITIAL_HANDSHAKE           0
 #define MBEDTLS_SSL_RENEGOTIATION_IN_PROGRESS   1   /* In progress */
 #define MBEDTLS_SSL_RENEGOTIATION_DONE          2   /* Done or aborted */
@@ -197,6 +205,19 @@ struct mbedtls_ssl_handshake_params
     mbedtls_x509_crl *sni_ca_crl;       /*!< trusted CAs CRLs from SNI      */
 #endif
 #endif /* MBEDTLS_X509_CRT_PARSE_C */
+#if defined(MBEDTLS_SSL__ECP_RESTARTABLE)
+    int32_t ec_restart_enabled;             /*!< Handshake supports EC restart? */
+    mbedtls_ecdsa_restart_ctx rs_ctx;   /*!< ECDSA restart context          */
+    enum {
+        ssl_ecrs_init = 0,              /*!< just getting started           */
+        ssl_ecrs_ske_read,              /*!< ServerKeyExchange was read     */
+        ssl_ecrs_ske_verified,          /*!< ServerKeyExchange was verified */
+        ssl_ecrs_ecdh_public_done,      /*!< wrote ECDHE public share       */
+        ssl_ecrs_ecdh_completed,        /*!< completed ECDHE key exchange   */
+        ssl_ecrs_keys_derived,          /*!< ssl_derive_keys() done         */
+        ssl_ecrs_pk_sign_done,          /*!< done writing CertificateVerify */
+    } ecrs_state;                       /*!< state for restartable ECC      */
+#endif
 #if defined(MBEDTLS_SSL_PROTO_DTLS)
     uint32_t out_msg_seq;           /*!<  Outgoing handshake sequence number */
     uint32_t in_msg_seq;            /*!<  Incoming handshake sequence number */

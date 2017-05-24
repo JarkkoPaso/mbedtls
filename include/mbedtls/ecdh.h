@@ -43,15 +43,19 @@ typedef enum
  */
 typedef struct
 {
-    mbedtls_ecp_group grp;      /*!<  elliptic curve used                           */
-    mbedtls_mpi d;              /*!<  our secret value (private key)                */
-    mbedtls_ecp_point Q;        /*!<  our public value (public key)                 */
-    mbedtls_ecp_point Qp;       /*!<  peer's public value (public key)              */
-    mbedtls_mpi z;              /*!<  shared secret                                 */
-    int32_t point_format;   /*!<  format for point export in TLS messages       */
-    mbedtls_ecp_point Vi;       /*!<  blinding value (for later)                    */
-    mbedtls_ecp_point Vf;       /*!<  un-blinding value (for later)                 */
-    mbedtls_mpi _d;             /*!<  previous d (for later)                        */
+    mbedtls_ecp_group grp;      /*!<  elliptic curve used                   */
+    mbedtls_mpi d;              /*!<  our secret value (private key)        */
+    mbedtls_ecp_point Q;        /*!<  our public value (public key)         */
+    mbedtls_ecp_point Qp;       /*!<  peer's public value (public key)      */
+    mbedtls_mpi z;              /*!<  shared secret                         */
+    int32_t point_format;       /*!<  format for point export in TLS        */
+    mbedtls_ecp_point Vi;       /*!<  blinding value (for later)            */
+    mbedtls_ecp_point Vf;       /*!<  un-blinding value (for later)         */
+    mbedtls_mpi _d;             /*!<  previous d (for later)                */
+#if defined(MBEDTLS_ECP_RESTARTABLE)
+    int32_t restart_enabled;    /*!<  enable restartalbe EC computations?   */
+    mbedtls_ecp_restart_ctx rs; /*!<  restart context for EC computations   */
+#endif
 }
 mbedtls_ecdh_context;
 
@@ -67,6 +71,8 @@ mbedtls_ecdh_context;
  *
  * \return          0 if successful,
  *                  or a MBEDTLS_ERR_ECP_XXX or MBEDTLS_MPI_XXX error code
+ *                  MBEDTLS_ERR_ECP_IN_PROGRESS if maximum number of
+ *                  operations was reached: see \c mbedtls_ecp_set_max_ops().
  */
 int32_t mbedtls_ecdh_gen_public( mbedtls_ecp_group *grp, mbedtls_mpi *d, mbedtls_ecp_point *Q,
                      int32_t (*f_rng)(void *, unsigned char *, size_t),
@@ -85,6 +91,8 @@ int32_t mbedtls_ecdh_gen_public( mbedtls_ecp_group *grp, mbedtls_mpi *d, mbedtls
  *
  * \return          0 if successful,
  *                  or a MBEDTLS_ERR_ECP_XXX or MBEDTLS_MPI_XXX error code
+ *                  MBEDTLS_ERR_ECP_IN_PROGRESS if maximum number of
+ *                  operations was reached: see \c mbedtls_ecp_set_max_ops().
  *
  * \note            If f_rng is not NULL, it is used to implement
  *                  countermeasures against potential elaborate timing
@@ -124,6 +132,8 @@ void mbedtls_ecdh_free( mbedtls_ecdh_context *ctx );
  *                  properly set (for example using mbedtls_ecp_group_load).
  *
  * \return          0 if successful, or an MBEDTLS_ERR_ECP_XXX error code
+ *                  MBEDTLS_ERR_ECP_IN_PROGRESS if maximum number of
+ *                  operations was reached: see \c mbedtls_ecp_set_max_ops().
  */
 int32_t mbedtls_ecdh_make_params( mbedtls_ecdh_context *ctx, size_t *olen,
                       unsigned char *buf, size_t blen,
@@ -170,6 +180,8 @@ int32_t mbedtls_ecdh_get_params( mbedtls_ecdh_context *ctx, const mbedtls_ecp_ke
  * \param p_rng     RNG parameter
  *
  * \return          0 if successful, or an MBEDTLS_ERR_ECP_XXX error code
+ *                  MBEDTLS_ERR_ECP_IN_PROGRESS if maximum number of
+ *                  operations was reached: see \c mbedtls_ecp_set_max_ops().
  */
 int32_t mbedtls_ecdh_make_public( mbedtls_ecdh_context *ctx, size_t *olen,
                       unsigned char *buf, size_t blen,
@@ -201,11 +213,29 @@ int32_t mbedtls_ecdh_read_public( mbedtls_ecdh_context *ctx,
  * \param p_rng     RNG parameter
  *
  * \return          0 if successful, or an MBEDTLS_ERR_ECP_XXX error code
+ *                  MBEDTLS_ERR_ECP_IN_PROGRESS if maximum number of
+ *                  operations was reached: see \c mbedtls_ecp_set_max_ops().
  */
 int32_t mbedtls_ecdh_calc_secret( mbedtls_ecdh_context *ctx, size_t *olen,
                       unsigned char *buf, size_t blen,
                       int32_t (*f_rng)(void *, unsigned char *, size_t),
                       void *p_rng );
+
+#if defined(MBEDTLS_ECP_RESTARTABLE)
+/**
+ * \brief           Enable restartable EC computations for this context.
+ *                  (Default: disabled.)
+ *
+ * \sa              \c mbedtls_ecp_set_max_ops()
+ *
+ * \note            It is not possible to safely disable restartable
+ *                  computations once enabled, except by free-ing the context,
+ *                  which cancels possible in-progress operations.
+ *
+ * \param ctx       ECDH context
+ */
+void mbedtls_ecdh_enable_restart( mbedtls_ecdh_context *ctx );
+#endif /* MBEDTLS_ECP_RESTARTABLE */
 
 #ifdef __cplusplus
 }
