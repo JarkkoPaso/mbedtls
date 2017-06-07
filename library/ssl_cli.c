@@ -2763,7 +2763,7 @@ static int32_t ssl_parse_server_hello_done( mbedtls_ssl_context *ssl )
 static int32_t ssl_write_client_key_exchange( mbedtls_ssl_context *ssl )
 {
     int32_t ret;
-    size_t i, n;
+    size_t i, n = 0;
     const mbedtls_ssl_ciphersuite_t *ciphersuite_info = ssl->transform_negotiate->ciphersuite_info;
 
     MBEDTLS_SSL_DEBUG_MSG( 2, ( "=> write client key exchange" ) );
@@ -2838,6 +2838,8 @@ static int32_t ssl_write_client_key_exchange( mbedtls_ssl_context *ssl )
             MBEDTLS_SSL_DEBUG_RET( 1, "mbedtls_ecdh_make_public", ret );
             return( ret );
         }
+        //Store length for later use (buffer is filled already in above function
+        ssl->out_msglen = n;
 
         MBEDTLS_SSL_DEBUG_ECP( 3, "ECDH: Q", &ssl->handshake->ecdh_ctx.Q );
 
@@ -2854,6 +2856,10 @@ ecdh_calc_secret:
         {
             MBEDTLS_SSL_DEBUG_RET( 1, "mbedtls_ecdh_calc_secret", ret );
             return( ret );
+        } else {
+            // fill the values to handle length correctly
+            i = 4;
+            n = ssl->out_msglen;
         }
 
         MBEDTLS_SSL_DEBUG_MPI( 3, "ECDH: z", &ssl->handshake->ecdh_ctx.z );
