@@ -217,6 +217,7 @@ struct mbedtls_ssl_handshake_params
         ssl_ecrs_keys_derived,          /*!< ssl_derive_keys() done         */
         ssl_ecrs_pk_sign_done,          /*!< done writing CertificateVerify */
     } ecrs_state;                       /*!< state for restartable ECC      */
+    size_t ecrs_n;                      /*!< place for seving a length      */
 #endif
 #if defined(MBEDTLS_SSL_PROTO_DTLS)
     uint32_t out_msg_seq;           /*!<  Outgoing handshake sequence number */

@@ -2819,6 +2819,8 @@ static int32_t ssl_write_client_key_exchange( mbedtls_ssl_context *ssl )
         /*
          * ECDH key exchange -- send client public value
          */
+        i = 4;
+
 #if defined(MBEDTLS_SSL__ECP_RESTARTABLE)
         if( ssl->handshake->ec_restart_enabled)
             mbedtls_ecdh_enable_restart( &ssl->handshake->ecdh_ctx );
@@ -2826,8 +2828,6 @@ static int32_t ssl_write_client_key_exchange( mbedtls_ssl_context *ssl )
         if( ssl->handshake->ecrs_state == ssl_ecrs_ecdh_public_done )
             goto ecdh_calc_secret;
 #endif
-
-        i = 4;
 
         ret = mbedtls_ecdh_make_public( &ssl->handshake->ecdh_ctx,
                                 &n,
@@ -2842,9 +2842,11 @@ static int32_t ssl_write_client_key_exchange( mbedtls_ssl_context *ssl )
         MBEDTLS_SSL_DEBUG_ECP( 3, "ECDH: Q", &ssl->handshake->ecdh_ctx.Q );
 
 #if defined(MBEDTLS_SSL__ECP_RESTARTABLE)
+        ssl->handshake->ecrs_n = n;
         ssl->handshake->ecrs_state++;
 
 ecdh_calc_secret:
+        n = ssl->handshake->ecrs_n;
 #endif
         if( ( ret = mbedtls_ecdh_calc_secret( &ssl->handshake->ecdh_ctx,
                                       &ssl->handshake->pmslen,
