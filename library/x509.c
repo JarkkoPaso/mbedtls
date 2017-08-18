@@ -1000,7 +1000,7 @@ int32_t mbedtls_x509_time_is_future( const mbedtls_x509_time *from )
  */
 int32_t mbedtls_x509_self_test( int32_t verbose )
 {
-#if defined(MBEDTLS_CERTS_C) && defined(MBEDTLS_SHA1_C)
+#if defined(MBEDTLS_CERTS_C) && defined(MBEDTLS_SHA256_C)
     int32_t ret;
     uint32_t flags;
     mbedtls_x509_crt cacert;

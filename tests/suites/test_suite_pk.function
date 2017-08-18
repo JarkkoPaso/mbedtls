@@ -127,8 +127,8 @@ void pk_rsa_verify_test_vec( char *message_hex_string, int digest,
     mbedtls_rsa_context *rsa;
     mbedtls_pk_context pk;
     int msg_len;
-    mbedtls_ecdsa_restart_ctx *rs_ctx = NULL;
-#if defined(MBEDTLS_ECP_RESTARTABLE)
+    void *rs_ctx = NULL;
+#if defined(MBEDTLS_ECDSA_C) && defined(MBEDTLS_ECP_RESTARTABLE)
     mbedtls_ecdsa_restart_ctx ctx;
 
     rs_ctx = &ctx;
@@ -162,7 +162,7 @@ void pk_rsa_verify_test_vec( char *message_hex_string, int digest,
                     result_str, mbedtls_pk_get_len( &pk ), rs_ctx ) == result );
 
 exit:
-#if defined(MBEDTLS_ECP_RESTARTABLE)
+#if defined(MBEDTLS_ECDSA_C) && defined(MBEDTLS_ECP_RESTARTABLE)
     mbedtls_ecdsa_restart_free( rs_ctx );
 #endif
     mbedtls_pk_free( &pk );
@@ -267,7 +267,7 @@ exit:
 }
 /* END_CASE */
 
-/* BEGIN_CASE depends_on:MBEDTLS_ECP_RESTARTABLE:MBEDTLS_ECDSA_DETERMINISTIC */
+/* BEGIN_CASE depends_on:MBEDTLS_ECP_RESTARTABLE:MBEDTLS_ECDSA_C:MBEDTLS_ECDSA_DETERMINISTIC */
 void pk_sign_verify_restart( int pk_type, int grp_id, char *d_str,
                               char *QX_str, char *QY_str,
                               int md_alg, char *msg, char *sig_str,
@@ -371,8 +371,9 @@ void pk_sign_verify( int type, int sign_ret, int verify_ret )
     mbedtls_pk_context pk;
     unsigned char hash[50], sig[5000];
     size_t sig_len;
-    mbedtls_ecdsa_restart_ctx *rs_ctx = NULL;
-#if defined(MBEDTLS_ECP_RESTARTABLE)
+
+    void *rs_ctx = NULL;
+#if defined(MBEDTLS_ECDSA_C) && defined(MBEDTLS_ECP_RESTARTABLE)
     mbedtls_ecdsa_restart_ctx ctx;
 
     rs_ctx = &ctx;
@@ -428,7 +429,7 @@ void pk_sign_verify( int type, int sign_ret, int verify_ret )
     }
 
 exit:
-#if defined(MBEDTLS_ECP_RESTARTABLE)
+#if defined(MBEDTLS_ECDSA_C) && defined(MBEDTLS_ECP_RESTARTABLE)
     mbedtls_ecdsa_restart_free( rs_ctx );
 #endif
     mbedtls_pk_free( &pk );

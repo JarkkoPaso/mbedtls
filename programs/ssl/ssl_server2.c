@@ -118,7 +118,9 @@ int main( void )
 #define DFL_MIN_VERSION         -1
 #define DFL_MAX_VERSION         -1
 #define DFL_ARC4                -1
+#define DFL_SHA1                -1
 #define DFL_AUTH_MODE           -1
+#define DFL_CERT_REQ_CA_LIST    MBEDTLS_SSL_CERT_REQ_CA_LIST_ENABLED
 #define DFL_MFL_CODE            MBEDTLS_SSL_MAX_FRAG_LEN_NONE
 #define DFL_TRUNC_HMAC          -1
 #define DFL_TICKETS             MBEDTLS_SSL_SESSION_TICKETS_ENABLED
@@ -127,6 +129,7 @@ int main( void )
 #define DFL_CACHE_TIMEOUT       -1
 #define DFL_SNI                 NULL
 #define DFL_ALPN_STRING         NULL
+#define DFL_CURVES              NULL
 #define DFL_DHM_FILE            NULL
 #define DFL_TRANSPORT           MBEDTLS_SSL_TRANSPORT_STREAM
 #define DFL_COOKIES             1
@@ -304,6 +307,17 @@ int main( void )
 #define USAGE_ECJPAKE ""
 #endif
 
+#if defined(MBEDTLS_ECP_C)
+#define USAGE_CURVES \
+    "    curves=a,b,c,d      default: \"default\" (library default)\n"  \
+    "                        example: \"secp521r1,brainpoolP512r1\"\n"  \
+    "                        - use \"none\" for empty list\n"           \
+    "                        - see mbedtls_ecp_curve_list()\n"          \
+    "                          for acceptable curve names\n"
+#else
+#define USAGE_CURVES ""
+#endif
+
 #define USAGE \
     "\n usage: ssl_server2 param=<>...\n"                   \
     "\n acceptable parameters:\n"                           \
@@ -321,6 +335,8 @@ int main( void )
     "\n"                                                    \
     "    auth_mode=%%s        default: (library default: none)\n"      \
     "                        options: none, optional, required\n" \
+    "    cert_req_ca_list=%%d default: 1 (send ca list)\n"  \
+    "                        options: 1 (send ca list), 0 (don't send)\n" \
     USAGE_IO                                                \
     USAGE_SNI                                               \
     "\n"                                                    \
@@ -338,8 +354,10 @@ int main( void )
     USAGE_ALPN                                              \
     USAGE_EMS                                               \
     USAGE_ETM                                               \
+    USAGE_CURVES                                            \
     "\n"                                                    \
     "    arc4=%%d             default: (library default: 0)\n" \
+    "    allow_sha1=%%d       default: 0\n"                             \
     "    min_version=%%s      default: (library default: tls1)\n"       \
     "    max_version=%%s      default: (library default: tls1_2)\n"     \
     "    force_version=%%s    default: \"\" (none)\n"       \
@@ -350,6 +368,22 @@ int main( void )
     "                                default: all enabled\n"            \
     "    force_ciphersuite=<name>    default: all enabled\n"            \
     " acceptable ciphersuite names:\n"
+
+
+#define ALPN_LIST_SIZE  10
+#define CURVE_LIST_SIZE 20
+
+#define PUT_UINT64_BE(out_be,in_le,i)                                   \
+{                                                                       \
+    (out_be)[(i) + 0] = (unsigned char)( ( (in_le) >> 56 ) & 0xFF );    \
+    (out_be)[(i) + 1] = (unsigned char)( ( (in_le) >> 48 ) & 0xFF );    \
+    (out_be)[(i) + 2] = (unsigned char)( ( (in_le) >> 40 ) & 0xFF );    \
+    (out_be)[(i) + 3] = (unsigned char)( ( (in_le) >> 32 ) & 0xFF );    \
+    (out_be)[(i) + 4] = (unsigned char)( ( (in_le) >> 24 ) & 0xFF );    \
+    (out_be)[(i) + 5] = (unsigned char)( ( (in_le) >> 16 ) & 0xFF );    \
+    (out_be)[(i) + 6] = (unsigned char)( ( (in_le) >> 8  ) & 0xFF );    \
+    (out_be)[(i) + 7] = (unsigned char)( ( (in_le) >> 0  ) & 0xFF );    \
+}
 
 /*
  * global options
@@ -377,12 +411,14 @@ struct options
     int32_t allow_legacy;           /* allow legacy renegotiation               */
     int32_t renegotiate;            /* attempt renegotiation?                   */
     int32_t renego_delay;           /* delay before enforcing renegotiation     */
-    int32_t renego_period;          /* period for automatic renegotiation       */
+    uint64_t renego_period;         /* period for automatic renegotiation       */
     int32_t exchanges;              /* number of data exchanges                 */
     int32_t min_version;            /* minimum protocol version accepted        */
     int32_t max_version;            /* maximum protocol version accepted        */
     int32_t arc4;                   /* flag for arc4 suites support             */
     int32_t auth_mode;              /* verify mode for connection               */
+    int32_t allow_sha1;             /* flag for SHA-1 support                   */
+    int32_t cert_req_ca_list;       /* should we send the CA list?              */
     unsigned char mfl_code;     /* code for maximum fragment length         */
     int32_t trunc_hmac;             /* accept truncated hmac?                   */
     int32_t tickets;                /* enable / disable session tickets         */
@@ -390,6 +426,7 @@ struct options
     int32_t cache_max;              /* max number of session cache entries      */
     int32_t cache_timeout;          /* expiration delay of session cache entries */
     char *sni;                  /* string describing sni information        */
+    const char *curves;         /* list of supported elliptic curves        */
     const char *alpn_string;    /* ALPN supported protocols                 */
     const char *dhm_file;       /* the file with the DH parameters          */
     int32_t extended_ms;            /* allow negotiation of extended MS?        */
@@ -777,7 +814,25 @@ void term_handler( int32_t sig )
 }
 #endif
 
-int main( int32_t argc, char *argv[] )
+#if defined(MBEDTLS_X509_CRT_PARSE_C)
+static int ssl_sig_hashes_for_test[] = {
+#if defined(MBEDTLS_SHA512_C)
+    MBEDTLS_MD_SHA512,
+    MBEDTLS_MD_SHA384,
+#endif
+#if defined(MBEDTLS_SHA256_C)
+    MBEDTLS_MD_SHA256,
+    MBEDTLS_MD_SHA224,
+#endif
+#if defined(MBEDTLS_SHA1_C)
+    /* Allow SHA-1 as we use it extensively in tests. */
+    MBEDTLS_MD_SHA1,
+#endif
+    MBEDTLS_MD_NONE
+};
+#endif /* MBEDTLS_X509_CRT_PARSE_C */
+
+int main( int argc, char *argv[] )
 {
     int32_t ret = 0, len, written, frags, exchanges_left;
     int32_t version_suites[4][2];
@@ -794,6 +849,9 @@ int main( int32_t argc, char *argv[] )
     mbedtls_ssl_cookie_ctx cookie_ctx;
 #endif
 
+#if defined(MBEDTLS_X509_CRT_PARSE_C)
+    mbedtls_x509_crt_profile crt_profile_for_test = mbedtls_x509_crt_profile_default;
+#endif
     mbedtls_entropy_context entropy;
     mbedtls_ctr_drbg_context ctr_drbg;
     mbedtls_ssl_context ssl;
@@ -825,8 +883,12 @@ int main( int32_t argc, char *argv[] )
 #if defined(SNI_OPTION)
     sni_entry *sni_info = NULL;
 #endif
+#if defined(MBEDTLS_ECP_C)
+    mbedtls_ecp_group_id curve_list[CURVE_LIST_SIZE];
+    const mbedtls_ecp_curve_info * curve_cur;
+#endif
 #if defined(MBEDTLS_SSL_ALPN)
-    const char *alpn_list[10];
+    const char *alpn_list[ALPN_LIST_SIZE];
 #endif
 #if defined(MBEDTLS_MEMORY_BUFFER_ALLOC_C)
     unsigned char alloc_buf[100000];
@@ -925,7 +987,9 @@ int main( int32_t argc, char *argv[] )
     opt.min_version         = DFL_MIN_VERSION;
     opt.max_version         = DFL_MAX_VERSION;
     opt.arc4                = DFL_ARC4;
+    opt.allow_sha1          = DFL_SHA1;
     opt.auth_mode           = DFL_AUTH_MODE;
+    opt.cert_req_ca_list    = DFL_CERT_REQ_CA_LIST;
     opt.mfl_code            = DFL_MFL_CODE;
     opt.trunc_hmac          = DFL_TRUNC_HMAC;
     opt.tickets             = DFL_TICKETS;
@@ -934,6 +998,7 @@ int main( int32_t argc, char *argv[] )
     opt.cache_timeout       = DFL_CACHE_TIMEOUT;
     opt.sni                 = DFL_SNI;
     opt.alpn_string         = DFL_ALPN_STRING;
+    opt.curves              = DFL_CURVES;
     opt.dhm_file            = DFL_DHM_FILE;
     opt.transport           = DFL_TRANSPORT;
     opt.cookies             = DFL_COOKIES;
@@ -1012,6 +1077,8 @@ int main( int32_t argc, char *argv[] )
             }
             opt.force_ciphersuite[1] = 0;
         }
+        else if( strcmp( p, "curves" ) == 0 )
+            opt.curves = q;
         else if( strcmp( p, "version_suites" ) == 0 )
             opt.version_suites = q;
         else if( strcmp( p, "renegotiation" ) == 0 )
@@ -1090,6 +1157,15 @@ int main( int32_t argc, char *argv[] )
                 default:    goto usage;
             }
         }
+        else if( strcmp( p, "allow_sha1" ) == 0 )
+        {
+            switch( atoi( q ) )
+            {
+                case 0:     opt.allow_sha1 = 0;   break;
+                case 1:     opt.allow_sha1 = 1;    break;
+                default:    goto usage;
+            }
+        }
         else if( strcmp( p, "force_version" ) == 0 )
         {
             if( strcmp( q, "ssl3" ) == 0 )
@@ -1130,6 +1206,12 @@ int main( int32_t argc, char *argv[] )
         else if( strcmp( p, "auth_mode" ) == 0 )
         {
             if( ( opt.auth_mode = get_auth_mode( q ) ) < 0 )
+                goto usage;
+        }
+        else if( strcmp( p, "cert_req_ca_list" ) == 0 )
+        {
+            opt.cert_req_ca_list = atoi( q );
+            if( opt.cert_req_ca_list < 0 || opt.cert_req_ca_list > 1 )
                 goto usage;
         }
         else if( strcmp( p, "max_frag_len" ) == 0 )
@@ -1351,6 +1433,62 @@ int main( int32_t argc, char *argv[] )
     }
 #endif /* MBEDTLS_KEY_EXCHANGE__SOME__PSK_ENABLED */
 
+#if defined(MBEDTLS_ECP_C)
+    if( opt.curves != NULL )
+    {
+        p = (char *) opt.curves;
+        i = 0;
+
+        if( strcmp( p, "none" ) == 0 )
+        {
+            curve_list[0] = MBEDTLS_ECP_DP_NONE;
+        }
+        else if( strcmp( p, "default" ) != 0 )
+        {
+            /* Leave room for a final NULL in curve list */
+            while( i < CURVE_LIST_SIZE - 1 && *p != '\0' )
+            {
+                q = p;
+
+                /* Terminate the current string */
+                while( *p != ',' && *p != '\0' )
+                    p++;
+                if( *p == ',' )
+                    *p++ = '\0';
+
+                if( ( curve_cur = mbedtls_ecp_curve_info_from_name( q ) ) != NULL )
+                {
+                    curve_list[i++] = curve_cur->grp_id;
+                }
+                else
+                {
+                    mbedtls_printf( "unknown curve %s\n", q );
+                    mbedtls_printf( "supported curves: " );
+                    for( curve_cur = mbedtls_ecp_curve_list();
+                         curve_cur->grp_id != MBEDTLS_ECP_DP_NONE;
+                         curve_cur++ )
+                    {
+                        mbedtls_printf( "%s ", curve_cur->name );
+                    }
+                    mbedtls_printf( "\n" );
+                    goto exit;
+                }
+            }
+
+            mbedtls_printf("Number of curves: %d\n", i );
+
+            if( i == CURVE_LIST_SIZE - 1 && *p != '\0' )
+            {
+                mbedtls_printf( "curves list too long, maximum %d",
+                                CURVE_LIST_SIZE - 1  );
+                goto exit;
+            }
+
+            curve_list[i] = MBEDTLS_ECP_DP_NONE;
+        }
+    }
+#endif /* MBEDTLS_ECP_C */
+
 #if defined(MBEDTLS_SSL_ALPN)
     if( opt.alpn_string != NULL )
     {
@@ -1358,7 +1496,7 @@ int main( int32_t argc, char *argv[] )
         i = 0;
 
         /* Leave room for a final NULL in alpn_list */
-        while( i < (int32_t) sizeof alpn_list - 1 && *p != '\0' )
+        while( i < (int32_t) ALPN_LIST_SIZE - 1 && *p != '\0' )
         {
             alpn_list[i++] = p;
 
@@ -1608,8 +1746,23 @@ int main( int32_t argc, char *argv[] )
         goto exit;
     }
 
+#if defined(MBEDTLS_X509_CRT_PARSE_C)
+    /* The default algorithms profile disables SHA-1, but our tests still
+       rely on it heavily. Hence we allow it here. A real-world server
+       should use the default profile unless there is a good reason not to. */
+    if( opt.allow_sha1 > 0 )
+    {
+        crt_profile_for_test.allowed_mds |= MBEDTLS_X509_ID_FLAG( MBEDTLS_MD_SHA1 );
+        mbedtls_ssl_conf_cert_profile( &conf, &crt_profile_for_test );
+        mbedtls_ssl_conf_sig_hashes( &conf, ssl_sig_hashes_for_test );
+    }
+#endif /* MBEDTLS_X509_CRT_PARSE_C */
+
     if( opt.auth_mode != DFL_AUTH_MODE )
         mbedtls_ssl_conf_authmode( &conf, opt.auth_mode );
+
+    if( opt.cert_req_ca_list != DFL_CERT_REQ_CA_LIST )
+        mbedtls_ssl_conf_cert_req_ca_list( &conf, opt.cert_req_ca_list );
 
 #if defined(MBEDTLS_SSL_PROTO_DTLS)
     if( opt.hs_to_min != DFL_HS_TO_MIN || opt.hs_to_max != DFL_HS_TO_MAX )
@@ -1785,6 +1938,14 @@ int main( int32_t argc, char *argv[] )
 #if defined(SNI_OPTION)
     if( opt.sni != NULL )
         mbedtls_ssl_conf_sni( &conf, sni_callback, sni_info );
+#endif
+
+#if defined(MBEDTLS_ECP_C)
+    if( opt.curves != NULL &&
+        strcmp( opt.curves, "default" ) != 0 )
+    {
+        mbedtls_ssl_conf_curves( &conf, curve_list );
+    }
 #endif
 
 #if defined(MBEDTLS_KEY_EXCHANGE__SOME__PSK_ENABLED)
@@ -1997,7 +2158,7 @@ handshake:
 
 #if defined(MBEDTLS_X509_CRT_PARSE_C)
     /*
-     * 5. Verify the server certificate
+     * 5. Verify the client certificate
      */
     mbedtls_printf( "  . Verifying peer X.509 certificate..." );
 

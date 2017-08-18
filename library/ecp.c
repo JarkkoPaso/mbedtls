@@ -1278,8 +1278,8 @@ static int32_t ecp_randomize_jac( const mbedtls_ecp_group *grp, mbedtls_ecp_poin
 {
     int32_t ret;
     mbedtls_mpi l, ll;
-    int32_t count = 0;
     size_t p_size;
+    int32_t count = 0;
 
 #if defined(MBEDTLS_ECP_RANDOMIZE_JAC_ALT)
     if ( mbedtls_internal_ecp_grp_capable( grp ) )
@@ -1294,7 +1294,7 @@ static int32_t ecp_randomize_jac( const mbedtls_ecp_group *grp, mbedtls_ecp_poin
     /* Generate l such that 1 < l < p */
     do
     {
-        mbedtls_mpi_fill_random( &l, p_size, f_rng, p_rng );
+        MBEDTLS_MPI_CHK( mbedtls_mpi_fill_random( &l, p_size, f_rng, p_rng ) );
 
         while( mbedtls_mpi_cmp_mpi( &l, &grp->P ) >= 0 )
             MBEDTLS_MPI_CHK( mbedtls_mpi_shift_r( &l, 1 ) );
@@ -1967,6 +1967,7 @@ static int32_t ecp_randomize_mxz( const mbedtls_ecp_group *grp, mbedtls_ecp_poin
     int32_t ret;
     mbedtls_mpi l;
     size_t p_size;
+
     int32_t count = 0;
 
 #if defined(MBEDTLS_ECP_RANDOMIZE_MXZ_ALT)
@@ -1982,7 +1983,7 @@ static int32_t ecp_randomize_mxz( const mbedtls_ecp_group *grp, mbedtls_ecp_poin
     /* Generate l such that 1 < l < p */
     do
     {
-        mbedtls_mpi_fill_random( &l, p_size, f_rng, p_rng );
+        MBEDTLS_MPI_CHK( mbedtls_mpi_fill_random( &l, p_size, f_rng, p_rng ) );
 
         while( mbedtls_mpi_cmp_mpi( &l, &grp->P ) >= 0 )
             MBEDTLS_MPI_CHK( mbedtls_mpi_shift_r( &l, 1 ) );
@@ -2144,11 +2145,7 @@ int32_t mbedtls_ecp_mul_restartable( mbedtls_ecp_group *grp, mbedtls_ecp_point *
 #endif
 
 #if defined(MBEDTLS_ECP_INTERNAL_ALT)
-#if defined(MBEDTLS_THREADING_C)
-    if( mbedtls_mutex_lock( &mbedtls_threading_ecp_mutex ) != 0 )
-        return ( MBEDTLS_ERR_THREADING_MUTEX_ERROR );
 
-#endif
     if ( is_grp_capable = mbedtls_internal_ecp_grp_capable( grp )  )
     {
         MBEDTLS_MPI_CHK( mbedtls_internal_ecp_init( grp ) );
@@ -2188,11 +2185,6 @@ cleanup:
         mbedtls_internal_ecp_free( grp );
     }
 
-#if defined(MBEDTLS_THREADING_C)
-    if( mbedtls_mutex_unlock( &mbedtls_threading_ecp_mutex ) != 0 )
-        return ( MBEDTLS_ERR_THREADING_MUTEX_ERROR );
-
-#endif
 #endif /* MBEDTLS_ECP_INTERNAL_ALT */
 
 #if defined(MBEDTLS_ECP_RESTARTABLE)
@@ -2323,16 +2315,10 @@ int32_t mbedtls_ecp_muladd_restartable(
     mbedtls_ecp_point_init( &mP );
 
 #if defined(MBEDTLS_ECP_INTERNAL_ALT)
-#if defined(MBEDTLS_THREADING_C)
-    if( mbedtls_mutex_lock( &mbedtls_threading_ecp_mutex ) != 0 )
-        return ( MBEDTLS_ERR_THREADING_MUTEX_ERROR );
-
-#endif
     if (  is_grp_capable = mbedtls_internal_ecp_grp_capable( grp )  )
     {
         MBEDTLS_MPI_CHK( mbedtls_internal_ecp_init( grp ) );
     }
-
 #endif /* MBEDTLS_ECP_INTERNAL_ALT */
 
 #if defined(MBEDTLS_ECP_RESTARTABLE)
@@ -2403,11 +2389,6 @@ cleanup:
         mbedtls_internal_ecp_free( grp );
     }
 
-#if defined(MBEDTLS_THREADING_C)
-    if( mbedtls_mutex_unlock( &mbedtls_threading_ecp_mutex ) != 0 )
-        return ( MBEDTLS_ERR_THREADING_MUTEX_ERROR );
-
-#endif
 #endif /* MBEDTLS_ECP_INTERNAL_ALT */
 
     mbedtls_ecp_point_free( &mP );

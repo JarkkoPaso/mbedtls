@@ -350,6 +350,7 @@ void mbedtls_ecp_set_max_ops( unsigned max_ops );
  *                  1 otherwise (restart enabled)
  */
 int32_t mbedtls_ecp_restart_enabled( void );
+
 #endif /* MBEDTLS_ECP_RESTARTABLE */
 
 /**
@@ -651,9 +652,10 @@ int32_t mbedtls_ecp_tls_write_group( const mbedtls_ecp_group *grp, size_t *olen,
  *                  or P is not a valid pubkey,
  *                  MBEDTLS_ERR_MPI_ALLOC_FAILED if memory allocation failed.
  */
-int32_t mbedtls_ecp_mul( mbedtls_ecp_group *grp, mbedtls_ecp_point *R,
+int32_t mbedtls_ecp_mul_restartable( mbedtls_ecp_group *grp, mbedtls_ecp_point *R,
              const mbedtls_mpi *m, const mbedtls_ecp_point *P,
-             int32_t (*f_rng)(void *, unsigned char *, size_t), void *p_rng );
+             int32_t (*f_rng)(void *, unsigned char *, size_t), void *p_rng,
+             mbedtls_ecp_restart_ctx *rs_ctx );
 
 /**
  * \brief           Restartable version of \c mbedtls_ecp_mul()
@@ -674,9 +676,9 @@ int32_t mbedtls_ecp_mul( mbedtls_ecp_group *grp, mbedtls_ecp_point *R,
  *                  MBEDTLS_ERR_ECP_IN_PROGRESS if maximum number of
  *                  operations was reached: see \c mbedtls_ecp_set_max_ops().
  */
-int32_t mbedtls_ecp_mul_restartable( mbedtls_ecp_group *grp, mbedtls_ecp_point *R,
+int mbedtls_ecp_mul_restartable( mbedtls_ecp_group *grp, mbedtls_ecp_point *R,
              const mbedtls_mpi *m, const mbedtls_ecp_point *P,
-             int32_t (*f_rng)(void *, unsigned char *, size_t), void *p_rng,
+             int (*f_rng)(void *, unsigned char *, size_t), void *p_rng,
              mbedtls_ecp_restart_ctx *rs_ctx );
 
 /**
@@ -780,6 +782,22 @@ int32_t mbedtls_ecp_check_privkey( const mbedtls_ecp_group *grp, const mbedtls_m
 int32_t mbedtls_ecp_gen_privkey( const mbedtls_ecp_group *grp,
                      mbedtls_mpi *d,
                      int32_t (*f_rng)(void *, unsigned char *, size_t),
+                     void *p_rng );
+
+/**
+ * \brief           Generate a private key
+ *
+ * \param grp       ECP group
+ * \param d         Destination MPI (secret part)
+ * \param f_rng     RNG function
+ * \param p_rng     RNG parameter
+ *
+ * \return          0 if successful,
+ *                  or a MBEDTLS_ERR_ECP_XXX or MBEDTLS_MPI_XXX error code
+ */
+int mbedtls_ecp_gen_privkey( const mbedtls_ecp_group *grp,
+                     mbedtls_mpi *d,
+                     int (*f_rng)(void *, unsigned char *, size_t),
                      void *p_rng );
 
 /**

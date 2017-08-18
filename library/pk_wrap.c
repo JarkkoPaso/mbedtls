@@ -82,6 +82,11 @@ static int32_t rsa_verify_wrap( void *ctx, mbedtls_md_type_t md_alg,
         return( MBEDTLS_ERR_PK_BAD_INPUT_DATA );
 #endif /* MBEDTLS_HAVE_INT64 */
 
+#if defined(MBEDTLS_HAVE_INT64)
+    if( md_alg == MBEDTLS_MD_NONE && UINT_MAX < hash_len )
+        return( MBEDTLS_ERR_PK_BAD_INPUT_DATA );
+#endif /* MBEDTLS_HAVE_INT64 */
+
     if( sig_len < ((mbedtls_rsa_context *) ctx)->len )
         return( MBEDTLS_ERR_RSA_VERIFY_FAILED );
 
