@@ -177,14 +177,14 @@ typedef struct
     /* for find_parent_in() */
     mbedtls_x509_crt *parent; /* non-null iff parent_in in progress */
     mbedtls_x509_crt *fallback_parent;
-    int fallback_sign_good;
+    int32_t fallback_sign_good;
 
     /* for find_parent() */
-    int parent_is_trusted; /* -1 if find_parent is not in progress */
+    int32_t parent_is_trusted; /* -1 if find_parent is not in progress */
 
     /* for verify_chain() */
     mbedtls_x509_crt *child; /* non-null iff in progress */
-    int self_cnt;
+    int32_t self_cnt;
     mbedtls_x509_crt_verify_chain ver_chain;
 
 } mbedtls_x509_crt_restart_ctx;
@@ -428,12 +428,12 @@ int32_t mbedtls_x509_crt_verify_with_profile( mbedtls_x509_crt *crt,
  *                 MBEDTLS_ERR_ECP_IN_PROGRESS if maximum number of
  *                 operations was reached: see \c mbedtls_ecp_set_max_ops().
  */
-int mbedtls_x509_crt_verify_restartable( mbedtls_x509_crt *crt,
+int32_t mbedtls_x509_crt_verify_restartable( mbedtls_x509_crt *crt,
                      mbedtls_x509_crt *trust_ca,
                      mbedtls_x509_crl *ca_crl,
                      const mbedtls_x509_crt_profile *profile,
                      const char *cn, uint32_t *flags,
-                     int (*f_vrfy)(void *, mbedtls_x509_crt *, int, uint32_t *),
+                     int32_t (*f_vrfy)(void *, mbedtls_x509_crt *, int32_t, uint32_t *),
                      void *p_vrfy,
                      mbedtls_x509_crt_restart_ctx *rs_ctx );
 

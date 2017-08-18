@@ -261,7 +261,7 @@ int32_t mbedtls_aes_crypt_ctr( mbedtls_aes_context *ctx,
  *
  * \return          0 if successful
  */
-int mbedtls_internal_aes_encrypt( mbedtls_aes_context *ctx,
+int32_t mbedtls_internal_aes_encrypt( mbedtls_aes_context *ctx,
                                   const unsigned char input[16],
                                   unsigned char output[16] );
 
@@ -276,7 +276,7 @@ int mbedtls_internal_aes_encrypt( mbedtls_aes_context *ctx,
  *
  * \return          0 if successful
  */
-int mbedtls_internal_aes_decrypt( mbedtls_aes_context *ctx,
+int32_t mbedtls_internal_aes_decrypt( mbedtls_aes_context *ctx,
                                   const unsigned char input[16],
                                   unsigned char output[16] );
 

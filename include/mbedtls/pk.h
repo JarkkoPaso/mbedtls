@@ -427,11 +427,11 @@ int32_t mbedtls_pk_sign_restartable( mbedtls_pk_context *ctx,
  *                  MBEDTLS_ERR_ECP_IN_PROGRESS if maximum number of
  *                  operations was reached: see \c mbedtls_ecp_set_max_ops().
  */
-int mbedtls_pk_sign_restartable( mbedtls_pk_context *ctx,
+int32_t mbedtls_pk_sign_restartable( mbedtls_pk_context *ctx,
              mbedtls_md_type_t md_alg,
              const unsigned char *hash, size_t hash_len,
              unsigned char *sig, size_t *sig_len,
-             int (*f_rng)(void *, unsigned char *, size_t), void *p_rng,
+             int32_t (*f_rng)(void *, unsigned char *, size_t), void *p_rng,
              void *rs_ctx );
 
 /**

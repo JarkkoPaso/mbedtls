@@ -1852,7 +1852,7 @@ static int32_t x509_name_cmp( const mbedtls_x509_name *a, const mbedtls_x509_nam
 /*
  * Check the signature of a certificate by its parent
  */
-static int x509_crt_check_signature( const mbedtls_x509_crt *child,
+static int32_t x509_crt_check_signature( const mbedtls_x509_crt *child,
                                      mbedtls_x509_crt *parent,
                                      mbedtls_x509_crt_restart_ctx *rs_ctx )
 {
@@ -2087,17 +2087,17 @@ check_signature:
  * [in] self_cnt: number of self-signed certs in the chain so far
  * [in-out] rs_ctx: context for restarting operations
  */
-static int x509_crt_find_parent(
+static int32_t x509_crt_find_parent(
                         mbedtls_x509_crt *child,
                         mbedtls_x509_crt *trust_ca,
                         mbedtls_x509_crt **parent,
-                        int *parent_is_trusted,
-                        int *signature_is_good,
-                        int path_cnt,
-                        int self_cnt,
+                        int32_t *parent_is_trusted,
+                        int32_t *signature_is_good,
+                        int32_t path_cnt,
+                        int32_t self_cnt,
                         mbedtls_x509_crt_restart_ctx *rs_ctx )
 {
-    int ret;
+    int32_t ret;
     mbedtls_x509_crt *search_list;
 
     *parent_is_trusted = 1;
@@ -2219,7 +2219,7 @@ static int32_t x509_crt_check_ee_locally_trusted(
  *  - 0 is the chain was successfully built and examined,
  *      even if it was found to be invalid
  */
-static int x509_crt_verify_chain(
+static int32_t x509_crt_verify_chain(
                 mbedtls_x509_crt *crt,
                 mbedtls_x509_crt *trust_ca,
                 mbedtls_x509_crl *ca_crl,
@@ -2227,15 +2227,15 @@ static int x509_crt_verify_chain(
                 mbedtls_x509_crt_verify_chain *ver_chain,
                 mbedtls_x509_crt_restart_ctx *rs_ctx )
 {
-    int ret;
+    int32_t ret;
     uint32_t *flags;
     mbedtls_x509_crt_verify_chain_item *cur;
     mbedtls_x509_crt *child;
     mbedtls_x509_crt *parent;
-    int parent_is_trusted;
-    int child_is_trusted;
-    int signature_is_good;
-    int self_cnt;
+    int32_t parent_is_trusted;
+    int32_t child_is_trusted;
+    int32_t signature_is_good;
+    int32_t self_cnt;
 
 #if defined(MBEDTLS_ECDSA_C) && defined(MBEDTLS_ECP_RESTARTABLE)
     /* resume if we had an operation in progress */
@@ -2363,7 +2363,7 @@ find_parent:
 /*
  * Check for CN match
  */
-static int x509_crt_check_cn( const mbedtls_x509_buf *name,
+static int32_t x509_crt_check_cn( const mbedtls_x509_buf *name,
                               const char *cn, size_t cn_len )
 {
     /* try exact match */
@@ -2425,13 +2425,13 @@ static void x509_crt_verify_name( const mbedtls_x509_crt *crt,
 /*
  * Merge the flags for all certs in the chain, after calling callback
  */
-static int x509_crt_merge_flags_with_cb(
+static int32_t x509_crt_merge_flags_with_cb(
            uint32_t *flags,
            const mbedtls_x509_crt_verify_chain *ver_chain,
-           int (*f_vrfy)(void *, mbedtls_x509_crt *, int, uint32_t *),
+           int32_t (*f_vrfy)(void *, mbedtls_x509_crt *, int32_t, uint32_t *),
            void *p_vrfy )
 {
-    int ret;
+    int32_t ret;
     size_t i;
     uint32_t cur_flags;
     const mbedtls_x509_crt_verify_chain_item *cur;

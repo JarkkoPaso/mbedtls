@@ -676,9 +676,9 @@ int32_t mbedtls_ecp_mul_restartable( mbedtls_ecp_group *grp, mbedtls_ecp_point *
  *                  MBEDTLS_ERR_ECP_IN_PROGRESS if maximum number of
  *                  operations was reached: see \c mbedtls_ecp_set_max_ops().
  */
-int mbedtls_ecp_mul_restartable( mbedtls_ecp_group *grp, mbedtls_ecp_point *R,
+int32_t mbedtls_ecp_mul_restartable( mbedtls_ecp_group *grp, mbedtls_ecp_point *R,
              const mbedtls_mpi *m, const mbedtls_ecp_point *P,
-             int (*f_rng)(void *, unsigned char *, size_t), void *p_rng,
+             int32_t (*f_rng)(void *, unsigned char *, size_t), void *p_rng,
              mbedtls_ecp_restart_ctx *rs_ctx );
 
 /**
@@ -795,9 +795,9 @@ int32_t mbedtls_ecp_gen_privkey( const mbedtls_ecp_group *grp,
  * \return          0 if successful,
  *                  or a MBEDTLS_ERR_ECP_XXX or MBEDTLS_MPI_XXX error code
  */
-int mbedtls_ecp_gen_privkey( const mbedtls_ecp_group *grp,
+int32_t mbedtls_ecp_gen_privkey( const mbedtls_ecp_group *grp,
                      mbedtls_mpi *d,
-                     int (*f_rng)(void *, unsigned char *, size_t),
+                     int32_t (*f_rng)(void *, unsigned char *, size_t),
                      void *p_rng );
 
 /**

@@ -1183,7 +1183,7 @@ static int32_t ssl_parse_client_hello( mbedtls_ssl_context *ssl )
      * signature-hash pairs. */
 #if defined(MBEDTLS_SSL_PROTO_TLS1_2) && \
     defined(MBEDTLS_KEY_EXCHANGE__WITH_CERT__ENABLED)
-    int sig_hash_alg_ext_present = 0;
+    int32_t sig_hash_alg_ext_present = 0;
 #endif /* MBEDTLS_SSL_PROTO_TLS1_2 &&
           MBEDTLS_KEY_EXCHANGE__WITH_CERT__ENABLED */
 

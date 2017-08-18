@@ -4314,7 +4314,7 @@ write_msg:
  * Once the certificate message is read, parse it into a cert chain and
  * perform basic checks, but leave actual verification to the caller
  */
-static int ssl_parse_certificate_chain( mbedtls_ssl_context *ssl )
+static int32_t ssl_parse_certificate_chain( mbedtls_ssl_context *ssl )
 {
     int32_t ret;
     size_t i, n;
@@ -4507,17 +4507,17 @@ static int ssl_parse_certificate_chain( mbedtls_ssl_context *ssl )
     return( 0 );
 }
 
-int mbedtls_ssl_parse_certificate( mbedtls_ssl_context *ssl )
+int32_t mbedtls_ssl_parse_certificate( mbedtls_ssl_context *ssl )
 {
-    int ret;
+    int32_t ret;
     const mbedtls_ssl_ciphersuite_t * const ciphersuite_info =
           ssl->transform_negotiate->ciphersuite_info;
 #if defined(MBEDTLS_SSL_SRV_C) && defined(MBEDTLS_SSL_SERVER_NAME_INDICATION)
-    const int authmode = ssl->handshake->sni_authmode != MBEDTLS_SSL_VERIFY_UNSET
+    const int32_t authmode = ssl->handshake->sni_authmode != MBEDTLS_SSL_VERIFY_UNSET
                        ? ssl->handshake->sni_authmode
                        : ssl->conf->authmode;
 #else
-    const int authmode = ssl->conf->authmode;
+    const int32_t authmode = ssl->conf->authmode;
 #endif
     void *rs_ctx = NULL;
 

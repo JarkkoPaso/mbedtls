@@ -320,7 +320,7 @@ mbedtls_platform_context;
  *          Its use and whether its necessary to be called is dependent on the
  *          platform.
  */
-int mbedtls_platform_setup( mbedtls_platform_context *ctx );
+int32_t mbedtls_platform_setup( mbedtls_platform_context *ctx );
 /**
  * \brief   Perform any platform teardown operations
  *

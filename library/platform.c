@@ -308,7 +308,7 @@ int32_t mbedtls_platform_set_nv_seed(
 /*
  * Placeholder platform setup that does nothing by default
  */
-int mbedtls_platform_setup( mbedtls_platform_context *ctx )
+int32_t mbedtls_platform_setup( mbedtls_platform_context *ctx )
 {
     (void)ctx;
 
