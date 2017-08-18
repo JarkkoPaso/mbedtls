@@ -78,7 +78,7 @@ typedef struct mbedtls_x509_crt
     int32_t ca_istrue;              /**< Optional Basic Constraint extension value: 1 if this certificate belongs to a CA, 0 otherwise. */
     int32_t max_pathlen;            /**< Optional Basic Constraint extension value: The maximum path length to the root certificate. Path length is 1 higher than RFC 5280 'meaning', so 1+ */
 
-    uint32_t key_usage;     /**< Optional key usage extension value: See the values in x509.h */
+    unsigned int key_usage;     /**< Optional key usage extension value: See the values in x509.h */
 
     mbedtls_x509_sequence ext_key_usage; /**< Optional list of extended key usage OIDs. */
 
