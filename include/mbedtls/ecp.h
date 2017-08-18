@@ -652,10 +652,9 @@ int32_t mbedtls_ecp_tls_write_group( const mbedtls_ecp_group *grp, size_t *olen,
  *                  or P is not a valid pubkey,
  *                  MBEDTLS_ERR_MPI_ALLOC_FAILED if memory allocation failed.
  */
-int32_t mbedtls_ecp_mul_restartable( mbedtls_ecp_group *grp, mbedtls_ecp_point *R,
+int32_t mbedtls_ecp_mul( mbedtls_ecp_group *grp, mbedtls_ecp_point *R,
              const mbedtls_mpi *m, const mbedtls_ecp_point *P,
-             int32_t (*f_rng)(void *, unsigned char *, size_t), void *p_rng,
-             mbedtls_ecp_restart_ctx *rs_ctx );
+             int32_t (*f_rng)(void *, unsigned char *, size_t), void *p_rng );
 
 /**
  * \brief           Restartable version of \c mbedtls_ecp_mul()

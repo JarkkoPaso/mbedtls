@@ -1727,7 +1727,7 @@ static int32_t ssl_parse_server_hello( mbedtls_ssl_context *ssl )
     if( suite_info->key_exchange == MBEDTLS_KEY_EXCHANGE_ECDHE_ECDSA &&
         ssl->minor_ver == MBEDTLS_SSL_MINOR_VERSION_3 )
     {
-        ssl->handshake->ec_restart_enabled = 1;
+        ssl->handshake->ecrs_enabled = 1;
     }
 #endif
 

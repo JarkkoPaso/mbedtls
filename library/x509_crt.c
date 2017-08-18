@@ -373,7 +373,7 @@ static int32_t x509_get_ns_cert_type( unsigned char **p,
 
 static int32_t x509_get_key_usage( unsigned char **p,
                                const unsigned char *end,
-                               uint32_t *key_usage)
+                               unsigned int *key_usage)
 {
     int32_t ret;
     size_t i;
@@ -388,9 +388,9 @@ static int32_t x509_get_key_usage( unsigned char **p,
 
     /* Get actual bitstring */
     *key_usage = 0;
-    for( i = 0; i < bs.len && i < sizeof( uint32_t ); i++ )
+    for( i = 0; i < bs.len && i < sizeof( unsigned int ); i++ )
     {
-        *key_usage |= (uint32_t) bs.p[i] << (8*i);
+        *key_usage |= (unsigned int) bs.p[i] << (8*i);
     }
 
     return( 0 );
@@ -973,8 +973,8 @@ int32_t mbedtls_x509_crt_parse_der( mbedtls_x509_crt *chain, const unsigned char
  */
 int32_t mbedtls_x509_crt_parse( mbedtls_x509_crt *chain, const unsigned char *buf, size_t buflen )
 {
-    int32_t success = 0, first_error = 0, total_failed = 0;
 #if defined(MBEDTLS_PEM_PARSE_C)
+    int32_t success = 0, first_error = 0, total_failed = 0;
     int32_t buf_format = MBEDTLS_X509_FORMAT_DER;
 #endif
 
@@ -1126,7 +1126,7 @@ int32_t mbedtls_x509_crt_parse_path( mbedtls_x509_crt *chain, const char *path )
     p = filename + len;
     filename[len++] = '*';
 
-    w_ret = MultiByteToWideChar( CP_ACP, 0, filename, len, szDir,
+    w_ret = MultiByteToWideChar( CP_ACP, 0, filename, (int32_t)len, szDir,
                                  MAX_PATH - 3 );
     if( w_ret == 0 )
         return( MBEDTLS_ERR_X509_BAD_INPUT_DATA );
@@ -1304,7 +1304,7 @@ static int32_t x509_info_cert_type( char **buf, size_t *size,
         PRINT_ITEM( name );
 
 static int32_t x509_info_key_usage( char **buf, size_t *size,
-                                uint32_t key_usage )
+                                unsigned int key_usage )
 {
     int32_t ret;
     size_t n = *size;
@@ -1552,10 +1552,10 @@ int32_t mbedtls_x509_crt_verify_info( char *buf, size_t size, const char *prefix
 
 #if defined(MBEDTLS_X509_CHECK_KEY_USAGE)
 int32_t mbedtls_x509_crt_check_key_usage( const mbedtls_x509_crt *crt,
-                                      uint32_t usage )
+                                      unsigned int usage )
 {
-    uint32_t usage_must, usage_may;
-    uint32_t may_mask = MBEDTLS_X509_KU_ENCIPHER_ONLY
+    unsigned int usage_must, usage_may;
+    unsigned int may_mask = MBEDTLS_X509_KU_ENCIPHER_ONLY
                           | MBEDTLS_X509_KU_DECIPHER_ONLY;
 
     if( ( crt->ext_types & MBEDTLS_X509_EXT_KEY_USAGE ) == 0 )
@@ -2039,12 +2039,8 @@ check_signature:
             continue;
         }
 
-        if( mbedtls_pk_verify_ext( child->sig_pk, child->sig_opts, &trust_ca->pk,
-                           child->sig_md, hash, mbedtls_md_get_size( md_info ),
-                           child->sig.p, child->sig.len ) != 0 )
-        {
-            continue;
-        }
+        break;
+    }
 
     if( parent != NULL )
     {
