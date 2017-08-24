@@ -1552,7 +1552,7 @@ int32_t mbedtls_x509_crt_verify_info( char *buf, size_t size, const char *prefix
 
 #if defined(MBEDTLS_X509_CHECK_KEY_USAGE)
 int32_t mbedtls_x509_crt_check_key_usage( const mbedtls_x509_crt *crt,
-                                      unsigned int usage )
+                                      uint32_t usage )
 {
     unsigned int usage_must, usage_may;
     unsigned int may_mask = MBEDTLS_X509_KU_ENCIPHER_ONLY
